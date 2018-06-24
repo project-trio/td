@@ -1,12 +1,15 @@
 <template>
-<div class="home">
-	<h1>TD Lobby</h1>
+<div class="page-home">
+	<Queue />
 </div>
 </template>
 
 <script>
+import Queue from '@/components/Queue'
+
 export default {
 	components: {
+		Queue,
 	},
 }
 </script>
