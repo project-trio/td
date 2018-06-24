@@ -21,4 +21,9 @@ export default {
 			pressed: {},
 		},
 	},
+
+	signinToken (token) {
+		this.state.signin.token = token
+		storage.set('token', token)
+	},
 }

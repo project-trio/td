@@ -6,8 +6,6 @@ import store from '@/xjs/store'
 
 import UtilPlugin from '@/xjs/util'
 
-import '@/xjs/bridge'
-
 Vue.config.productionTip = false
 
 Vue.use(UtilPlugin)
@@ -18,3 +16,12 @@ new Vue({
 	router,
 	render: h => h(App),
 }).$mount('#app')
+
+//INIT
+
+const signinToken = router.currentRoute.query.token
+if (signinToken) {
+	store.signinToken(signinToken)
+}
+
+require('@/xjs/bridge')

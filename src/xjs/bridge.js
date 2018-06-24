@@ -35,8 +35,12 @@ socket.on('local', (user) => {
 })
 
 socket.on('error', (error) => {
-	window.alert(error)
 	storage.clear()
+	if (error.startsWith('http')) {
+		window.location.replace(`${error}?signin=1`)
+	} else {
+		window.alert(error)
+	}
 })
 
 export default socket
