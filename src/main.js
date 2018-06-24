@@ -4,7 +4,11 @@ import App from './App.vue'
 import router from '@/router'
 import store from '@/store'
 
+import UtilPlugin from '@/util'
+
 Vue.config.productionTip = false
+
+Vue.use(UtilPlugin)
 
 Vue.prototype.$store = store
 
