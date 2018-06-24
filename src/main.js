@@ -14,6 +14,7 @@ Vue.prototype.$store = store
 
 new Vue({
 	router,
+	data: store,
 	render: h => h(App),
 }).$mount('#app')
 
@@ -21,6 +22,7 @@ new Vue({
 
 const signinToken = router.currentRoute.query.token
 if (signinToken) {
+	router.replace({ query: null })
 	store.signinToken(signinToken)
 }
 
