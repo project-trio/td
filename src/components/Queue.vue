@@ -7,7 +7,7 @@
 	</div>
 
 	<div v-if="multiplayer" class="multiplayer">
-		<p class="mode-description">Compete to clear the creeps the fastest!</p>
+		<p class="mode-description">Compete against other players to clear the creeps the fastest!</p>
 		<div class="queue-action">
 			<div v-if="enoughPlayersForGame">
 				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }">{{ readyRequested ? 'ready!' : `ready? (${queueTimer - readyAt})` }}</button>
@@ -81,23 +81,18 @@ export default {
 		},
 	},
 
-	mounted () {
+	created () {
 		this.notificationPermission = window.Notification ? Notification.permission : 'unavailable'
-		// LobbyEvents.connect('queue', { ready: false })
 	},
 
 	beforeDestroy () {
 		this.setReadyTimer(false)
-		// LobbyEvents.connect('leave') //TODO queue
 	},
 
 	methods: {
 		onMultiplayer (multiplayer) {
 			this.multiplayer = multiplayer
-			bridge.emit('queue', multiplayer, multiplayer ? this.onNames : null)
-		},
-		onNames (names) {
-			this.$store.state.queue.names = names
+			bridge.emit('queue', multiplayer)
 		},
 
 		cancelTimer () {

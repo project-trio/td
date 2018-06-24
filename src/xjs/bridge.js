@@ -43,16 +43,4 @@ socket.on('error', (error) => {
 	}
 })
 
-//QUEUE
-
-socket.on('queue join', (name) => {
-	store.state.queue.names.push(name)
-})
-socket.on('queue leave', (name) => {
-	const index = store.state.queue.names.indexOf(name)
-	if (index !== -1) {
-		store.state.queue.names.splice(index, 1)
-	}
-})
-
 export default socket
