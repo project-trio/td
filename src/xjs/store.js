@@ -2,7 +2,9 @@ import storage from '@/xjs/storage'
 
 export default {
 	state: {
-		queued: [],
+		queue: {
+			names: [],
+		},
 
 		signin: {
 			token: storage.get('token'),

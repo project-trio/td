@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import bridge from '@/xjs/bridge'
 import router from '@/xjs/router'
 
 export default {
@@ -55,11 +56,11 @@ export default {
 			return this.queueCount > 1
 		},
 
-		queuedPlayers () {
-			return this.$store.state.queued
+		queuedNames () {
+			return this.$store.state.queue.names
 		},
 		queueCount () {
-			return this.queuedPlayers.length
+			return this.queuedNames.length
 		},
 
 		gameSizes () {
@@ -93,6 +94,10 @@ export default {
 	methods: {
 		onMultiplayer (multiplayer) {
 			this.multiplayer = multiplayer
+			bridge.emit('queue', multiplayer, multiplayer ? this.onNames : null)
+		},
+		onNames (names) {
+			this.$store.state.queue.names = names
 		},
 
 		cancelTimer () {
