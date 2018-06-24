@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import router from '@/router'
-import store from '@/store'
+import router from '@/xjs/router'
+import store from '@/xjs/store'
 
-import UtilPlugin from '@/util'
+import UtilPlugin from '@/xjs/util'
 
 Vue.config.productionTip = false
 

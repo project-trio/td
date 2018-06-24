@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import store from '@/store'
+import store from '@/xjs/store'
 
 const KEY_ENTER = 13
 
