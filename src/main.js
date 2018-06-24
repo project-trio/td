@@ -6,6 +6,8 @@ import store from '@/xjs/store'
 
 import UtilPlugin from '@/xjs/util'
 
+import '@/xjs/bridge'
+
 Vue.config.productionTip = false
 
 Vue.use(UtilPlugin)
