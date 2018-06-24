@@ -10,6 +10,7 @@ export default {
 			token: storage.get('token'),
 			reconnect: null,
 			user: null,
+			attempted: false,
 		},
 
 		key: {
@@ -25,7 +26,13 @@ export default {
 	},
 
 	signinToken (token) {
+		this.state.signin.attempted = true
 		this.state.signin.token = token
 		storage.set('token', token)
+	},
+
+	setGame (data) {
+		this.state.game.id = data.gid
+		this.state.game.players = data.players
 	},
 }

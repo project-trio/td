@@ -18,12 +18,7 @@ new Vue({
 	render: h => h(App),
 }).$mount('#app')
 
-//INIT
-
-const signinToken = router.currentRoute.query.token
-if (signinToken) {
+if (router.currentRoute.query.token) {
+	store.state.signin.attempted = true
 	router.replace({ query: null })
-	store.signinToken(signinToken)
 }
-
-require('@/xjs/bridge')

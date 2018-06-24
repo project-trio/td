@@ -6,7 +6,17 @@ import store from '@/xjs/store'
 //INIT
 
 const query = {}
-const token = store.state.signin.token
+let token = store.state.signin.token
+if (!token) {
+	const query = window.location.search
+	if (query) {
+		console.log(query.split('?token='))
+		token = query.split('?token=')[1]
+		if (token) {
+			store.signinToken(token)
+		}
+	}
+}
 if (token) {
 	query.token = token
 }
@@ -35,9 +45,17 @@ socket.on('local', (user) => {
 })
 
 socket.on('error', (error) => {
-	storage.clear()
+	if (!error) {
+		return console.log('Undefined error')
+	}
 	if (error.startsWith('http')) {
-		window.location.replace(`${error}?signin=1`)
+		if (!store.state.signin.attempted) {
+			storage.clear()
+			window.location.replace(`${error}?signin=1`)
+		} else {
+			console.log(error)
+			window.alert('Unable to sign in')
+		}
 	} else {
 		window.alert(error)
 	}
