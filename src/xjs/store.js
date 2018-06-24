@@ -1,6 +1,14 @@
+import storage from '@/xjs/storage'
+
 export default {
 	state: {
 		queued: [],
+
+		signin: {
+			token: storage.get('token'),
+			reconnect: null,
+			user: null,
+		},
 
 		key: {
 			lastPress: {
