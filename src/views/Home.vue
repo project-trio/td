@@ -35,8 +35,6 @@ export default {
 	},
 
 	beforeDestroy () {
-		this.setReadyTimer(false)
-
 		bridge.off('queue join')
 		bridge.off('queue leave')
 	},

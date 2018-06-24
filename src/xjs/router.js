@@ -15,9 +15,14 @@ export default new Router({
 			component: Home,
 		},
 		{
-			path: '/play',
+			path: '/play/:gid',
 			name: 'Game',
 			component: Game,
+			props (route) {
+				return {
+					gid: route.params.gid,
+				}
+			},
 		},
 	],
 })

@@ -13,6 +13,11 @@ export default {
 			attempted: false,
 		},
 
+		game: {
+			id: null,
+			players: [],
+		},
+
 		key: {
 			lastPress: {
 				name: null,

@@ -12,6 +12,9 @@
 			<div v-if="enoughPlayersForGame">
 				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }">{{ readyRequested ? 'ready!' : `ready? (${queueTimer - readyAt})` }}</button>
 			</div>
+			<div v-else class="text-faint">
+				No one else is in queue for game yet. Why not send the link to a friend?
+			</div>
 		</div>
 		<div v-if="multiplayer && notificationPermission !== 'granted'" class="queue-notification">
 			<div v-if="notificationPermission === 'unavailable'">
@@ -28,7 +31,7 @@
 	</div>
 	<div v-else class="singleplayer">
 		<p class="mode-description">Take on the creeps in solo training.</p>
-		<button @click="onReady" class="big">Play now</button>
+		<button @click="onPlaySingleplayer" class="big">Play now</button>
 	</div>
 </div>
 </template>
@@ -93,6 +96,13 @@ export default {
 		onMultiplayer (multiplayer) {
 			this.multiplayer = multiplayer
 			bridge.emit('queue', multiplayer)
+		},
+
+		onPlaySingleplayer () {
+			bridge.emit('singleplayer', null, (data) => {
+				this.$store.setGame(data)
+				this.$router.push({ name: 'Game', params: { gid: data.gid } })
+			})
 		},
 
 		cancelTimer () {
