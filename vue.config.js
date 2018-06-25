@@ -12,4 +12,8 @@ module.exports = {
 			},
 		},
 	},
+
+	pages: {
+		index: { entry: 'src/app/main.js' },
+	},
 }
