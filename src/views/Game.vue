@@ -1,14 +1,17 @@
 <template>
 <div class="page-game">
-	<canvas />
+	<GameCanvas />
 </div>
 </template>
 
 <script>
 import bridge from '@/xjs/bridge'
 
+import GameCanvas from '@/components/Game/Canvas'
+
 export default {
 	components: {
+		GameCanvas,
 	},
 
 	props: {
