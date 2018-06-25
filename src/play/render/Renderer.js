@@ -74,7 +74,6 @@ export default class Renderer {
 				this.gameCamera = this.orthoCamera
 			}
 			this.gameCamera.position.z = CAMERA_HEIGHT
-			this.pointer.update(this.gameCamera)
 			// this.gameCamera.add(this.audioListener)
 		}
 

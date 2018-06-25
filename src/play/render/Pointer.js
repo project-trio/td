@@ -41,11 +41,9 @@ export default class Pointer {
 		canvas.removeEventListener('contextmenu', onClick)
 	}
 
-	setCamera (camera) {
+	update (camera) {
 		raycaster.setFromCamera(pointerLocation, camera)
-	}
 
-	update () {
 		intersecting = raycaster.intersectObjects(this.intersectContainer.children, true)
 		const newHovering = {}
 		for (const intersect of intersecting) {
