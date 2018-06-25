@@ -124,30 +124,6 @@ export default class GameMap {
 			return true
 		}
 
-		//// SAMPLE output
-		// const ARROWS = {
-		// 	'10': '→',
-		// 	'1-1': '↗',
-		// 	'0-1': '↑',
-		// 	'-1-1': '↖',
-		// 	'-10': '←',
-		// 	'-11': '↙',
-		// 	'01': '↓',
-		// 	'11': '↘',
-		// }
-		// let count = 0, out = ''
-		// const path = this.path(true, true)
-		// for (let idx = 0; idx < TOTAL_TILES; idx += 1) {
-		// 	const pi = path[idx]
-		// 	out += (pi ? ARROWS[`${pi[0]}${pi[1]}`] : '·') + ' '
-		// 	if (count >= TILES_WIDE - 1) {
-		// 		count = 0
-		// 		out += '\n'
-		// 	} else {
-		// 		count += 1
-		// 	}
-		// }
-		// console.log(out)
 	}
 
 	entrance (enter, vertical) {
@@ -165,9 +141,20 @@ export default class GameMap {
 		return result
 	}
 
-	path (test, vertical) {
+	//PATHFINDING
+
+	updatePaths (test) {
+		if (!test) {
+			this.paths = [ tileArray(), tileArray() ]
+		}
+		return this.pathfind(test, true) && this.pathfind(test, false)
+	}
+
+	pathfind (test, vertical) {
+		//TODO if test === false then include creep occupied squares
 		// console.time('path ' + vertical)
-		const path = this[test ? 'test' : 'paths'][vertical ? 1 : 0]
+		const path = (test ? this.test : this.paths)[vertical ? 1 : 0]
+		const entranceTest = this.entrances[vertical ? 1 : 0][0]
 		let positions = [ ...this.exits[vertical ? 1 : 0] ]
 		const searchedIndexes = new Set()
 		const blocked = this.blocked
@@ -181,17 +168,14 @@ export default class GameMap {
 		}
 
 		let firstSearch = true
+		let foundPath = false
 		while (positions.length) {
 			const nextSearch = []
 			let diagonal = false
 			for (const indexDiffs of this.ordinals) {
 				for (const position of positions) {
 					const column = position % TILES_WIDE
-					const edgeCheck = column === 0
-							? -1
-							: column === TILES_WIDE - 1
-								? 1
-								: false
+					const edgeCheck = column === 0 ? -1 : (column === TILES_WIDE - 1 ? 1 : false)
 					for (const diffs of indexDiffs) {
 						const diffX = diffs[0], diffY = diffs[1]
 						if (edgeCheck && diffX === edgeCheck) {
@@ -204,6 +188,9 @@ export default class GameMap {
 						}
 						if (diagonal && (blocked[position + diffX] || blocked[position + diffY])) {
 							continue
+						}
+						if (newIndex === entranceTest) {
+							foundPath = true
 						}
 						path[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY) ]
 						nextSearch.push(newIndex)
@@ -222,7 +209,40 @@ export default class GameMap {
 			positions = nextSearch
 		}
 		// console.timeEnd('path ' + vertical)
-		return path
+		if (!test) { //SAMPLE
+			if (!foundPath) {
+				console.error('Unable to calculate required path', vertical, entranceTest, blocked)
+				this.debugPath(path, false)
+				return true
+			}
+			// this.debugPath(path, foundPath && entranceTest) //SAMPLE
+		}
+		return foundPath
+	}
+
+	debugPath (path, entrance) {
+		const ARROWS = {
+			'10': '→',
+			'1-1': '↗',
+			'0-1': '↑',
+			'-1-1': '↖',
+			'-10': '←',
+			'-11': '↙',
+			'01': '↓',
+			'11': '↘',
+		}
+		let count = 0, out = '%c'
+		for (let idx = 0; idx < TOTAL_TILES; idx += 1) {
+			const pi = path[idx]
+			out += (pi ? ARROWS[`${pi[0]}${pi[1]}`] : '·') + ' '
+			if (count >= TILES_WIDE - 1) {
+				count = 0
+				out += '\n'
+			} else {
+				count += 1
+			}
+		}
+		console.log(out, `color:${entrance ? 'black' : 'red'};`)
 	}
 
 }
