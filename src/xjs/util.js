@@ -1,4 +1,5 @@
 const utils = {
+	TESTING: process.env.NODE !== 'production',
 }
 
 export default {
