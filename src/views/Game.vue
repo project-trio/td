@@ -1,6 +1,6 @@
 <template>
 <div class="page-game">
-	<GameCanvas />
+	<GameCanvas v-if="gameData" :gameData="gameData" />
 </div>
 </template>
 
@@ -18,27 +18,41 @@ export default {
 		gid: String,
 	},
 
+	data () {
+		return {
+			gameData: null,
+		}
+	},
+
 	computed: {
 		joined () {
 			return this.$store.state.game.id === this.gid
 		},
 	},
 
-	created () {
-		if (!this.joined) {
-			console.log('rejoin', this.gid)
-			bridge.emit('join game', this.gid, (data) => {
-				console.log('joined', data)
-				this.$store.setGame(data)
-			})
-		}
+	beforeCreate () {
+		bridge.on('start game', (data) => {
+			console.log('start game', data)
+			this.gameData = data
+		})
+	},
+
+	beforeDestroy () {
+		bridge.off('start game')
 	},
 
 	mounted () {
 		if (this.joined) {
-			console.log('ready up')
-			bridge.emit('ready', this.gid, (data) => {
-				console.log(data)
+			bridge.emit('ready', this.gid)
+		} else {
+			bridge.emit('join game', this.gid, (data) => {
+				if (data.error) {
+					console.log('rejoin error', data.error)
+					this.$router.replace({ name: 'Home' })
+				} else {
+					console.log('rejoined', data)
+					this.gameData = data
+				}
 			})
 		}
 	},

@@ -100,8 +100,9 @@ export default {
 
 		onPlaySingleplayer () {
 			bridge.emit('singleplayer', null, (data) => {
-				this.$store.setGame(data)
-				this.$router.push({ name: 'Game', params: { gid: data.gid } })
+				const gid = data.gid
+				this.$store.state.game.id = gid
+				this.$router.push({ name: 'Game', params: { gid } })
 			})
 		},
 

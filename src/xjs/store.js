@@ -39,9 +39,4 @@ export default {
 		this.state.signin.token = token
 		storage.set('token', token)
 	},
-
-	setGame (data) {
-		this.state.game.id = data.gid
-		this.state.game.players = data.players
-	},
 }

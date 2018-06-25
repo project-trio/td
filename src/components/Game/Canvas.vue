@@ -4,10 +4,17 @@
 
 <script>
 import Renderer from '@/play/render/Renderer'
+import Game from '@/play/Game'
 
 export default {
+	props: {
+		gameData: Object,
+	},
+
 	mounted () {
-		this.renderer = new Renderer(this.$el)
+		const renderer = new Renderer(this.$el)
+		this.$options.renderer = renderer
+		this.$options.game = new Game(renderer.floorContainer, this.gameData)
 	},
 }
 </script>
