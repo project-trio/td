@@ -4,13 +4,12 @@ import App from './App.vue'
 import router from '@/xjs/router'
 import store from '@/xjs/store'
 
-import UtilPlugin from '@/xjs/util'
+import util from '@/xjs/util'
 
 Vue.config.productionTip = false
 
-Vue.use(UtilPlugin)
-
 Vue.prototype.$store = store
+Vue.prototype.$util = util
 
 new Vue({
 	router,

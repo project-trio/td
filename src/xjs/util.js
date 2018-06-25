@@ -1,13 +1,9 @@
-const utils = {
-	TESTING: process.env.NODE !== 'production',
+export default {
+
+	TESTING: window.location.protocol === 'http:',
 
 	pluralize (amount, word) {
 		return `${amount} ${word}${amount === 1 ? '' : 's'}`
 	},
-}
 
-export default {
-	install (Vue) {
-		Vue.prototype.$util = utils
-	},
 }

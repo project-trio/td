@@ -2,6 +2,7 @@ import io from 'socket.io-client'
 
 import storage from '@/xjs/storage'
 import store from '@/xjs/store'
+import util from '@/xjs/util'
 
 //INIT
 
@@ -21,7 +22,7 @@ if (token) {
 	query.token = token
 }
 
-const socket = io('/td', { query })
+const socket = io(`${util.TESTING ? 'http://192.168.0.11:8031' : 'https://trio.suzu.online'}/td`, { query })
 
 //EVENTS
 
