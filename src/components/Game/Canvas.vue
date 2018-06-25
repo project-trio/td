@@ -30,6 +30,16 @@ export default {
 		}
 	},
 
+	beforeDestroy () {
+		this.$options.renderer.renderer = null
+		this.$options.renderer = null
+		this.$options.game = null
+		if (this.$options.loop) {
+			this.$options.loop.game = null
+			this.$options.loop = null
+		}
+	},
+
 	methods: {
 		createGame () {
 			this.$options.game = new Game(this.$options.renderer.container, this.gameData)

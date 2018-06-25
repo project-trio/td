@@ -8,10 +8,8 @@ import render from '@/play/render'
 THREE.Cache.enabled = true
 
 const CAMERA_FOV = 90
-const CAMERA_OFF = 256
-const CAMERA_HEIGHT = CAMERA_OFF / (CAMERA_FOV / 180)
 
-const PERSPECTIVE_CAMERA = true //TODO
+const PERSPECTIVE_CAMERA = false //TODO
 
 export default class Renderer {
 
@@ -70,10 +68,11 @@ export default class Renderer {
 			// }
 			if (this.usePerspectiveCamera) {
 				this.gameCamera = this.perspectiveCamera
+				this.gameCamera.position.z = 192 / (CAMERA_FOV / 180)
 			} else {
 				this.gameCamera = this.orthoCamera
+				this.gameCamera.position.z = 100
 			}
-			this.gameCamera.position.z = CAMERA_HEIGHT
 			// this.gameCamera.add(this.audioListener)
 		}
 
@@ -87,13 +86,11 @@ export default class Renderer {
 		if (this.usePerspectiveCamera) {
 			this.gameCamera.aspect = width / height
 		} else {
-			const cameraZoom = height / (CAMERA_OFF / 0.575)
-			const zoomWidth = width / cameraZoom
-			const zoomHeight = height / cameraZoom
-			this.gameCamera.left = -zoomWidth
-			this.gameCamera.right = zoomWidth
-			this.gameCamera.top = zoomHeight
-			this.gameCamera.bottom = -zoomHeight
+			const zoom = 2
+			this.gameCamera.left = -width / zoom
+			this.gameCamera.right = width / zoom
+			this.gameCamera.top = height / zoom
+			this.gameCamera.bottom = -height / zoom
 		}
 		this.gameCamera.updateProjectionMatrix()
 	}

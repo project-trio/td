@@ -71,7 +71,7 @@ export default {
 	},
 
 	circle (radius, options) {
-		const segments = Math.ceil(radius / 16) * 8
+		const segments = Math.ceil(radius / 16) * 12
 		const geometry = new THREE.CircleBufferGeometry(radius, segments)
 		const material = new THREE.MeshBasicMaterial({ color: options.color })
 		if (options.opacity !== undefined) {

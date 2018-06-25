@@ -2,7 +2,7 @@
 <div class="chat">
 	<div ref="chatScroll" class="chat-log scrolls">
 		<div v-for="(msg, index) in messages" class="msg" :key="index">
-			<span :class="`msg-from team-${msg.team !== undefined ? msg.team + 1 : 0}`">{{ msg.from }}</span>&ensp;<span class="msg-at">({{ timeSince(msg.at) }})</span>: {{ msg.body }}
+			<span class="msg-from">{{ msg.from }}</span>&ensp;<span class="msg-at">({{ timeSince(msg.at) }})</span>: {{ msg.body }}
 		</div>
 	</div>
 	<div class="chat-input-container">
