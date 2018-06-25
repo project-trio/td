@@ -2,6 +2,8 @@ import * as THREE from 'three'
 
 import render from '@/play/render'
 
+import Tower from '@/play/Game/Unit/Tower'
+
 const TILE_SIZE = 32
 const TILES_WIDE = 22
 const TILES_TALL = 18
@@ -13,6 +15,8 @@ const MIN_X = -MAP_WIDTH / 2 + TILE_SIZE * 2
 const MIN_Y = -MAP_HEIGHT / 2 + TILE_SIZE * 2
 const MAX_X = MAP_WIDTH / 2 - TILE_SIZE * 2
 const MAX_Y = MAP_HEIGHT / 2 - TILE_SIZE * 2
+
+const BLOCK_CHECK = [0, -1, -TILES_WIDE, 1]
 
 const ENTRANCE_SIZE = 6
 const EX = 0
@@ -33,7 +37,6 @@ export default class GameMap {
 		this.container.interactive = true
 
 		this.blocked = tileArray()
-		this.paths = [ tileArray(), tileArray() ]
 		this.test = [ tileArray(), tileArray() ]
 		this.entrances = [ this.entrance(true, false), this.entrance(true, true) ]
 		this.exits = [ this.entrance(false, false), this.entrance(false, true) ]
@@ -58,11 +61,9 @@ export default class GameMap {
 				blockCol = 1
 			}
 		}
+		this.updatePaths(false)
 
-		this.path(false, true)
-		this.path(false, false)
-
-		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x448866, parent: this.container })
+		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0xccbb99, parent: this.container })
 		ground.owner = ground
 
 		const walls = [
@@ -82,54 +83,105 @@ export default class GameMap {
 			geometry.translate(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2)
 			wallGeometries.merge(geometry)
 		}
-		const material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa })
+		const material = new THREE.MeshBasicMaterial({ color: 0xddddcc })
 		const mesh = new THREE.Mesh(wallGeometries, material)
 		mesh.castShadow = true
 		mesh.receiveShadow = true
 		this.container.add(mesh)
 
-		ground.placement = render.rectangle(TILE_SIZE * 2, TILE_SIZE * 2, { color: 0xffffff, parent: ground })
-		ground.placement.visible = false
+		const placement = render.rectangle(TILE_SIZE * 2, TILE_SIZE * 2, { color: 0xffffff, parent: ground })
+		placement.visible = false
 
-		ground.onHover = () => {
-			ground.placement.visible = true
-		}
-
+		let cx = null, cy = null
+		ground.onHover = () => {}
 		ground.onMove = (point) => {
 			let tx = point.x
 			let ty = point.y
 			if (tx <= MIN_X) {
-				tx = MIN_X
+				tx = 2
 			} else if (tx >= MAX_X) {
-				tx = MAX_X
+				tx = TILES_WIDE - 2
 			} else {
-				tx = (Math.round((tx - TILE_SIZE) / TILE_SIZE) + 1) * TILE_SIZE
+				tx = (Math.round((tx - TILE_SIZE + MAP_WIDTH / 2) / TILE_SIZE) + 1)
 			}
 			if (ty < MIN_Y) {
-				ty = MIN_Y
+				ty = 2
 			} else if (ty >= MAX_Y) {
-				ty = MAX_Y
+				ty = TILES_TALL - 2
 			} else {
-				ty = (Math.round((point.y - TILE_SIZE) / TILE_SIZE) + 1) * TILE_SIZE
+				ty = (Math.round((ty - TILE_SIZE + MAP_HEIGHT / 2) / TILE_SIZE) + 1)
 			}
-			ground.placement.position.x = tx
-			ground.placement.position.y = ty
+			if (tx !== cx || ty !== cy) {
+				if (cx !== null) {
+					this.toggleTower(cx, cy, false)
+				}
+				if (this.blockedSquare(tx, ty)) {
+					cx = null
+					placement.visible = false
+					return
+				}
+				placement.visible = true
+				cx = tx
+				cy = ty
+				placement.position.x = tx * TILE_SIZE - MAP_WIDTH / 2
+				placement.position.y = ty * TILE_SIZE - MAP_HEIGHT / 2
+				this.toggleTower(cx, cy, true)
+
+				const blocked = !this.updatePaths(true)
+				if (blocked !== placement.blocked) {
+					placement.blocked = blocked
+					placement.material.color.setHex(blocked ? 0xdd8855 : 0x99dd66)
+				}
+			}
 		}
 
 		ground.onBlur = () => {
-			ground.placement.visible = false
+			placement.visible = false
 		}
 
 		ground.onClick = (_point, _rightClick) => {
+			if (placement.blocked) {
+				return
+			}
+			const tower = new Tower(placement.position.x, placement.position.y, this.container)
+			this.toggleTower(cx, cy, true, false)
+			this.updatePaths(false)
+			tower.tx = cx
+			tower.ty = cy
+			cx = null
+			placement.visible = false
 			return true
 		}
+	}
 
+	toggleTower (cx, cy, blocking) {
+		let index = cx + (TILES_TALL - cy) * TILES_WIDE
+		for (const diff of BLOCK_CHECK) {
+			index += diff
+			this.blocked[index] = blocking
+		}
+	}
+
+	blockedSquare (cx, cy) {
+		let index = cx + (TILES_TALL - cy) * TILES_WIDE
+		for (const diff of BLOCK_CHECK) {
+			index += diff
+			if (this.blocked[index]) {
+				return true
+			}
+		}
+		return false
 	}
 
 	entrance (enter, vertical) {
 		const result = []
 		let tx = vertical ? (TILES_WIDE - ENTRANCE_SIZE) / 2 : (enter ? 1 : TILES_WIDE)
-		let ty = vertical ? (enter ? 1 : TILES_TALL) : (TILES_TALL - ENTRANCE_SIZE) / 2 + 1
+		let ty = vertical ? (enter ? 1 : TILES_TALL) : (TILES_TALL - ENTRANCE_SIZE) / 2
+		if (vertical) {
+			tx += EX
+		} else {
+			ty += EY
+		}
 		for (let eidx = 0; eidx < ENTRANCE_SIZE; eidx += 1) {
 			if (vertical) {
 				tx += 1
