@@ -4,8 +4,10 @@ import * as THREE from 'three'
 
 export default {
 
-	group () {
-		return new THREE.Group()
+	group (parent) {
+		const group = new THREE.Group()
+		parent.add(group)
+		return group
 	},
 
 	// Voxels
@@ -54,11 +56,10 @@ export default {
 
 	// Shapes
 
-	rectangle (x, y, w, h, options) {
+	rectangle (w, h, options) {
 		const geometry = new THREE.PlaneBufferGeometry(w, h)
 		const material = new THREE.MeshBasicMaterial({ color: options.color })
 		const rectangle = new THREE.Mesh(geometry, material)
-		rectangle.position.set(x, y, options.z || 0)
 		if (options.parent) {
 			options.parent.add(rectangle)
 		}

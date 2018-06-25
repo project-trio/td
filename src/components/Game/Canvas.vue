@@ -4,6 +4,7 @@
 
 <script>
 import Renderer from '@/play/render/Renderer'
+import Loop from '@/play/render/Loop'
 import Game from '@/play/Game'
 
 export default {
@@ -11,10 +12,30 @@ export default {
 		gameData: Object,
 	},
 
+	renderer: null,
+	game: null,
+	loop: null,
+
+	watch: {
+		gameData () {
+			this.createGame()
+		},
+	},
+
 	mounted () {
 		const renderer = new Renderer(this.$el)
 		this.$options.renderer = renderer
-		this.$options.game = new Game(renderer.floorContainer, this.gameData)
+		if (this.gameData) {
+			this.createGame()
+		}
+	},
+
+	methods: {
+		createGame () {
+			this.$options.game = new Game(this.$options.renderer.container, this.gameData)
+			this.$options.game.renderer = this.$options.renderer
+			this.$options.loop = new Loop(this.$options.game)
+		},
 	},
 }
 </script>

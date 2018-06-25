@@ -1,6 +1,6 @@
 <template>
 <div class="page-game">
-	<GameCanvas v-if="gameData" :gameData="gameData" />
+	<GameCanvas :gameData="gameData" />
 </div>
 </template>
 

@@ -3,16 +3,16 @@ import { Raycaster, Vector2 } from 'three'
 const raycaster = new Raycaster()
 const pointerLocation = new Vector2()
 
-//LISTENER
+let intersecting = null
 
-function onMouseMove (event) {
+const onMouseMove = (event) => {
 	pointerLocation.x = (event.clientX / window.innerWidth) * 2 - 1
 	pointerLocation.y = -(event.clientY / window.innerHeight) * 2 + 1
 }
 
-function onClick (event) {
+const onClick = (event) => {
 	const rightClick = event.which ? event.which === 3 : event.button >= 2
-	for (const intersect of this.intersecting) {
+	for (const intersect of intersecting) {
 		const owner = intersect.object.owner
 		if (owner && owner.onClick) {
 			if (owner.onClick(intersect.point, rightClick)) {
@@ -22,12 +22,11 @@ function onClick (event) {
 	}
 }
 
-//PUBLIC
-
 export default class Pointer {
 
 	constructor (canvas, container) {
 		this.intersectContainer = container
+		intersecting = []
 		this.hovering = {}
 
 		canvas.addEventListener('mousedown', onClick)
@@ -36,17 +35,20 @@ export default class Pointer {
 	}
 
 	destroy (canvas) {
+		intersecting = null
 		canvas.removeEventListener('mousedown', onClick)
 		canvas.removeEventListener('mousemove', onMouseMove)
 		canvas.removeEventListener('contextmenu', onClick)
 	}
 
-	reposition (camera) {
+	setCamera (camera) {
 		raycaster.setFromCamera(pointerLocation, camera)
+	}
 
-		this.intersecting = raycaster.intersectObjects(this.intersectContainer.children, true)
+	update () {
+		intersecting = raycaster.intersectObjects(this.intersectContainer.children, true)
 		const newHovering = {}
-		for (const intersect of this.intersecting) {
+		for (const intersect of intersecting) {
 			const owner = intersect.object.owner
 			if (owner && owner.onHover) {
 				if (!this.hovering[owner.id]) {
@@ -65,4 +67,5 @@ export default class Pointer {
 		}
 		this.hovering = newHovering
 	}
+
 }

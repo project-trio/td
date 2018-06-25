@@ -7,7 +7,7 @@ import render from '@/play/render'
 
 THREE.Cache.enabled = true
 
-const CAMERA_FOV = 60
+const CAMERA_FOV = 90
 const CAMERA_OFF = 256
 const CAMERA_HEIGHT = CAMERA_OFF / (CAMERA_FOV / 180)
 
@@ -46,8 +46,8 @@ export default class Renderer {
 		this.gameScene = gameScene
 		this.gameLight = gameLight
 
-		this.floorContainer = render.group()
-		this.pointer = new Pointer(canvas, this.floorContainer)
+		this.container = render.group(gameScene)
+		this.pointer = new Pointer(canvas, this.container)
 
 		this.createRenderer()
 
@@ -74,6 +74,7 @@ export default class Renderer {
 				this.gameCamera = this.orthoCamera
 			}
 			this.gameCamera.position.z = CAMERA_HEIGHT
+			this.pointer.update(this.gameCamera)
 			// this.gameCamera.add(this.audioListener)
 		}
 
@@ -121,7 +122,7 @@ export default class Renderer {
 	}
 
 	update () {
-		this.pointer.reposition(this.gameCamera)
+		this.pointer.update(this.gameCamera)
 		this.renderer.render(this.gameScene, this.gameCamera)
 	}
 

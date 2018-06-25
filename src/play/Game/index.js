@@ -1,11 +1,9 @@
 import store from '@/xjs/store'
 
-// import Bullet from '@/play/Game/Bullet'
-// import Creep from '@/play/Game/Creep'
-// import GameMap from '@/play/Game/Map'
-// import Tower from '@/play/Game/Tower'
+import GameMap from '@/play/Game/Map'
 
 export default class Game {
+
 	constructor (container, data) {
 		this.container = container
 		this.players = []
@@ -23,10 +21,17 @@ export default class Game {
 		this.ticksPerUpdate = this.updateDuration / this.tickDuration
 
 		this.id = data.gid
-		this.started = false
 		this.finished = false
 		this.serverUpdate = -1
 		this.updatesUntilStart = data.updatesUntilStart
+
+		this.started = true
+		store.state.game.playing = true
+
+		this.map = new GameMap(this.container)
+
+		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
+		this.lastTickTime = performance.now()
 	}
 
 	// Update
@@ -146,27 +151,7 @@ export default class Game {
 	// Setup
 
 	destroy () {
-		// Unit.destroy()
-		// Bullet.destroy()
 		store.resetGameState()
-	}
-
-	start () {
-		if (this.started) {
-			console.error('game already started')
-			return
-		}
-		this.started = true
-		store.state.game.playing = true
-
-		// Unit.init()
-		// Bullet.init()
-		// this.map = new GameMap(this.mapName, this.container)
-
-		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
-		this.lastTickTime = performance.now()
-
-		// this.map.build()
 	}
 
 	end () {
