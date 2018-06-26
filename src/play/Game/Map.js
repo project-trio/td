@@ -140,16 +140,16 @@ export default class GameMap {
 		}
 
 		ground.onClick = (_point, _rightClick) => {
-			if (placement.blocked) {
+			if (placement.blocked || !placement.visible) {
 				return
 			}
+			placement.visible = false
 			const tower = new Tower(placement.position.x, placement.position.y, this.container)
 			this.toggleTower(cx, cy, true, false)
 			this.updatePaths(false)
 			tower.tx = cx
 			tower.ty = cy
 			cx = null
-			placement.visible = false
 			return true
 		}
 	}
@@ -206,7 +206,7 @@ export default class GameMap {
 		//TODO if test === false then include creep occupied squares
 		// console.time('path ' + vertical)
 		const path = (test ? this.test : this.paths)[vertical ? 1 : 0]
-		const entranceTest = this.entrances[vertical ? 1 : 0][0]
+		const requiredIndecies = new Set(this.entrances[vertical ? 1 : 0])
 		let positions = [ ...this.exits[vertical ? 1 : 0] ]
 		const searchedIndexes = new Set()
 		const blocked = this.blocked
@@ -241,7 +241,7 @@ export default class GameMap {
 						if (diagonal && (blocked[position + diffX] || blocked[position + diffY])) {
 							continue
 						}
-						if (newIndex === entranceTest) {
+						if (requiredIndecies.delete(newIndex) && !requiredIndecies.size) {
 							foundPath = true
 						}
 						path[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY) ]
@@ -263,7 +263,7 @@ export default class GameMap {
 		// console.timeEnd('path ' + vertical)
 		if (!test) { //SAMPLE
 			if (!foundPath) {
-				console.error('Unable to calculate required path', vertical, entranceTest, blocked)
+				console.error('Unable to calculate required path', vertical, requiredIndecies, blocked)
 				this.debugPath(path, false)
 				return true
 			}
