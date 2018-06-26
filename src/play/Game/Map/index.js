@@ -4,6 +4,7 @@ import store from '@/xjs/store'
 
 import render from '@/play/render'
 
+import Unit from '@/play/Game/entity/Unit'
 import Tower from '@/play/Game/entity/Tower'
 
 import Paths from '@/play/Game/Map/Paths'
@@ -93,6 +94,7 @@ export default class GameMap {
 				}
 				if (this.paths.blockedSquare(tx, ty)) {
 					cx = null
+					cy = null
 					placement.visible = false
 					return
 				}
@@ -103,7 +105,7 @@ export default class GameMap {
 				placement.position.y = ty * TILE_SIZE - MAP_HEIGHT / 2
 				this.paths.toggleTower(cx, cy, true)
 
-				const blocked = !this.paths.update(true)
+				const blocked = !this.paths.update()
 				if (blocked !== placement.blocked) {
 					placement.blocked = blocked
 					placement.material.color.setHex(blocked ? 0xdd8855 : 0x99dd66)
@@ -119,15 +121,41 @@ export default class GameMap {
 			if (placement.blocked || !placement.visible) {
 				return
 			}
+			if (!this.paths.update(Unit.all())) {
+				return console.log('Tower blocked by creeps')
+			}
 			placement.visible = false
-			const tower = new Tower(placement.position.x, placement.position.y, this.container)
+			const tower = new Tower(placement.position.x, placement.position.y, this.container, true)
 			this.paths.toggleTower(cx, cy, true, false)
-			this.paths.update(false)
+			this.paths.apply()
 			tower.tx = cx
 			tower.ty = cy
+			for (const unit of Unit.all()) {
+				if (unit.updatePath) {
+					unit.updatePath(true)
+				}
+			}
 			cx = null
 			return true
 		}
+	}
+
+	tileCenter (index) {
+		const tx = (index % TILES_WIDE) - TILES_WIDE / 2 + 0.5
+		const ty = TILES_TALL - Math.floor(index / TILES_WIDE) - TILES_TALL / 2 - 0.5
+		return [ tx * TILE_SIZE, ty * TILE_SIZE ]
+	}
+
+	tilePath (index, vertical) {
+		return this.paths.move[vertical][index]
+	}
+
+	tileBlocked (index) {
+		return this.paths.blocked[index]
+	}
+
+	moveIndex (index, dx, dy) {
+		return index + dx + dy * TILES_WIDE
 	}
 
 	spawn (renderTime) {

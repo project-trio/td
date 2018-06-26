@@ -25,6 +25,8 @@ const entrance = (enter, vertical) => {
 	return result
 }
 
+let errorPath
+
 export default class Paths {
 
 	constructor (tilesWide, tilesTall, entranceSize, ex, ey) {
@@ -37,9 +39,10 @@ export default class Paths {
 		this.blockCheck = [0, -1, -TILES_WIDE, 1]
 
 		this.blocked = tileArray()
+		this.move = [ tileArray(), tileArray() ]
 		this.test = [ tileArray(), tileArray() ]
-		this.entrances = [ entrance(true, false), entrance(true, true) ]
-		this.exits = [ entrance(false, false), entrance(false, true) ]
+		this.entrances = [ entrance(true, 0), entrance(true, 1) ]
+		this.exits = [ entrance(false, 0), entrance(false, 1) ]
 		this.ordinals = [
 			[ [1, 0], [0, -TILES_WIDE], [-1, 0], [0, TILES_WIDE] ],
 			[ [1, -TILES_WIDE], [-1, -TILES_WIDE], [-1, TILES_WIDE], [1, TILES_WIDE] ],
@@ -67,7 +70,8 @@ export default class Paths {
 				blockCol = 1
 			}
 		}
-		this.update(false)
+		this.update()
+		this.apply()
 	}
 
 	toggleTower (cx, cy, blocking) {
@@ -89,19 +93,55 @@ export default class Paths {
 		return false
 	}
 
-	update (test) {
-		if (!test) {
-			this.paths = [ tileArray(), tileArray() ]
+	update (allUnits) {
+		errorPath = null
+		const additionalIndicies = allUnits ? [] : null
+		if (additionalIndicies) {
+			for (const { currentIndex } of allUnits) {
+				if (currentIndex) {
+					additionalIndicies.push(currentIndex)
+				}
+			}
 		}
-		return this.pathfind(test, true) && this.pathfind(test, false)
+		for (let vertical = 0; vertical < 2; vertical += 1) {
+			const error = this.find(vertical, additionalIndicies)
+			if (error) {
+				errorPath = error
+			}
+		}
+		return errorPath === null
 	}
 
-	pathfind (test, vertical) {
+	apply () {
+		if (errorPath) {
+			console.error('Unable to calculate required path')
+			this.debugPath(errorPath, false)
+			return false
+		}
+		for (let vertical = 0; vertical < 2; vertical += 1) {
+			const resultPath = this.move[vertical]
+			const testPath = this.test[vertical]
+			for (let idx = testPath.length - 1; idx >= 0; idx -= 1) {
+				const testMove = testPath[idx]
+				if (testMove) {
+					resultPath[idx] = [ testMove[0], testMove[1] ]
+				}
+			}
+		}
+	}
+
+	find (vertical, additionalIndicies) {
 		//TODO if test === false then include creep occupied squares
 		// console.time('path ' + vertical)
-		const path = (test ? this.test : this.paths)[vertical ? 1 : 0]
-		const requiredIndecies = new Set(this.entrances[vertical ? 1 : 0])
-		let positions = [ ...this.exits[vertical ? 1 : 0] ]
+		const path = this.test[vertical]
+		const requiredIndecies = new Set(this.entrances[vertical])
+		let positions = [ ...this.exits[vertical] ]
+		if (additionalIndicies) {
+			for (const additionalIndex of additionalIndicies) {
+				requiredIndecies.add(additionalIndex)
+			}
+		}
+
 		const searchedIndexes = new Set()
 		const blocked = this.blocked
 		for (let idx = 0; idx < TILES_TOTAL; idx += 1) {
@@ -155,15 +195,7 @@ export default class Paths {
 			positions = nextSearch
 		}
 		// console.timeEnd('path ' + vertical)
-		if (!test) { //SAMPLE
-			if (!foundPath) {
-				console.error('Unable to calculate required path', vertical, requiredIndecies, blocked)
-				this.debugPath(path, false)
-				return true
-			}
-			// this.debugPath(path, foundPath && entranceTest) //SAMPLE
-		}
-		return foundPath
+		return !foundPath && path
 	}
 
 	debugPath (path, entrance) {

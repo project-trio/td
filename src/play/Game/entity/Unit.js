@@ -4,12 +4,21 @@ let allUnits = []
 
 class Unit {
 
-	constructor (x, y, parent) {
+	constructor (parent, live) {
 		this.container = render.group(parent)
-		this.container.position.x = x
-		this.container.position.y = y
 
-		allUnits.push(this)
+		this.currentIndex = null
+		this.destinationIndex = null
+
+		if (live) {
+			allUnits.push(this)
+		}
+	}
+
+	distanceTo (x, y) {
+		const diffX = x - this.cX
+		const diffY = y - this.cY
+		return diffX * diffX + diffY * diffY
 	}
 
 }
@@ -34,6 +43,9 @@ Unit.get = function (id) {
 }
 
 Unit.update = function (renderTime, timeDelta, tweening) {
+	for (const unit of allUnits) {
+		unit.update(timeDelta, tweening)
+	}
 }
 
 export default Unit
