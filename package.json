@@ -8,6 +8,7 @@
 		"lint": "vue-cli-service lint"
 	},
 	"dependencies": {
+		"seedrandom": "^2.4.3",
 		"socket.io-client": "^2.1.1",
 		"stats.js": "^0.17.0",
 		"three": "^0.93.0",

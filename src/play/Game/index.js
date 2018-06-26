@@ -1,4 +1,5 @@
 import store from '@/xjs/store'
+import random from '@/xjs/random'
 
 import GameMap from '@/play/Game/Map'
 import Unit from '@/play/Game/entity/Unit'
@@ -6,6 +7,9 @@ import Unit from '@/play/Game/entity/Unit'
 export default class Game {
 
 	constructor (container, data) {
+		this.id = data.gid
+		random.init(this.id)
+
 		this.container = container
 		this.players = []
 
@@ -21,7 +25,6 @@ export default class Game {
 		this.updateDuration = data.updateDuration
 		this.ticksPerUpdate = this.updateDuration / this.tickDuration
 
-		this.id = data.gid
 		this.finished = false
 		this.serverUpdate = -1
 		this.updatesUntilStart = data.updatesUntilStart
