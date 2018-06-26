@@ -27,7 +27,6 @@ export default class Game {
 		this.updatesUntilStart = data.updatesUntilStart
 
 		this.started = true
-		store.state.game.playing = true
 
 		this.map = new GameMap(this.container)
 
@@ -89,32 +88,12 @@ export default class Game {
 		if (!nextUpdate) {
 			return false
 		}
-		const onSelectionScreen = this.updateCount <= this.updatesUntilStart
 		this.updateQueue[this.updateCount] = null
 		this.updateCount += 1
 
 		for (let idx = nextUpdate.length - 1; idx >= 0; idx -= 1) { // 'action' response
-			const playerActions = nextUpdate[idx]
-			if (!playerActions) {
-				continue
-			}
-			const player = this.players[idx]
-			if (!player) {
-				console.error('Update invalid for player', idx, playerActions)
-				continue
-			}
-			if (onSelectionScreen) {
-				const playerUnitName = playerActions.unit
-				if (playerUnitName) {
-					const storePlayer = store.state.game.players[idx]
-					storePlayer.shipName = playerUnitName
-				}
-			} else {
-				for (let ai = playerActions.length - 1; ai >= 0; ai -= 1) {
-					const action = playerActions[ai]
-					console.log(action) //TODO
-				}
-			}
+			const update = nextUpdate[idx]
+			console.log(update)
 		}
 		return true
 	}

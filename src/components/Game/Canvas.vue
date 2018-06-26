@@ -7,6 +7,8 @@ import Renderer from '@/play/render/Renderer'
 import Loop from '@/play/render/Loop'
 import Game from '@/play/Game'
 
+import bridge from '@/xjs/bridge'
+
 export default {
 	props: {
 		gameData: Object,
@@ -22,6 +24,20 @@ export default {
 		},
 	},
 
+	beforeCreate () {
+		bridge.on('server update', (data) => {
+			const game = this.$options.game
+			if (game && !game.finished) {
+				const update = data.update
+				if (game.serverUpdate !== update - 1) {
+					console.error('Invalid update', game.serverUpdate, update)
+				}
+				game.enqueueUpdate(update, data.actions)
+				bridge.emit('updated', { update })
+			}
+		})
+	},
+
 	mounted () {
 		const renderer = new Renderer(this.$el)
 		this.$options.renderer = renderer
@@ -31,6 +47,7 @@ export default {
 	},
 
 	beforeDestroy () {
+		bridge.off('server update')
 		this.$options.renderer.renderer = null
 		this.$options.renderer = null
 		this.$options.game = null
