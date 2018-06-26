@@ -40,7 +40,7 @@ export default class GameMap {
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
 		this.waves = new Waves(this, this.paths.entrances)
 
-		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0xccbb99, parent: this.container })
+		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99
 		ground.owner = ground
 
 		const walls = [
