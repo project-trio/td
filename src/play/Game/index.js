@@ -60,13 +60,14 @@ export default class Game {
 					if (renderTime > 0 && ticksToRender > this.ticksPerUpdate) {
 						store.state.game.missingUpdate = true
 					}
-					// p('Missing update', ticksToRender, tickOffsets)
+					// console.log('Missing update', ticksToRender, tickOffsets)
 					break
 				}
 			}
 			if (renderTime > 0) {
 				// Bullet.update(renderTime, this.tickDuration, false)
 				Unit.update(renderTime, this.tickDuration, false)
+				this.map.waves.update(renderTime)
 			} else if (renderTime === 0) {
 				this.startPlaying()
 			}
@@ -117,7 +118,7 @@ export default class Game {
 			if (behindUpdates > 0) {
 				this.tickOffsets -= behindUpdates
 				this.renderedSinceUpdate = false
-				p('Catching up to server update', behindUpdates, this.tickOffsets)
+				console.log('Catching up to server update', behindUpdates, this.tickOffsets)
 			}
 		}
 	}
@@ -129,7 +130,7 @@ export default class Game {
 		}
 		store.state.game.playing = true
 
-		this.map.spawn()
+		this.map.spawn(0) //TODO renderTime?
 	}
 
 	// Setup

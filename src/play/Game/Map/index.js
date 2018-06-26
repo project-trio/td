@@ -4,10 +4,10 @@ import store from '@/xjs/store'
 
 import render from '@/play/render'
 
-import Creep from '@/play/Game/entity/Creep'
 import Tower from '@/play/Game/entity/Tower'
 
 import Paths from '@/play/Game/Map/Paths'
+import Waves from '@/play/Game/Map/Waves'
 
 const TILE_SIZE = 32
 const TILES_WIDE = 22
@@ -37,6 +37,7 @@ export default class GameMap {
 		this.container.interactive = true
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
+		this.waves = new Waves(this, this.paths.entrances)
 
 		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0xccbb99, parent: this.container })
 		ground.owner = ground
@@ -129,9 +130,9 @@ export default class GameMap {
 		}
 	}
 
-	spawn () {
+	spawn (renderTime) {
 		store.state.game.wave += 1
-		console.log('Wave', store.state.game.wave)
+		this.waves.spawn(renderTime, store.state.game.wave)
 	}
 
 }
