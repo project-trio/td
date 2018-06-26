@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 
+import store from '@/xjs/store'
+
 import render from '@/play/render'
 
+import Creep from '@/play/Game/entity/Creep'
 import Tower from '@/play/Game/entity/Tower'
 
 const TILE_SIZE = 32
@@ -29,6 +32,8 @@ const tileArray = () => {
 export default class GameMap {
 
 	constructor (parent) {
+		store.state.game.wave = 0
+
 		const EH = ENTRANCE_SIZE / 2
 		const TWH = TILES_WIDE / 2
 		const TTH = TILES_TALL / 2
@@ -191,6 +196,11 @@ export default class GameMap {
 			result[eidx] = (tx - 1) + (ty - 1) * TILES_WIDE
 		}
 		return result
+	}
+
+	spawn () {
+		store.state.game.wave += 1
+		console.log('Wave', store.state.game.wave)
 	}
 
 	//PATHFINDING

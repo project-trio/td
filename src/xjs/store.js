@@ -1,5 +1,16 @@
 import storage from '@/xjs/storage'
 
+const defaultGameState = () => {
+	return {
+		id: null,
+		players: [],
+		wave: 0,
+		playing: false,
+		missingUpdate: false,
+		renderTime: 0,
+	}
+}
+
 export default {
 	state: {
 		queue: {
@@ -13,10 +24,7 @@ export default {
 			attempted: false,
 		},
 
-		game: {
-			id: null,
-			players: [],
-		},
+		game: defaultGameState(),
 
 		settings: {
 			shadows: 2,
@@ -38,5 +46,9 @@ export default {
 		this.state.signin.attempted = true
 		this.state.signin.token = token
 		storage.set('token', token)
+	},
+
+	reset () {
+		this.state.game = defaultGameState()
 	},
 }

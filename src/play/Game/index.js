@@ -141,11 +141,13 @@ export default class Game {
 	}
 
 	startPlaying () {
-		if (this.started) {
+		if (store.state.game.playing) {
 			console.error('game already playing')
 			return
 		}
-		//TODO spawn
+		store.state.game.playing = true
+
+		this.map.spawn()
 	}
 
 	// Setup
