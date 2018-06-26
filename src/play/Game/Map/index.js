@@ -40,6 +40,8 @@ export default class GameMap {
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
 		this.waves = new Waves(this.paths.entrances)
+
+		Tower.init(TILE_SIZE)
 		Creep.init(this)
 
 		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99

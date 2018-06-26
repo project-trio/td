@@ -68,10 +68,8 @@ export default class Renderer {
 			// }
 			if (this.usePerspectiveCamera) {
 				this.gameCamera = this.perspectiveCamera
-				this.gameCamera.position.z = 192 / (CAMERA_FOV / 180)
 			} else {
 				this.gameCamera = this.orthoCamera
-				this.gameCamera.position.z = 100
 			}
 			// this.gameCamera.add(this.audioListener)
 		}
@@ -99,12 +97,14 @@ export default class Renderer {
 		this.pixelMultiplier = null
 
 		this.renderer = new THREE.WebGLRenderer({
-			antialias: false,
+			antialias: true,
 			canvas: this.canvas,
 		})
 
 		this.perspectiveCamera = new THREE.PerspectiveCamera(CAMERA_FOV)
+		this.perspectiveCamera.position.z = 192 / (CAMERA_FOV / 180)
 		this.orthoCamera = new THREE.OrthographicCamera()
+		this.orthoCamera.position.z = 100
 
 		const shadowQuality = store.state.settings.shadows
 		const renderShadow = shadowQuality >= 1

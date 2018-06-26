@@ -34,7 +34,7 @@ export default class Creep extends Unit {
 			this.container.rotation.z = this.destinationAngle
 		}
 
-		render.circle(16, { color: 0x6688ee, parent: this.container })
+		render.circle(15, { color: 0x6688ee, parent: this.container })
 	}
 
 	update (timeDelta, tweening) {
