@@ -6,7 +6,8 @@ import render from '@/play/render'
 
 import Creep from '@/play/Game/entity/Creep'
 import Tower from '@/play/Game/entity/Tower'
-import Paths from '@/play/Game/Paths'
+
+import Paths from '@/play/Game/Map/Paths'
 
 const TILE_SIZE = 32
 const TILES_WIDE = 22
