@@ -41,7 +41,7 @@ export default class Loop {
 		}
 		window.requestAnimationFrame(this.animateThis)
 
-		const isPlaying = game.playing
+		const isPlaying = store.state.game.playing
 		if (isPlaying && this.framePanel) {
 			this.framePanel.begin()
 		}
