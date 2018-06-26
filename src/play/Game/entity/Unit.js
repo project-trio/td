@@ -43,8 +43,14 @@ Unit.get = function (id) {
 }
 
 Unit.update = function (renderTime, timeDelta, tweening) {
-	for (const unit of allUnits) {
-		unit.update(timeDelta, tweening)
+	for (let idx = allUnits.length - 1; idx >= 0; idx -= 1) {
+		const unit = allUnits[idx]
+		if (unit.dead) {
+			unit.destroy()
+			allUnits.splice(idx, 1)
+		} else {
+			unit.update(timeDelta, tweening)
+		}
 	}
 }
 

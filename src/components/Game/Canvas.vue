@@ -8,6 +8,7 @@ import Loop from '@/play/render/Loop'
 import Game from '@/play/Game'
 
 import bridge from '@/xjs/bridge'
+import local from '@/xjs/local'
 
 export default {
 	props: {
@@ -15,8 +16,6 @@ export default {
 	},
 
 	renderer: null,
-	game: null,
-	loop: null,
 
 	watch: {
 		gameData () {
@@ -26,7 +25,7 @@ export default {
 
 	beforeCreate () {
 		bridge.on('server update', (data) => {
-			const game = this.$options.game
+			const game = local.game
 			if (game && !game.finished) {
 				const update = data.update
 				if (game.serverUpdate !== update - 1) {
@@ -48,20 +47,14 @@ export default {
 
 	beforeDestroy () {
 		bridge.off('server update')
-		this.$options.renderer.renderer = null
-		this.$options.renderer = null
-		this.$options.game = null
-		if (this.$options.loop) {
-			this.$options.loop.game = null
-			this.$options.loop = null
-		}
+		local.game = null
 	},
 
 	methods: {
 		createGame () {
-			this.$options.game = new Game(this.$options.renderer.container, this.gameData)
-			this.$options.game.renderer = this.$options.renderer
-			this.$options.loop = new Loop(this.$options.game)
+			local.game = new Game(this.$options.renderer.container, this.gameData)
+			local.game.renderer = this.$options.renderer
+			local.game.loop = new Loop(local.game)
 		},
 	},
 }

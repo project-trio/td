@@ -10,6 +10,10 @@ export default {
 		return group
 	},
 
+	remove (object) {
+		return object.parent.remove(object)
+	},
+
 	// Voxels
 
 	// voxelMesh (mesh, options) {

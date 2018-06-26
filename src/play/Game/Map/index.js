@@ -4,6 +4,7 @@ import store from '@/xjs/store'
 
 import render from '@/play/render'
 
+import Creep from '@/play/Game/entity/Creep'
 import Unit from '@/play/Game/entity/Unit'
 import Tower from '@/play/Game/entity/Tower'
 
@@ -38,7 +39,8 @@ export default class GameMap {
 		this.container.interactive = true
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
-		this.waves = new Waves(this, this.paths.entrances)
+		this.waves = new Waves(this.paths.entrances)
+		Creep.init(this)
 
 		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99
 		ground.owner = ground
@@ -103,7 +105,7 @@ export default class GameMap {
 				cy = ty
 				placement.position.x = tx * TILE_SIZE - MAP_WIDTH / 2
 				placement.position.y = ty * TILE_SIZE - MAP_HEIGHT / 2
-				this.paths.toggleTower(cx, cy, true)
+				this.paths.toggleTower(tx, ty, true)
 
 				const blocked = !this.paths.update()
 				if (blocked !== placement.blocked) {
@@ -117,19 +119,19 @@ export default class GameMap {
 			placement.visible = false
 		}
 
-		ground.onClick = (_point, _rightClick) => {
-			if (placement.blocked || !placement.visible) {
+		ground.onClick = (point, rightClick) => {
+			if (rightClick) {
 				return
 			}
-			if (!this.paths.update(Unit.all())) {
-				return console.log('Tower blocked by creeps')
+			if (placement.blocked || !placement.visible || !this.paths.update(Unit.all())) {
+				return
 			}
 			placement.visible = false
 			const tower = new Tower(placement.position.x, placement.position.y, this.container, true)
-			this.paths.toggleTower(cx, cy, true, false)
+			this.paths.toggleTower(cx, cy, true)
 			this.paths.apply()
-			tower.tx = cx
-			tower.ty = cy
+			tower.tX = cx
+			tower.tY = cy
 			for (const unit of Unit.all()) {
 				if (unit.updatePath) {
 					unit.updatePath(true)
@@ -138,6 +140,12 @@ export default class GameMap {
 			cx = null
 			return true
 		}
+	}
+
+	removeTower (tower) {
+		this.paths.toggleTower(tower.tX, tower.tY, false)
+		this.paths.update()
+		this.paths.apply()
 	}
 
 	tileCenter (index) {

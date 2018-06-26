@@ -59,8 +59,8 @@ const CREEP_TYPE_COUNT = CREEP_TYPES.length
 
 export default class Waves {
 
-	constructor (map, spawnPoints) {
-		Creep.init(map)
+	constructor (spawnPoints) {
+		Creep.init()
 		this.spawning = []
 		this.waveCount = 0
 		this.spawnPoints = spawnPoints

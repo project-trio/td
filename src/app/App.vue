@@ -4,6 +4,24 @@
 </div>
 </template>
 
+<script>
+export default {
+	created () {
+		window.addEventListener('contextmenu', this.onRightClick, true)
+	},
+
+	beforeDestroy () {
+		window.addEventListener('contextmenu', this.onRightClick, true)
+	},
+
+	methods: {
+		onRightClick (event) {
+			event.preventDefault()
+		},
+	},
+}
+</script>
+
 <style lang="stylus">
 body
 	margin 0
