@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import render from '@/play/render'
 
-import Tower from '@/play/Game/Unit/Tower'
+import Tower from '@/play/Game/entity/Tower'
 
 const TILE_SIZE = 32
 const TILES_WIDE = 22

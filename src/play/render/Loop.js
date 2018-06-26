@@ -2,8 +2,8 @@ import Stats from 'stats.js'
 
 import store from '@/xjs/store'
 
-// import Bullet from '@/client/play/game/entity/attack/bullet'
-// import Unit from '@/client/play/game/entity/unit/unit'
+// import Bullet from '@/play/Game/entity/Bullet'
+import Unit from '@/play/Game/entity/Unit'
 
 const storeSettings = store.state.settings
 
@@ -62,11 +62,10 @@ export default class Loop {
 			if (storeSettings.fpsCap) {
 				return
 			}
-			//TODO
-			// const tweenTimeDelta = timestamp - this.previousTimestamp
-			// const renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
+			const tweenTimeDelta = timestamp - this.previousTimestamp
+			const renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
 			// Bullet.update(renderTime, tweenTimeDelta, true)
-			// Unit.update(renderTime, tweenTimeDelta, true)
+			Unit.update(renderTime, tweenTimeDelta, true)
 		}
 
 		game.renderer.update()

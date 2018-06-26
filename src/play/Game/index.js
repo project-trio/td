@@ -1,6 +1,7 @@
 import store from '@/xjs/store'
 
 import GameMap from '@/play/Game/Map'
+import Unit from '@/play/Game/entity/Unit'
 
 export default class Game {
 
@@ -63,8 +64,7 @@ export default class Game {
 			}
 			if (renderTime > 0) {
 				// Bullet.update(renderTime, this.tickDuration, false)
-				// Unit.update(renderTime, this.tickDuration, false)
-				// this.map.update(renderTime)
+				Unit.update(renderTime, this.tickDuration, false)
 			} else if (renderTime === 0) {
 				this.startPlaying()
 			}

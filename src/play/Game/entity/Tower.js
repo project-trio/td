@@ -1,11 +1,12 @@
 import render from '@/play/render'
 
-export default class Tower {
+import Unit from '@/play/Game/entity/Unit'
+
+export default class Tower extends Unit {
 
 	constructor (x, y, parent) {
-		this.container = render.group(parent)
-		this.container.position.x = x
-		this.container.position.y = y
+		super(x, y, parent)
+
 		const diameter = 64
 		render.rectangle(diameter, diameter, { color: 0x333333, parent: this.container })
 	}
