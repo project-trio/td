@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import Unit from '@/play/Game/entity/Unit'
+import Creep from '@/play/Game/entity/Unit/Creep'
 
 import render from '@/play/render'
 
@@ -12,6 +13,8 @@ import Bullet from '@/play/Game/entity/Bullet'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
+
+let allTowers = null
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
@@ -76,6 +79,7 @@ export default class Tower extends Unit {
 		this.container.add(this.top)
 
 		this.select()
+		allTowers.push(this)
 	}
 
 	select () {
@@ -141,6 +145,7 @@ export default class Tower extends Unit {
 	destroy () {
 		store.state.game.local.gold += this.gold
 		local.game.map.removeTower(this)
+
 		super.destroy()
 	}
 
@@ -156,11 +161,11 @@ export default class Tower extends Unit {
 			if (!this.target) {
 				let newTarget = null
 				let nearestDistance = this.rangeCheck + 1
-				for (const unit of Unit.all()) {
-					if (unit.creep && unit.healthScheduled > 0 && (attackBit & unit.stats.attackBit)) {
-						const distance = unit.distanceTo(cX, cY)
+				for (const creep of Creep.all()) {
+					if (creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit)) {
+						const distance = creep.distanceTo(cX, cY)
 						if (distance < nearestDistance) {
-							newTarget = unit
+							newTarget = creep
 							nearestDistance = distance
 						}
 					}
@@ -205,6 +210,8 @@ const roundedRectOf = (o, width, r) => {
 }
 
 Tower.init = (tileSize) => {
+	allTowers = []
+
 	backingGeometry = new THREE.PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
 	backingMaterial = new THREE.MeshLambertMaterial({ color: 0xaabbaa })
 
@@ -221,4 +228,20 @@ Tower.init = (tileSize) => {
 	const turretLength = tileSize * 1.5
 	turretGeometry = new THREE.ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
 	turretGeometry.translate(0, turretLength / 2 - 4, 0)
+}
+
+Tower.destroy = function () {
+	allTowers = null
+}
+
+Tower.update = function (renderTime, timeDelta, tweening) {
+	for (let idx = allTowers.length - 1; idx >= 0; idx -= 1) {
+		const tower = allTowers[idx]
+		if (tower.dead) {
+			tower.destroy(renderTime)
+			allTowers.splice(idx, 1)
+		} else {
+			tower.update(renderTime, timeDelta, tweening)
+		}
+	}
 }

@@ -9,7 +9,7 @@ import towers from '@/play/data/towers'
 
 import gameMath from '@/play/Game/math'
 
-import Unit from '@/play/Game/entity/Unit'
+import Creep from '@/play/Game/entity/Unit/Creep'
 
 //LOCAL
 
@@ -129,9 +129,9 @@ class Bullet {
 			this.container.parent.add(area)
 			allSplashes.push(area)
 			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
-			for (const unit of Unit.all()) {
-				if (unit.creep && unit.distanceTo(aX, aY) <= radiusCheck) {
-					unit.takeDamage(damage, unit !== this.target)
+			for (const creep of Creep.all()) {
+				if (creep.distanceTo(aX, aY) <= radiusCheck) {
+					creep.takeDamage(damage, creep !== this.target)
 					//TODO slow
 				}
 			}

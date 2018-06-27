@@ -6,7 +6,6 @@ import render from '@/play/render'
 
 import towers from '@/play/data/towers'
 
-import Unit from '@/play/Game/entity/Unit'
 import Creep from '@/play/Game/entity/Unit/Creep'
 import Tower from '@/play/Game/entity/Unit/Tower'
 
@@ -129,7 +128,7 @@ export default class GameMap {
 			if (button === 2) {
 				return
 			}
-			if (placement.blocked || !placement.visible || !this.paths.update(Unit.all())) {
+			if (placement.blocked || !placement.visible || !this.paths.update(Creep.all())) {
 				return
 			}
 			const towerName = store.state.game.build
@@ -145,10 +144,8 @@ export default class GameMap {
 			this.paths.apply()
 			tower.tX = cx
 			tower.tY = cy
-			for (const unit of Unit.all()) {
-				if (unit.updatePath) {
-					unit.updatePath(true)
-				}
+			for (const unit of Creep.all()) {
+				unit.updatePath(true)
 			}
 			cx = null
 			return true

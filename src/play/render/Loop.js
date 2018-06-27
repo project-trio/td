@@ -3,7 +3,8 @@ import Stats from 'stats.js'
 import store from '@/xjs/store'
 
 import Bullet from '@/play/Game/entity/Bullet'
-import Unit from '@/play/Game/entity/Unit'
+import Creep from '@/play/Game/entity/Unit/Creep'
+import Tower from '@/play/Game/entity/Unit/Tower'
 
 const storeSettings = store.state.settings
 
@@ -65,7 +66,8 @@ export default class Loop {
 			const tweenTimeDelta = timestamp - this.previousTimestamp
 			const renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
 			Bullet.update(renderTime, tweenTimeDelta, true)
-			Unit.update(renderTime, tweenTimeDelta, true)
+			Creep.update(renderTime, tweenTimeDelta, true)
+			Tower.update(renderTime, tweenTimeDelta, true)
 		}
 
 		game.renderer.update()

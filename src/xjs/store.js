@@ -60,7 +60,7 @@ export default {
 		storage.set('token', token)
 	},
 
-	reset () {
+	resetGameState () {
 		this.state.game = defaultGameState()
 	},
 }

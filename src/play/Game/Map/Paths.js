@@ -93,11 +93,11 @@ export default class Paths {
 		return false
 	}
 
-	update (allUnits) {
+	update (allCreeps) {
 		errorPath = null
-		const additionalIndicies = allUnits ? [] : null
+		const additionalIndicies = allCreeps ? [] : null
 		if (additionalIndicies) {
-			for (const { currentIndex } of allUnits) {
+			for (const { currentIndex } of allCreeps) {
 				if (currentIndex) {
 					additionalIndicies.push(currentIndex)
 				}

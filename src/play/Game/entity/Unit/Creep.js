@@ -10,6 +10,7 @@ const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2
 
+let allCreeps = null
 let gameMap, creepSize
 
 export default class Creep extends Unit {
@@ -23,7 +24,6 @@ export default class Creep extends Unit {
 		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
 
 		if (live) {
-			this.creep = true
 			this.id = `${wave}${data.name}${vertical}`
 			this.stats = data
 
@@ -57,6 +57,8 @@ export default class Creep extends Unit {
 			this.healthBar.position.x = -hpWidth / 2
 			this.healthBar.geometry.translate(hpWidth / 2, 0, 0)
 		}
+
+		allCreeps.push(this)
 	}
 
 	update (renderTime, timeDelta, tweening) {
@@ -101,7 +103,7 @@ export default class Creep extends Unit {
 	destroy (renderTime) {
 		gameMap.waves.killCreep(renderTime)
 
-		super.destroy(renderTime)
+		super.destroy()
 	}
 
 	die () {
@@ -175,11 +177,29 @@ export default class Creep extends Unit {
 
 //STATIC
 
+Creep.all = function () {
+	return allCreeps
+}
+
 Creep.init = (map, tileSize) => {
+	allCreeps = []
 	gameMap = map
 	creepSize = tileSize / 2 - 1
 }
 
 Creep.destroy = () => {
+	allCreeps = null
 	gameMap = null
+}
+
+Creep.update = function (renderTime, timeDelta, tweening) {
+	for (let idx = allCreeps.length - 1; idx >= 0; idx -= 1) {
+		const creep = allCreeps[idx]
+		if (creep.dead) {
+			creep.destroy(renderTime)
+			allCreeps.splice(idx, 1)
+		} else {
+			creep.update(renderTime, timeDelta, tweening)
+		}
+	}
 }
