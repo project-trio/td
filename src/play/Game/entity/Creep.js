@@ -8,7 +8,7 @@ const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2
 
-let gameMap
+let gameMap, creepSize
 
 export default class Creep extends Unit {
 
@@ -34,7 +34,7 @@ export default class Creep extends Unit {
 			this.container.rotation.z = this.destinationAngle
 		}
 
-		render.circle(15, { color: 0x6688ee, parent: this.container })
+		render.circle(creepSize, { color: 0x6688ee, parent: this.container })
 	}
 
 	update (timeDelta, tweening) {
@@ -110,8 +110,9 @@ export default class Creep extends Unit {
 
 //STATIC
 
-Creep.init = (map) => {
+Creep.init = (map, tileSize) => {
 	gameMap = map
+	creepSize = tileSize / 2 - 1
 }
 
 Creep.destroy = () => {

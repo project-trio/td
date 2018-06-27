@@ -68,8 +68,10 @@ Tower.init = (tileSize) => {
 
 	const baseShape = new THREE.Shape()
 	const hole = new THREE.Shape()
-	roundedRectOf(baseShape, 54, 4)
-	roundedRectOf(hole, 54, 8)
+	const outlineSize = tileSize * 2 - 10
+	const outlineRadius = Math.floor(tileSize / 4)
+	roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
+	roundedRectOf(hole, outlineSize, outlineRadius)
 	baseShape.holes.push(hole)
 	baseGeometry = new THREE.ExtrudeGeometry(baseShape, { depth: 0 })
 	baseMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 })

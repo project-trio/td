@@ -42,7 +42,7 @@ export default class GameMap {
 		this.waves = new Waves(this.paths.entrances)
 
 		Tower.init(TILE_SIZE)
-		Creep.init(this)
+		Creep.init(this, TILE_SIZE)
 
 		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99
 		ground.owner = ground
