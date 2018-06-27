@@ -9,6 +9,7 @@ const CREEP_TYPES = [
 		health: [ 20, 4 ],
 		speed: 1,
 		gold: 1,
+		attackBit: 1,
 	},
 	{
 		name: 'immune',
@@ -16,6 +17,7 @@ const CREEP_TYPES = [
 		health: [ 21, 4.5 ],
 		speed: 1,
 		gold: 1,
+		attackBit: 1,
 	},
 	{
 		name: 'group',
@@ -24,6 +26,7 @@ const CREEP_TYPES = [
 		health: [ 20, 5 ],
 		speed: 1,
 		gold: 1,
+		attackBit: 1,
 	},
 	{
 		name: 'fast',
@@ -31,6 +34,7 @@ const CREEP_TYPES = [
 		health: [ 20, 0 ],
 		speed: 1.25,
 		gold: 1,
+		attackBit: 1,
 	},
 	{
 		name: 'dark',
@@ -38,6 +42,7 @@ const CREEP_TYPES = [
 		health: [ 20, 0 ],
 		speed: 1,
 		gold: 1,
+		attackBit: 1,
 	},
 	{
 		name: 'spawn',
@@ -45,6 +50,7 @@ const CREEP_TYPES = [
 		health: [ 20, 0 ],
 		speed: 1,
 		gold: 2,
+		attackBit: 1,
 	},
 	{
 		name: 'flying',
@@ -52,6 +58,7 @@ const CREEP_TYPES = [
 		health: [ 20, 0 ],
 		speed: 1,
 		gold: 1,
+		attackBit: 2,
 	},
 ]
 
@@ -83,6 +90,7 @@ export default class Waves {
 			count: data.count,
 			gold: data.gold,
 			grouped: data.grouped,
+			attackBit: data.attackBit,
 			isBoss: waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0,
 		})
 		console.log('Wave', this.waveCount, data)
