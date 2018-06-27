@@ -2,6 +2,8 @@ import render from '@/play/render'
 
 import Unit from '@/play/Game/entity/Unit'
 
+import store from '@/xjs/store'
+
 const PId2 = Math.PI / 2
 const MOVE_DIVISOR = 15
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
@@ -56,6 +58,17 @@ export default class Creep extends Unit {
 		const diffY = this.moveY * this.speed * timeDelta / MOVE_DIVISOR
 		const positionX = startX + diffX
 		const positionY = startY + diffY
+
+		if (!this.currentIndex) {
+			const escaped = this.vertical
+					? positionY < gameMap.killY
+					: positionX > gameMap.killX
+			if (escaped) {
+				this.dead = true
+				store.state.game.local.lives -= 1
+			}
+		}
+
 		this.container.position.x = positionX
 		this.container.position.y = positionY
 		if (!tweening) {
@@ -63,6 +76,12 @@ export default class Creep extends Unit {
 			this.cY = positionY
 		}
 	}
+
+	// destroy () {
+	// 	super.destroy()
+	// }
+
+	// Path
 
 	setDestination (index) {
 		this.destinationIndex = index

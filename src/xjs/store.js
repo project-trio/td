@@ -9,6 +9,9 @@ const defaultGameState = () => {
 		missingUpdate: false,
 		renderTime: 0,
 		build: 'pellet',
+		local: {
+			lives: 20,
+		},
 	}
 }
 

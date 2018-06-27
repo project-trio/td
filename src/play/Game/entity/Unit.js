@@ -21,6 +21,10 @@ class Unit {
 		return diffX * diffX + diffY * diffY
 	}
 
+	destroy () {
+		render.remove(this.container)
+	}
+
 }
 
 //STATIC

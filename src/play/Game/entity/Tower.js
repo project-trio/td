@@ -52,7 +52,7 @@ export default class Tower extends Unit {
 
 	destroy () {
 		local.game.map.removeTower(this)
-		render.remove(this.container)
+		super.destroy()
 	}
 
 	update (timeDelta, tweening) {
