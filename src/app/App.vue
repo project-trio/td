@@ -52,6 +52,9 @@ button
 		&:active
 			opacity 0.4
 
+.selection.selected
+	cursor default
+
 .big
 	display block
 	margin auto

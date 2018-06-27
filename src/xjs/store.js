@@ -8,6 +8,7 @@ const defaultGameState = () => {
 		playing: false,
 		missingUpdate: false,
 		renderTime: 0,
+		build: 'pellet',
 	}
 }
 

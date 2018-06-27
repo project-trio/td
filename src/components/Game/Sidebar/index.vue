@@ -1,7 +1,7 @@
 <template>
 <div class="sidebar">
-	<div v-for="tower in $options.towers" class="tower-box" :key="tower.name">
-		<button class="big tower-button capitalize">{{ tower.name }}</button>
+	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
+		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }">{{ idx + 1 }}</button>
 	</div>
 	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
 		<div>{{ player.name }}</div>
@@ -21,12 +21,22 @@ export default {
 	}),
 
 	computed: {
+		build () {
+			return this.$store.state.game.build
+		},
+
 		localId () {
 			return this.$store.state.signin.user.id
 		},
 
 		players () {
 			return this.$store.state.game.players
+		},
+	},
+
+	methods: {
+		onTower (name) {
+			this.$store.state.game.build = name
 		},
 	},
 }
@@ -51,8 +61,14 @@ export default {
 	box-sizing border-box
 
 .tower-button
-	font-size 16px
+	font-size 20px
 	width 100%
+
+.selection
+	border-radius 4px
+
+.selection.selected
+	background #dd6677
 
 .player-box
 	margin 8px
