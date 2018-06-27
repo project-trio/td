@@ -59,6 +59,7 @@ export default class Tower extends Unit {
 		this.bulletSpeed = stats.bulletSpeed
 		this.bulletAcceleration = stats.bulletAcceleration
 		this.rangeCheck = gameMath.squared(this.range * 2)
+		this.speedCheck = (10 - this.speed) * 100
 
 		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
 		this.backing.owner = this
@@ -145,7 +146,7 @@ export default class Tower extends Unit {
 				}
 			}
 			if (this.target) {
-				if (this.firedAt + this.speed * 1000 < renderTime) {
+				if (this.firedAt + this.speedCheck < renderTime) {
 					this.firedAt = renderTime
 					const data = {
 						attackDamage: this.damage,

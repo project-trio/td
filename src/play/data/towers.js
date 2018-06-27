@@ -7,8 +7,8 @@ export default {
 		damage: [ 10,  10, 20, 40, 80, 240 ],
 		range:  [ 60,  0,  0,  0,  0,  120 ],
 		speed:  [ 1.5, 0,  0,  0,  0,  -0.4 ],
-		bulletSpeed: 1,
 		attackBit: 3,
+		bulletSpeed: 10,
 	},
 
 	squirt: {
@@ -16,8 +16,8 @@ export default {
 		damage: [ 5,  5,  8,  16, 31, 255 ],
 		range:  [ 70, 0,  0,  0,  0,  20 ],
 		speed:  [ 6,  0,  0,  0,  0,  3 ],
-		bulletSpeed: 2,
 		attackBit: 3,
+		bulletSpeed: 10,
 		bulletColor: 0x4444cc,
 	},
 
@@ -26,8 +26,8 @@ export default {
 		damage: [ 8,  8,  16, 32, 64,  128 ],
 		range:  [ 90, 10, 10, 10, 10,  10 ],
 		speed:  [ 1,  0,  0,  0,  0,   0 ],
-		bulletSpeed: 1,
 		attackBit: 1,
+		bulletSpeed: 5,
 		bulletAcceleration: 1,
 		bulletColor: 0xdd4444,
 		bulletSize: 8,
@@ -38,8 +38,8 @@ export default {
 		damage: [ 20, 20, 40, 80, 160, 160 ],
 		range:  [ 60, 0,  5,  0,  5,   5 ],
 		speed:  [ 4,  0,  0,  0,  0,   2 ],
-		bulletSpeed: 1,
 		attackBit: 2,
+		bulletSpeed: 10,
 	},
 
 	frost: {
@@ -48,8 +48,8 @@ export default {
 		range:  [ 50,  0,  0,  0,  0,  25 ],
 		speed:  [ 1.5, 0,  0,  0,  0,  0 ],
 		slow:   [ 20,  5,  5,  5,  5,  10 ],
-		bulletSpeed: 1,
 		attackBit: 3,
+		bulletSpeed: 10,
 		bulletColor: 0x00aaff,
 	},
 
@@ -67,8 +67,8 @@ export default {
 		damage: [ 100, 100, 200, 400, 800, 1600 ],
 		range:  [ 100, 0,   0,   0,   0,   0 ],
 		speed:  [ 0,   0,   0,   0,   0,   0 ],
-		bulletSpeed: 1,
 		attackBit: 3,
+		bulletSpeed: 10,
 		bulletTriangle: true,
 	},
 

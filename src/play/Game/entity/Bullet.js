@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 
+import local from '@/xjs/local'
 import store from '@/xjs/store'
 
 import render from '@/play/render'
@@ -44,7 +45,7 @@ class Bullet {
 		this.container.add(ball)
 
 		this.attackDamage = data.attackDamage
-		this.moveConstant = data.bulletSpeed / 5
+		this.moveConstant = data.bulletSpeed / local.game.tickDuration
 		if (data.bulletAcceleration) {
 			this.moveAcceleration = 0.00000005
 			this.startTime = store.state.game.renderTime
