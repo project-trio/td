@@ -24,7 +24,7 @@ for (const name in towers) {
 	}
 	const towerData = towers[name]
 	const geometry = new THREE.SphereBufferGeometry(towerData.bulletSize || 4)
-	const material = new THREE.MeshBasicMaterial({ color: towerData.bulletColor || 0x000000 })
+	const material = new THREE.MeshBasicMaterial({ color: towerData.color || 0x000000 })
 	bulletsCache[name] = [ geometry, material ]
 }
 

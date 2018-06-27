@@ -15,8 +15,10 @@ import store from '@/xjs/store'
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
+let turretGeometry
 
 const rangesCache = {}
+const materialsCache = {}
 const rangeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
 for (const name in towers) {
 	if (name === 'names') {
@@ -24,6 +26,7 @@ for (const name in towers) {
 	}
 	const towerData = towers[name]
 	const ranges = towerData.range
+	materialsCache[name] = new THREE.MeshBasicMaterial({ color: towerData.color })
 	let range = 0
 	for (const diff of ranges) {
 		if (diff) {
@@ -56,16 +59,18 @@ export default class Tower extends Unit {
 		this.damage = stats.damage[0]
 		this.range = stats.range[0]
 		this.speed = stats.speed[0]
-		this.bulletSpeed = stats.bulletSpeed
-		this.bulletAcceleration = stats.bulletAcceleration
 		this.rangeCheck = gameMath.squared(this.range * 2)
 		this.speedCheck = (10 - this.speed) * 100
 
 		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
 		this.backing.owner = this
 		const outline = new THREE.Mesh(baseGeometry, baseMaterial)
+		this.top = new THREE.Mesh(turretGeometry, materialsCache[name])
+		this.top.rotation.z = Math.random() * Math.PI * 2
+		this.top.position.z = 10
 		this.container.add(this.backing)
 		this.container.add(outline)
+		this.container.add(this.top)
 
 		this.select()
 	}
@@ -146,12 +151,13 @@ export default class Tower extends Unit {
 				}
 			}
 			if (this.target) {
+				this.top.rotation.z = Math.atan2(this.target.cY - cY, this.target.cX - cX) - Math.PI / 2
 				if (this.firedAt + this.speedCheck < renderTime) {
 					this.firedAt = renderTime
 					const data = {
 						attackDamage: this.damage,
-						bulletSpeed: this.bulletSpeed,
-						bulletAcceleration: this.bulletAcceleration,
+						bulletSpeed: this.stats.bulletSpeed,
+						bulletAcceleration: this.stats.bulletAcceleration,
 					}
 					new Bullet(this, this.target, data, this.container.parent)
 				}
@@ -191,4 +197,8 @@ Tower.init = (tileSize) => {
 	baseShape.holes.push(hole)
 	baseGeometry = new THREE.ExtrudeGeometry(baseShape, { depth: 0 })
 	baseMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 })
+
+	const turretLength = tileSize * 1.5
+	turretGeometry = new THREE.ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
+	turretGeometry.translate(0, turretLength / 2 - 4, 0)
 }

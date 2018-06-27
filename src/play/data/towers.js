@@ -3,6 +3,7 @@ export default {
 	names: [ 'pellet', 'squirt', 'dart', 'swarm', 'frost', 'bash', 'snap', 'boost' ],
 
 	pellet: {
+		color: 0x222222,
 		cost:   [ 5,   5,  10, 20, 40, 120 ],
 		damage: [ 10,  10, 20, 40, 80, 240 ],
 		range:  [ 60,  0,  0,  0,  0,  120 ],
@@ -12,16 +13,17 @@ export default {
 	},
 
 	squirt: {
+		color: 0x4444cc,
 		cost:   [ 15, 12, 23, 35, 75, 290 ],
 		damage: [ 5,  5,  8,  16, 31, 255 ],
 		range:  [ 70, 0,  0,  0,  0,  20 ],
 		speed:  [ 6,  0,  0,  0,  0,  3 ],
 		attackBit: 3,
 		bulletSpeed: 10,
-		bulletColor: 0x4444cc,
 	},
 
 	dart: {
+		color: 0xdd4444,
 		cost:   [ 20, 15, 35, 60, 110, 160 ],
 		damage: [ 8,  8,  16, 32, 64,  128 ],
 		range:  [ 90, 10, 10, 10, 10,  10 ],
@@ -29,11 +31,11 @@ export default {
 		attackBit: 1,
 		bulletSpeed: 5,
 		bulletAcceleration: 1,
-		bulletColor: 0xdd4444,
 		bulletSize: 8,
 	},
 
 	swarm: {
+		color: 0x66aa44,
 		cost:   [ 50, 30, 50, 75, 125, 310 ],
 		damage: [ 20, 20, 40, 80, 160, 160 ],
 		range:  [ 60, 0,  5,  0,  5,   5 ],
@@ -43,6 +45,7 @@ export default {
 	},
 
 	frost: {
+		color: 0x00aaff,
 		cost:   [ 50,  25, 25, 25, 25, 50 ],
 		damage: [ 10,  5,  5,  5,  5,  10 ],
 		range:  [ 50,  0,  0,  0,  0,  25 ],
@@ -50,10 +53,10 @@ export default {
 		slow:   [ 20,  5,  5,  5,  5,  10 ],
 		attackBit: 3,
 		bulletSpeed: 10,
-		bulletColor: 0x00aaff,
 	},
 
 	bash: {
+		color: 0xdd44ee,
 		cost:   [ 100, 120, 145, 175, 260, 450 ],
 		damage: [ 60,  60,  120, 240, 480, 1040 ],
 		range:  [ 40,  0,   0,   0,   5,   5 ],
@@ -63,6 +66,7 @@ export default {
 	},
 
 	snap: {
+		color: 0x000000,
 		cost:   [ 15,  15,  15,  30,  45,  60 ],
 		damage: [ 100, 100, 200, 400, 800, 1600 ],
 		range:  [ 100, 0,   0,   0,   0,   0 ],
@@ -73,6 +77,7 @@ export default {
 	},
 
 	boost: {
+		color: 0x00ff00,
 		cost:   [ 100, 100, 100, 100, 100 ],
 		damage: [ 10,  10,  10,  10,  10 ],
 		range:  [ 42,  0,   0,   0,   0 ],
