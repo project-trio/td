@@ -1,11 +1,14 @@
 <template>
 <div class="sidebar">
+	<div class="stats">
+		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span>{{ displayTime }}</div>
+	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
 		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }">{{ idx + 1 }}</button>
 	</div>
 	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
 		<div>{{ player.name }}</div>
-		<div>{{ player.score }}</div>
+		<div>{{ player.lives }}</div>
 	</div>
 </div>
 </template>
@@ -21,8 +24,40 @@ export default {
 	}),
 
 	computed: {
+		storeStateGame () {
+			return this.$store.state.game
+		},
+
+		gold () {
+			return this.storeStateGame.local.gold
+		},
+
+		secondsElapsed () {
+			return Math.round(this.storeStateGame.renderTime / 1000)
+		},
+		displayTime () {
+			let seconds = this.secondsElapsed
+			if (seconds <= 0) {
+				return seconds
+			}
+			let minutes
+			if (seconds >= 60) {
+				minutes = Math.floor(seconds / 60)
+				seconds %= 60
+				if (minutes < 10) {
+					minutes = `0${minutes}`
+				}
+			} else {
+				minutes = '00'
+			}
+			if (seconds < 10) {
+				seconds = `0${seconds}`
+			}
+			return `${minutes}:${seconds}`
+		},
+
 		build () {
-			return this.$store.state.game.build
+			return this.storeStateGame.build
 		},
 
 		localId () {
@@ -30,19 +65,36 @@ export default {
 		},
 
 		players () {
-			return this.$store.state.game.players
+			return this.storeStateGame.players
 		},
 	},
 
 	methods: {
 		onTower (name) {
-			this.$store.state.game.build = name
+			this.storeStateGame.build = name
 		},
 	},
 }
 </script>
 
 <style lang="stylus" scoped>
+.stats
+	text-align right
+	height 36px
+	margin 8px 0
+	display flex
+	justify-content flex-end
+	align-items center
+	font-size 18px
+	font-variant-numeric tabular-nums
+
+.time
+	margin 0 14px
+
+.emoji
+	height 0
+	margin-right -2px
+
 .sidebar
 	position fixed
 	top 0
@@ -50,7 +102,6 @@ export default {
 	bottom 0
 	width 256px
 	background #2
-	padding-top 64px
 	box-sizing border-box
 	color #f
 

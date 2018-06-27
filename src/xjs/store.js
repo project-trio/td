@@ -11,6 +11,7 @@ const defaultGameState = () => {
 		build: 'pellet',
 		local: {
 			lives: 20,
+			gold: 80,
 		},
 	}
 }

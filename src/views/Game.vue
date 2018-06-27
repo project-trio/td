@@ -40,6 +40,7 @@ export default {
 			const players = data.players
 			for (const player of players) {
 				player.score = 0
+				player.lives = 20
 				player.wavesWon = 0
 				player.creepsTotal = 0
 				player.creepsAlive = 0
