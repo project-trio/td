@@ -99,19 +99,31 @@ export default class Tower extends Unit {
 		}
 	}
 
-	onClick (point, rightClick) {
-		if (rightClick) {
+	onClick (point, button) {
+		switch (button) {
+		case 0:
+			this.select()
+			break
+		case 1:
 			this.dead = true
-			return true
+			break
+		case 2:
+			this.upgrade()
+			break
 		}
-		this.select()
 		return true
 	}
 
 	upgrade () {
+		const levelIndex = this.level + 1
+		const upgradeCost = this.stats.cost[levelIndex]
+		if (upgradeCost > store.state.game.local.gold) {
+			return
+		}
+		store.state.game.local.gold -= upgradeCost
+
 		this.level += 1
-		const levelIndex = this.level
-		this.gold += this.stats.cost[levelIndex]
+		this.gold += upgradeCost
 		this.damage += this.stats.damage[levelIndex]
 		this.speed += this.stats.range[levelIndex]
 		const rangeDiff = this.stats.range[levelIndex]

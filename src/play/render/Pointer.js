@@ -11,11 +11,11 @@ const onMouseMove = (event) => {
 }
 
 const onClick = (event) => {
-	const rightClick = event.which ? event.which === 3 : event.button >= 2
+	const button = event.button
 	for (const intersect of intersecting) {
 		const owner = intersect.object.owner
 		if (owner && owner.onClick) {
-			if (owner.onClick(intersect.point, rightClick)) {
+			if (owner.onClick(intersect.point, button)) {
 				return false
 			}
 		}
@@ -31,14 +31,12 @@ export default class Pointer {
 
 		canvas.addEventListener('mousedown', onClick)
 		canvas.addEventListener('mousemove', onMouseMove)
-		canvas.addEventListener('contextmenu', onClick)
 	}
 
 	destroy (canvas) {
 		intersecting = null
 		canvas.removeEventListener('mousedown', onClick)
 		canvas.removeEventListener('mousemove', onMouseMove)
-		canvas.removeEventListener('contextmenu', onClick)
 	}
 
 	update (camera) {

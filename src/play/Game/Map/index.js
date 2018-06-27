@@ -125,8 +125,8 @@ export default class GameMap {
 			placement.visible = false
 		}
 
-		ground.onClick = (point, rightClick) => {
-			if (rightClick) {
+		ground.onClick = (point, button) => {
+			if (button === 2) {
 				return
 			}
 			if (placement.blocked || !placement.visible || !this.paths.update(Unit.all())) {
