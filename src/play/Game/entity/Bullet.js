@@ -67,6 +67,7 @@ class Bullet {
 		this.container.add(ball)
 
 		this.attackDamage = data.attackDamage
+		target.healthScheduled -= data.attackDamage
 		this.moveConstant = data.bulletSpeed / local.game.tickDuration
 		if (data.bulletAcceleration) {
 			this.moveAcceleration = 0.00000005
@@ -117,6 +118,8 @@ class Bullet {
 	}
 
 	reachedDestination () {
+		const damage = this.attackDamage
+		const targetAlive = !this.target.dead
 		if (this.explosionRadius) {
 			const area = new THREE.Mesh(rangesCache[this.explosionRadius], splashesCache[this.name].clone())
 			const aX = this.target.cX
@@ -128,12 +131,12 @@ class Bullet {
 			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
 			for (const unit of Unit.all()) {
 				if (unit.creep && unit.distanceTo(aX, aY) <= radiusCheck) {
-					unit.takeDamage(this.attackDamage)
+					unit.takeDamage(damage, unit !== this.target)
+					//TODO slow
 				}
 			}
-			//TODO slow
-		} else if (!this.target.isDead) {
-			this.target.takeDamage(this.attackDamage)
+		} else if (targetAlive) {
+			this.target.takeDamage(damage, false)
 		}
 
 		this.remove = true

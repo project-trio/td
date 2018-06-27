@@ -149,7 +149,7 @@ export default class Tower extends Unit {
 			const attackBit = this.stats.attackBit
 			const cX = this.cX, cY = this.cY
 			if (this.target) {
-				if (this.target.dead || this.target.distanceTo(cX, cY) > this.rangeCheck) {
+				if (this.target.healthScheduled <= 0 || this.target.distanceTo(cX, cY) > this.rangeCheck) {
 					this.target = null
 				}
 			}
@@ -157,7 +157,7 @@ export default class Tower extends Unit {
 				let newTarget = null
 				let nearestDistance = this.rangeCheck + 1
 				for (const unit of Unit.all()) {
-					if (unit.creep && (attackBit & unit.stats.attackBit)) {
+					if (unit.creep && unit.healthScheduled > 0 && (attackBit & unit.stats.attackBit)) {
 						const distance = unit.distanceTo(cX, cY)
 						if (distance < nearestDistance) {
 							newTarget = unit

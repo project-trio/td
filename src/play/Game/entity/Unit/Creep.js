@@ -41,6 +41,9 @@ export default class Creep extends Unit {
 
 			// Health bar
 
+			this.healthRemaining = this.stats.health
+			this.healthScheduled = this.healthRemaining
+
 			const hpHeight = 3
 			const hpWidth = 40
 			this.healthContainer = render.group(this.container)
@@ -82,7 +85,7 @@ export default class Creep extends Unit {
 					? positionY < gameMap.killY
 					: positionX > gameMap.killX
 			if (escaped) {
-				this.dead = true
+				this.die()
 				store.state.game.local.lives -= 1
 			}
 		}
@@ -101,15 +104,23 @@ export default class Creep extends Unit {
 		super.destroy(renderTime)
 	}
 
-	takeDamage (damage) {
+	die () {
+		this.dead = true
+		this.healthScheduled = 0
+	}
+
+	takeDamage (damage, splash) {
 		const newHealth = Math.max(0, this.healthRemaining - damage)
 		this.healthRemaining = newHealth
 
 		const healthScale = newHealth / this.stats.health
 		if (healthScale > 0) {
 			this.healthBar.scale.x = healthScale
+			if (splash) {
+				this.healthScheduled -= damage
+			}
 		} else {
-			this.dead = true
+			this.die()
 			store.state.game.local.gold += this.stats.gold
 		}
 	}
