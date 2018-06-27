@@ -18,11 +18,13 @@ export default class Creep extends Unit {
 		const live = data !== undefined
 		super(gameMap.container, live)
 
+		this.unitContainer = render.group(this.container)
+		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
+
 		if (live) {
 			this.id = `${wave}${data.name}${vertical}`
-			this.name = data.name
+			this.stats = data
 
-			this.speed = data.speed
 			this.vertical = vertical
 			this.currentIndex = null
 			this.setDestination(entranceIndex)
@@ -33,10 +35,23 @@ export default class Creep extends Unit {
 			this.cX = startX
 			this.cY = startY
 			this.setMovement(1 - vertical, vertical)
-			this.container.rotation.z = this.destinationAngle
-		}
+			this.unitContainer.rotation.z = this.destinationAngle
 
-		render.circle(creepSize, { color: 0x6688ee, parent: this.container })
+			// Health bar
+
+			const hpHeight = 3
+			const hpWidth = 40
+			this.healthContainer = render.group(this.container)
+			this.healthContainer.position.y = 32
+			this.healthContainer.position.z = 30
+
+			const outlineWeight = 1
+			render.rectangle(hpWidth + outlineWeight, hpHeight + outlineWeight, { color: 0x000000, parent: this.healthContainer, noDepth: true })
+			render.rectangle(hpWidth, hpHeight, { color: 0xFF3333, parent: this.healthContainer, noDepth: true })
+			this.healthBar = render.rectangle(hpWidth, hpHeight, { color: 0x33FF99, parent: this.healthContainer, noDepth: true })
+			this.healthBar.position.x = -hpWidth / 2
+			this.healthBar.geometry.translate(hpWidth / 2, 0, 0)
+		}
 	}
 
 	update (timeDelta, tweening) {
@@ -54,8 +69,9 @@ export default class Creep extends Unit {
 		}
 		const startX = tweening ? this.container.position.x : this.cX
 		const startY = tweening ? this.container.position.y : this.cY
-		const diffX = this.moveX * this.speed * timeDelta / MOVE_DIVISOR
-		const diffY = this.moveY * this.speed * timeDelta / MOVE_DIVISOR
+		const updateSpeed = this.stats.speed * timeDelta / MOVE_DIVISOR
+		const diffX = this.moveX * updateSpeed
+		const diffY = this.moveY * updateSpeed
 		const positionX = startX + diffX
 		const positionY = startY + diffY
 
@@ -80,6 +96,19 @@ export default class Creep extends Unit {
 	// destroy () {
 	// 	super.destroy()
 	// }
+
+	takeDamage (damage) {
+		const newHealth = Math.max(0, this.healthRemaining - damage)
+		this.healthRemaining = newHealth
+
+		const healthScale = newHealth / this.stats.healthMax
+		if (healthScale > 0) {
+			this.healthBar.scale.x = healthScale
+		} else {
+			this.dead = true
+			store.state.game.local.gold += this.stats.gold
+		}
+	}
 
 	// Path
 
