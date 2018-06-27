@@ -62,7 +62,7 @@ export default class Tower extends Unit {
 		this.speedCheck = (10 - this.speed) * 100
 		this.rangeCheck = gameMath.checkRadius(this.range)
 		if (stats.radius) {
-			this.explosionRadius = stats.radius[0] * 2
+			this.explosionRadius = stats.radius[0]
 		}
 
 		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
@@ -122,7 +122,7 @@ export default class Tower extends Unit {
 		}
 		store.state.game.local.gold -= upgradeCost
 
-		this.level += 1
+		this.level = levelIndex
 		this.gold += upgradeCost
 		this.damage += this.stats.damage[levelIndex]
 		this.speed += this.stats.range[levelIndex]
@@ -132,7 +132,7 @@ export default class Tower extends Unit {
 			this.rangeCheck = gameMath.checkRadius(this.range)
 		}
 		if (this.explosionRadius) {
-			this.explosionRadius += this.stats.radius[levelIndex] * 2
+			this.explosionRadius += this.stats.radius[levelIndex]
 		}
 	}
 
