@@ -46,7 +46,7 @@ export default {
 	},
 
 	frost: {
-		color: 0x00aaff,
+		color: 0x00aaee,
 		cost:   [ 50,  25, 25, 25, 25, 50 ],
 		damage: [ 10,  5,  5,  5,  5,  10 ],
 		range:  [ 50,  0,  0,  0,  0,  25 ],
@@ -58,7 +58,7 @@ export default {
 	},
 
 	bash: {
-		color: 0xdd44ee,
+		color: 0xbb44ee,
 		cost:   [ 100, 120, 145, 175, 260, 450 ],
 		damage: [ 60,  60,  120, 240, 480, 1040 ],
 		range:  [ 40,  0,   0,   0,   5,   5 ],
@@ -79,7 +79,7 @@ export default {
 	},
 
 	boost: {
-		color: 0x00ff00,
+		color: 0xccbb33,
 		cost:   [ 100, 100, 100, 100, 100 ],
 		damage: [ 10,  10,  10,  10,  10 ],
 		range:  [ 42,  0,   0,   0,   0 ],

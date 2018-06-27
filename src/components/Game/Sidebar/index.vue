@@ -4,7 +4,7 @@
 		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span>{{ displayTime }}</div>
 	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }">{{ idx + 1 }}</button>
+		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
 	</div>
 	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
 		<div>{{ player.name }}</div>
@@ -38,7 +38,7 @@ export default {
 		displayTime () {
 			let seconds = this.secondsElapsed
 			if (seconds <= 0) {
-				return seconds
+				return -seconds
 			}
 			let minutes
 			if (seconds >= 60) {
@@ -72,6 +72,18 @@ export default {
 	methods: {
 		onTower (name) {
 			this.storeStateGame.build = name
+		},
+
+		color (tower) {
+			let hexColor = tower.color
+			if (hexColor === 0x0 || hexColor === 0x222222) {
+				hexColor += 0x444444
+			}
+			let color = hexColor.toString(16)
+			while (color.length < 6) {
+				color = `0${color}`
+			}
+			return `#${color}`
 		},
 	},
 }
@@ -114,12 +126,16 @@ export default {
 .tower-button
 	font-size 20px
 	width 100%
+	color #0
+	font-weight bold
 
 .selection
 	border-radius 4px
 
 .selection.selected
-	background #dd6677
+	transform scale(0.89)
+	border 1px solid #9
+	box-shadow 0px 0px 8px 2px #f
 
 .player-box
 	margin 8px

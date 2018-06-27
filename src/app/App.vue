@@ -39,7 +39,8 @@ input, button
 	outline none
 
 button
-	transition background, opacity 300ms
+	transition-property background, transform, opacity, border, box-shadow
+	transition-duration 300ms
 
 .big, .selection
 	cursor pointer
