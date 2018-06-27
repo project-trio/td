@@ -8,6 +8,7 @@ export default {
 		range:  [ 60,  0,  0,  0,  0,  120 ],
 		speed:  [ 1.5, 0,  0,  0,  0,  -0.4 ],
 		attacks: 3,
+		bulletSpeed: 1,
 	},
 
 	squirt: {
@@ -16,6 +17,8 @@ export default {
 		range:  [ 70, 0,  0,  0,  0,  20 ],
 		speed:  [ 6,  0,  0,  0,  0,  3 ],
 		attacks: 3,
+		bulletSpeed: 2,
+		bulletColor: 0x4444cc,
 	},
 
 	dart: {
@@ -24,6 +27,10 @@ export default {
 		range:  [ 90, 10, 10, 10, 10,  10 ],
 		speed:  [ 1,  0,  0,  0,  0,   0 ],
 		attacks: 1,
+		bulletSpeed: 1,
+		bulletAcceleration: 1,
+		bulletColor: 0xdd4444,
+		bulletSize: 8,
 	},
 
 	swarm: {
@@ -32,6 +39,7 @@ export default {
 		range:  [ 60, 0,  5,  0,  5,   5 ],
 		speed:  [ 4,  0,  0,  0,  0,   2 ],
 		attacks: 2,
+		bulletSpeed: 1,
 	},
 
 	frost: {
@@ -41,6 +49,8 @@ export default {
 		speed:  [ 1.5, 0,  0,  0,  0,  0 ],
 		slow:   [ 20,  5,  5,  5,  5,  10 ],
 		attacks: 3,
+		bulletSpeed: 1,
+		bulletColor: 0x00aaff,
 	},
 
 	bash: {
@@ -58,6 +68,8 @@ export default {
 		range:  [ 100, 0,   0,   0,   0,   0 ],
 		speed:  [ 0,   0,   0,   0,   0,   0 ],
 		attacks: 3,
+		bulletSpeed: 1,
+		bulletTriangle: true,
 	},
 
 	boost: {

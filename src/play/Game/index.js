@@ -2,6 +2,8 @@ import store from '@/xjs/store'
 import random from '@/xjs/random'
 
 import GameMap from '@/play/Game/Map'
+
+import Bullet from '@/play/Game/entity/Bullet'
 import Unit from '@/play/Game/entity/Unit'
 
 export default class Game {
@@ -65,7 +67,7 @@ export default class Game {
 				}
 			}
 			if (renderTime > 0) {
-				// Bullet.update(renderTime, this.tickDuration, false)
+				Bullet.update(renderTime, this.tickDuration, false)
 				Unit.update(renderTime, this.tickDuration, false)
 				this.map.waves.update(renderTime)
 			} else if (renderTime === 0) {

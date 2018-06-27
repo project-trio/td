@@ -22,6 +22,7 @@ export default class Creep extends Unit {
 		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
 
 		if (live) {
+			this.creep = true
 			this.id = `${wave}${data.name}${vertical}`
 			this.stats = data
 
@@ -54,7 +55,7 @@ export default class Creep extends Unit {
 		}
 	}
 
-	update (timeDelta, tweening) {
+	update (renderTime, timeDelta, tweening) {
 		if (!tweening) {
 			let atDest = false
 			if (this.dX !== 0) {

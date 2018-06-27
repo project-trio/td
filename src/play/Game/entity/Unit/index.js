@@ -53,7 +53,7 @@ Unit.update = function (renderTime, timeDelta, tweening) {
 			unit.destroy()
 			allUnits.splice(idx, 1)
 		} else {
-			unit.update(timeDelta, tweening)
+			unit.update(renderTime, timeDelta, tweening)
 		}
 	}
 }

@@ -4,6 +4,8 @@ import store from '@/xjs/store'
 
 import render from '@/play/render'
 
+import towers from '@/play/data/towers'
+
 import Unit from '@/play/Game/entity/Unit'
 import Creep from '@/play/Game/entity/Unit/Creep'
 import Tower from '@/play/Game/entity/Unit/Tower'
@@ -11,7 +13,7 @@ import Tower from '@/play/Game/entity/Unit/Tower'
 import Paths from '@/play/Game/Map/Paths'
 import Waves from '@/play/Game/Map/Waves'
 
-const TILE_SIZE = 32
+const TILE_SIZE = 28
 const TILES_WIDE = 22
 const TILES_TALL = 18
 const MAP_WIDTH = TILE_SIZE * TILES_WIDE
@@ -23,7 +25,7 @@ const MAX_X = MAP_WIDTH / 2 - TILE_SIZE * 2
 const MAX_Y = MAP_HEIGHT / 2 - TILE_SIZE * 2
 
 const ENTRANCE_SIZE = 6
-const EX = 0
+const EX = 1
 const EY = 1
 
 export default class GameMap {
@@ -130,8 +132,15 @@ export default class GameMap {
 			if (placement.blocked || !placement.visible || !this.paths.update(Unit.all())) {
 				return
 			}
+			const towerName = store.state.game.build
+			const towerData = towers[towerName]
+			const cost = towerData.cost[0]
+			if (cost > store.state.game.local.gold) {
+				return
+			}
+			store.state.game.local.gold -= cost
 			placement.visible = false
-			const tower = new Tower(placement.position.x, placement.position.y, this.container, true)
+			const tower = new Tower(towerName, towerData, placement.position.x, placement.position.y, this.container, true)
 			this.paths.toggleTower(cx, cy, true)
 			this.paths.apply()
 			tower.tX = cx
