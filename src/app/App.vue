@@ -59,6 +59,9 @@ button
 
 //TEXT
 
+.capitalize
+	text-transform capitalize
+
 .text-small
 	font-size 0.9em
 

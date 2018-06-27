@@ -1,5 +1,6 @@
 <template>
 <div class="page-game">
+	<Sidebar />
 	<GameCanvas :gameData="gameData" />
 </div>
 </template>
@@ -8,10 +9,12 @@
 import bridge from '@/xjs/bridge'
 
 import GameCanvas from '@/components/Game/Canvas'
+import Sidebar from '@/components/Game/Sidebar'
 
 export default {
 	components: {
 		GameCanvas,
+		Sidebar,
 	},
 
 	props: {
