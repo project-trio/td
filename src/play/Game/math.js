@@ -10,8 +10,8 @@ export default {
 		return distance < (range * range)
 	},
 
-	squared (value) {
-		return value * value
+	checkRadius (value) {
+		return value * value * 4
 	},
 
 }

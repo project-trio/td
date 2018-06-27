@@ -57,10 +57,13 @@ export default class Tower extends Unit {
 		this.level = 0
 		this.gold = stats.cost[0]
 		this.damage = stats.damage[0]
-		this.range = stats.range[0]
 		this.speed = stats.speed[0]
-		this.rangeCheck = gameMath.squared(this.range * 2)
+		this.range = stats.range[0]
 		this.speedCheck = (10 - this.speed) * 100
+		this.rangeCheck = gameMath.checkRadius(this.range)
+		if (stats.radius) {
+			this.explosionRadius = stats.radius[0] * 2
+		}
 
 		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
 		this.backing.owner = this
@@ -107,13 +110,17 @@ export default class Tower extends Unit {
 
 	upgrade () {
 		this.level += 1
-		this.gold += this.stats.cost[this.level]
-		this.damage += this.stats.damage[this.level]
-		this.speed += this.stats.range[this.level]
-		const rangeDiff = this.stats.range[this.level]
+		const levelIndex = this.level
+		this.gold += this.stats.cost[levelIndex]
+		this.damage += this.stats.damage[levelIndex]
+		this.speed += this.stats.range[levelIndex]
+		const rangeDiff = this.stats.range[levelIndex]
 		if (rangeDiff !== 0) {
 			this.range += rangeDiff
-			this.rangeCheck = gameMath.squared(this.range * 2)
+			this.rangeCheck = gameMath.checkRadius(this.range)
+		}
+		if (this.explosionRadius) {
+			this.explosionRadius += this.stats.radius[levelIndex] * 2
 		}
 	}
 
@@ -158,6 +165,7 @@ export default class Tower extends Unit {
 						attackDamage: this.damage,
 						bulletSpeed: this.stats.bulletSpeed,
 						bulletAcceleration: this.stats.bulletAcceleration,
+						explosionRadius: this.explosionRadius,
 					}
 					new Bullet(this, this.target, data, this.container.parent)
 				}

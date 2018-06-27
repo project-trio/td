@@ -19,7 +19,7 @@ export default class Creep extends Unit {
 		super(gameMap.container, live)
 
 		this.unitContainer = render.group(this.container)
-		this.unitContainer.position.z = 50
+		this.container.position.z = 50
 		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
 
 		if (live) {
@@ -48,9 +48,9 @@ export default class Creep extends Unit {
 			this.healthContainer.position.z = 30
 
 			const outlineWeight = 1
-			render.rectangle(hpWidth + outlineWeight, hpHeight + outlineWeight, { color: 0x000000, parent: this.healthContainer, noDepth: true })
-			render.rectangle(hpWidth, hpHeight, { color: 0xFF3333, parent: this.healthContainer, noDepth: true })
-			this.healthBar = render.rectangle(hpWidth, hpHeight, { color: 0x33FF99, parent: this.healthContainer, noDepth: true })
+			render.rectangle(hpWidth + outlineWeight, hpHeight + outlineWeight, { color: 0x000000, parent: this.healthContainer })
+			render.rectangle(hpWidth, hpHeight, { color: 0xFF3333, parent: this.healthContainer })
+			this.healthBar = render.rectangle(hpWidth, hpHeight, { color: 0x33FF99, parent: this.healthContainer })
 			this.healthBar.position.x = -hpWidth / 2
 			this.healthBar.geometry.translate(hpWidth / 2, 0, 0)
 		}

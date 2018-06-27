@@ -9,23 +9,44 @@ import towers from '@/play/data/towers'
 
 import gameMath from '@/play/Game/math'
 
-// import Unit from '@/play/Game/entity/Unit'
+import Unit from '@/play/Game/entity/Unit'
 
 //LOCAL
 
 const COLLISION_DISTANCE = 300
 
 let allBullets = []
+let allSplashes = []
 
 const bulletsCache = {}
+const rangesCache = {}
+const splashesCache = {}
 for (const name in towers) {
 	if (name === 'names') {
 		continue
 	}
 	const towerData = towers[name]
 	const geometry = new THREE.SphereBufferGeometry(towerData.bulletSize || 4)
-	const material = new THREE.MeshBasicMaterial({ color: towerData.color || 0x000000 })
+	const material = new THREE.MeshBasicMaterial({ color: towerData.color })
 	bulletsCache[name] = [ geometry, material ]
+
+	const splashMaterial = new THREE.MeshBasicMaterial({ color: towerData.color })
+	splashMaterial.transparent = true
+	splashMaterial.opacity = 0.3
+	splashesCache[name] = splashMaterial
+
+	const ranges = towerData.radius
+	if (ranges) {
+		let range = 0
+		for (const diff of ranges) {
+			if (diff) {
+				range += diff
+				if (!rangesCache[range]) {
+					rangesCache[range] = new THREE.CircleBufferGeometry(range * 2, range * 2)
+				}
+			}
+		}
+	}
 }
 
 class Bullet {
@@ -35,6 +56,7 @@ class Bullet {
 	constructor (source, target, data, parent, initialDistance) {
 		const startAngle = null //TODO source.top.rotation.z
 		this.unitTarget = target.stats !== undefined
+		this.name = source.name
 
 		this.explosionRadius = data.explosionRadius
 		this.slow = data.slow
@@ -94,21 +116,24 @@ class Bullet {
 		this.container.position.y = moveToY
 	}
 
-	reachedDestination (renderTime) {
-		if (this.explosionRadius) { //TODO
-			// new AreaOfEffect(null, {
-			// 	cX: this.target[0],
-			// 	cY: this.target[1],
-			// 	color: this.color,
-			// 	opacity: 0.25,
-			// 	radius: this.explosionRadius,
-			// 	attackDamage: this.attackDamage,
-			// 	renderTime,
-			// 	parent: this.container.parent,
-			// })
+	reachedDestination () {
+		if (this.explosionRadius) {
+			const area = new THREE.Mesh(rangesCache[this.explosionRadius], splashesCache[this.name].clone())
+			const aX = this.target.cX
+			const aY = this.target.cY
+			area.position.x = aX
+			area.position.y = aY
+			this.container.parent.add(area)
+			allSplashes.push(area)
+			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
+			for (const unit of Unit.all()) {
+				if (unit.creep && unit.distanceTo(aX, aY) <= radiusCheck) {
+					unit.takeDamage(this.attackDamage)
+				}
+			}
+			//TODO slow
 		} else if (!this.target.isDead) {
 			this.target.takeDamage(this.attackDamage)
-			//TODO slow
 		}
 
 		this.remove = true
@@ -176,6 +201,7 @@ class Bullet {
 
 Bullet.destroy = function () {
 	allBullets = []
+	allSplashes = []
 }
 
 Bullet.update = function (renderTime, timeDelta, tweening) {
@@ -191,11 +217,21 @@ Bullet.update = function (renderTime, timeDelta, tweening) {
 		}
 	}
 
-	// Move
 	for (const bullet of allBullets) {
 		bullet.move(renderTime, timeDelta, tweening)
 		if (bullet.updateAnimations) {
 			bullet.updateAnimations(renderTime)
+		}
+	}
+
+	const splashFade = timeDelta / 1000
+	for (let idx = allSplashes.length - 1; idx >= 0; idx -= 1) {
+		const splash = allSplashes[idx]
+		if (splash.opacity < splashFade) {
+			allBullets.splice(idx, 1)
+			render.remove(splash.container)
+		} else {
+			splash.material.opacity -= splashFade
 		}
 	}
 }
