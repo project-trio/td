@@ -25,15 +25,15 @@ export default class Renderer {
 		gameLight.target.position.set(15, -40, 0)
 		gameScene.add(gameLight.target)
 
-		const projectionSize = 1500
-		gameLight.shadow.camera.left = -projectionSize
-		gameLight.shadow.camera.right = projectionSize
-		gameLight.shadow.camera.top = projectionSize
-		gameLight.shadow.camera.bottom = -projectionSize
-		gameLight.shadow.camera.near = 1
-		gameLight.shadow.camera.far = 2048
-		gameLight.shadow.mapSize.width = 2048
-		gameLight.shadow.mapSize.height = 2048
+		// const projectionSize = 1500
+		// gameLight.shadow.camera.left = -projectionSize
+		// gameLight.shadow.camera.right = projectionSize
+		// gameLight.shadow.camera.top = projectionSize
+		// gameLight.shadow.camera.bottom = -projectionSize
+		// gameLight.shadow.camera.near = 1
+		// gameLight.shadow.camera.far = 2048
+		// gameLight.shadow.mapSize.width = 2048
+		// gameLight.shadow.mapSize.height = 2048
 
 		// audioListener = RenderSound.create(audioListener)
 
@@ -71,6 +71,7 @@ export default class Renderer {
 			} else {
 				this.gameCamera = this.orthoCamera
 			}
+			this.gameCamera.position.x = -128
 			// this.gameCamera.add(this.audioListener)
 		}
 
