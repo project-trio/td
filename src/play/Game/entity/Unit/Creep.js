@@ -19,6 +19,7 @@ export default class Creep extends Unit {
 		super(gameMap.container, live)
 
 		this.unitContainer = render.group(this.container)
+		this.unitContainer.position.z = 50
 		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
 
 		if (live) {
@@ -28,7 +29,7 @@ export default class Creep extends Unit {
 
 			this.vertical = vertical
 			this.currentIndex = null
-			this.setDestination(entranceIndex)
+			this.setDestination(entranceIndex, data.attackBit === 2)
 			const startX = this.destinationX - (vertical ? 0 : START_DISTANCE)
 			const startY = this.destinationY + (vertical ? START_DISTANCE : 0)
 			this.container.position.x = startX
@@ -56,7 +57,7 @@ export default class Creep extends Unit {
 	}
 
 	update (renderTime, timeDelta, tweening) {
-		if (!tweening) {
+		if (!tweening && this.destinationIndex) {
 			let atDest = false
 			if (this.dX !== 0) {
 				atDest = this.dX > 0 ? this.cX > this.destinationX - MOVEMENT_PADDING : this.cX < this.destinationX + MOVEMENT_PADDING
@@ -115,8 +116,10 @@ export default class Creep extends Unit {
 
 	// Path
 
-	setDestination (index) {
-		this.destinationIndex = index
+	setDestination (index, flying) {
+		if (!flying) {
+			this.destinationIndex = index
+		}
 		const center = gameMap.tileCenter(index)
 		this.destinationX = center[0]
 		this.destinationY = center[1]
