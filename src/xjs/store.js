@@ -47,6 +47,13 @@ export default {
 		},
 	},
 
+	winWave (playerIds) {
+		const waveNumber = this.state.game.wave
+		for (const id of playerIds) {
+			this.state.game.players[id].waves.push(waveNumber)
+		}
+	},
+
 	signinToken (token) {
 		this.state.signin.attempted = true
 		this.state.signin.token = token

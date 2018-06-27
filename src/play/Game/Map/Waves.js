@@ -1,5 +1,6 @@
 import Creep from '@/play/Game/entity/Unit/Creep'
 
+import bridge from '@/xjs/bridge'
 import random from '@/xjs/random'
 
 const CREEP_TYPES = [
@@ -69,18 +70,23 @@ export default class Waves {
 	constructor (spawnPoints) {
 		Creep.init()
 		this.spawning = []
-		this.waveCount = 0
+		this.count = 0
 		this.spawnPoints = spawnPoints
+		this.waveStart = 0
+		this.creepCount = 0
 	}
 
 	spawn (renderTime) {
-		this.waveCount += 1
-		const waveIndex = this.waveCount - 1
+		this.count += 1
+		const waveIndex = this.count - 1
 		let creepIndex = waveIndex % CREEP_TYPE_COUNT
 		if (waveIndex < 20 && creepIndex === 4) {
 			creepIndex = 0
 		}
 		const data = CREEP_TYPES[creepIndex]
+		this.creepCount += data.count * 2
+		this.waveStart = renderTime
+
 		this.spawning.push({
 			index: 0,
 			startAt: renderTime,
@@ -93,10 +99,11 @@ export default class Waves {
 			attackBit: data.attackBit,
 			isBoss: waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0,
 		})
-		console.log('Wave', this.waveCount, data)
+		console.log('Wave', this.count, data)
 	}
 
 	update (renderTime) {
+		const waveNumber = this.count
 		const spawning = this.spawning
 		for (let sidx = spawning.length - 1; sidx >= 0; sidx -= 1) {
 			const spawnData = spawning[sidx]
@@ -108,9 +115,19 @@ export default class Waves {
 				}
 				for (let vertical = 0; vertical < 2; vertical += 1) {
 					const entranceIndex = random.choose(this.spawnPoints[vertical])
-					new Creep(spawnData, entranceIndex, vertical, this.waveCount)
+					new Creep(spawnData, entranceIndex, vertical, waveNumber)
 				}
 			}
+		}
+
+	}
+
+	killCreep (renderTime) {
+		this.creepCount -= 1
+		if (this.creepCount === 0) {
+			const waveTime = renderTime - this.waveStart
+			// console.log('Wave complete!', this.count, waveTime)
+			bridge.emit('wave complete', { wave: this.count, time: waveTime })
 		}
 	}
 

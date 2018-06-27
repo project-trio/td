@@ -21,7 +21,7 @@ class Unit {
 		return diffX * diffX + diffY * diffY
 	}
 
-	destroy () {
+	destroy (_renderTime) {
 		render.remove(this.container)
 	}
 
@@ -50,7 +50,7 @@ Unit.update = function (renderTime, timeDelta, tweening) {
 	for (let idx = allUnits.length - 1; idx >= 0; idx -= 1) {
 		const unit = allUnits[idx]
 		if (unit.dead) {
-			unit.destroy()
+			unit.destroy(renderTime)
 			allUnits.splice(idx, 1)
 		} else {
 			unit.update(renderTime, timeDelta, tweening)

@@ -94,15 +94,17 @@ export default class Creep extends Unit {
 		}
 	}
 
-	// destroy () {
-	// 	super.destroy()
-	// }
+	destroy (renderTime) {
+		gameMap.waves.killCreep(renderTime)
+
+		super.destroy(renderTime)
+	}
 
 	takeDamage (damage) {
 		const newHealth = Math.max(0, this.healthRemaining - damage)
 		this.healthRemaining = newHealth
 
-		const healthScale = newHealth / this.stats.healthMax
+		const healthScale = newHealth / this.stats.health
 		if (healthScale > 0) {
 			this.healthBar.scale.x = healthScale
 		} else {

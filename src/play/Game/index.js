@@ -89,7 +89,7 @@ export default class Game {
 		return true
 	}
 
-	dequeueUpdate (_renderTime) {
+	dequeueUpdate (renderTime) {
 		const nextUpdate = this.updateQueue[this.updateCount]
 		if (!nextUpdate) {
 			return false
@@ -97,9 +97,9 @@ export default class Game {
 		this.updateQueue[this.updateCount] = null
 		this.updateCount += 1
 
-		for (let idx = nextUpdate.length - 1; idx >= 0; idx -= 1) { // 'action' response
-			const update = nextUpdate[idx]
-			console.log(update)
+		if (nextUpdate.length) {
+			store.winWave(nextUpdate)
+			this.map.waves.spawn(renderTime)
 		}
 		return true
 	}
