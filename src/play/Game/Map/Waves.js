@@ -1,69 +1,11 @@
+import creeps from '@/play/data/creeps'
+
 import Creep from '@/play/Game/entity/Unit/Creep'
 
 import bridge from '@/xjs/bridge'
 import random from '@/xjs/random'
 
-const CREEP_TYPES = [
-	{
-		name: 'normal',
-		count: 10,
-		health: [ 20, 4 ],
-		speed: 1,
-		gold: 1,
-		attackBit: 1,
-	},
-	{
-		name: 'immune',
-		count: 10,
-		health: [ 21, 4.5 ],
-		speed: 1,
-		gold: 1,
-		attackBit: 1,
-	},
-	{
-		name: 'group',
-		grouped: true,
-		count: 6,
-		health: [ 20, 5 ],
-		speed: 1,
-		gold: 1,
-		attackBit: 1,
-	},
-	{
-		name: 'fast',
-		count: 10,
-		health: [ 20, 0 ],
-		speed: 1.25,
-		gold: 1,
-		attackBit: 1,
-	},
-	{
-		name: 'dark',
-		count: 6,
-		health: [ 20, 0 ],
-		speed: 1,
-		gold: 1,
-		attackBit: 1,
-	},
-	{
-		name: 'spawn',
-		count: 4,
-		health: [ 20, 0 ],
-		speed: 1,
-		gold: 2,
-		attackBit: 1,
-	},
-	{
-		name: 'flying',
-		count: 10,
-		health: [ 20, 0 ],
-		speed: 1,
-		gold: 1,
-		attackBit: 2,
-	},
-]
-
-const CREEP_TYPE_COUNT = CREEP_TYPES.length
+const CREEP_TYPE_COUNT = creeps.length
 
 export default class Waves {
 
@@ -83,7 +25,7 @@ export default class Waves {
 		if (waveIndex < 20 && creepIndex === 4) {
 			creepIndex = 0
 		}
-		const data = CREEP_TYPES[creepIndex]
+		const data = creeps[creepIndex]
 		this.creepCount += data.count * 2
 		this.waveStart = renderTime
 
