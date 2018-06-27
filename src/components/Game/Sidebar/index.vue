@@ -1,7 +1,11 @@
 <template>
 <div class="sidebar">
-	<div v-for="tower in $options.towers" class="tower-container" :key="tower.name">
+	<div v-for="tower in $options.towers" class="tower-box" :key="tower.name">
 		<button class="big tower-button capitalize">{{ tower.name }}</button>
+	</div>
+	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
+		<div>{{ player.name }}</div>
+		<div>{{ player.score }}</div>
 	</div>
 </div>
 </template>
@@ -15,6 +19,16 @@ export default {
 		tower.name = name
 		return tower
 	}),
+
+	computed: {
+		localId () {
+			return this.$store.state.signin.user.id
+		},
+
+		players () {
+			return this.$store.state.game.players
+		},
+	},
 }
 </script>
 
@@ -30,7 +44,7 @@ export default {
 	box-sizing border-box
 	color #f
 
-.tower-container
+.tower-box
 	width 25%
 	padding 2px
 	display inline-block
@@ -39,4 +53,12 @@ export default {
 .tower-button
 	font-size 16px
 	width 100%
+
+.player-box
+	margin 8px
+	padding 6px 8px
+	background #0
+
+.player-box.local
+	background #212
 </style>
