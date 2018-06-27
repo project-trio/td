@@ -1,4 +1,4 @@
-import Creep from '@/play/Game/entity/Creep'
+import Creep from '@/play/Game/entity/Unit/Creep'
 
 import random from '@/xjs/random'
 

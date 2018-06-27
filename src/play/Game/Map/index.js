@@ -4,9 +4,9 @@ import store from '@/xjs/store'
 
 import render from '@/play/render'
 
-import Creep from '@/play/Game/entity/Creep'
 import Unit from '@/play/Game/entity/Unit'
-import Tower from '@/play/Game/entity/Tower'
+import Creep from '@/play/Game/entity/Unit/Creep'
+import Tower from '@/play/Game/entity/Unit/Tower'
 
 import Paths from '@/play/Game/Map/Paths'
 import Waves from '@/play/Game/Map/Waves'

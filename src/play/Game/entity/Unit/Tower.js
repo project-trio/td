@@ -1,25 +1,8 @@
 import * as THREE from 'three'
 
-import render from '@/play/render'
-
 import Unit from '@/play/Game/entity/Unit'
 
 import local from '@/xjs/local'
-
-const roundedRectOf = (o, width, r) => {
-	const wh = width / 2
-	const sh = wh - r
-	o.moveTo(0, -wh)
-	o.moveTo(sh, -wh)
-	o.quadraticCurveTo(wh, -wh, wh, -sh)
-	o.moveTo(wh, sh)
-	o.quadraticCurveTo(wh, wh, sh, wh)
-	o.moveTo(-sh, wh)
-	o.quadraticCurveTo(-wh, wh, -wh, sh)
-	o.moveTo(-wh, -sh)
-	o.quadraticCurveTo(-wh, -wh, -sh, -wh)
-	o.moveTo(0, -wh)
-}
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
@@ -61,6 +44,21 @@ export default class Tower extends Unit {
 }
 
 //STATIC
+
+const roundedRectOf = (o, width, r) => {
+	const wh = width / 2
+	const sh = wh - r
+	o.moveTo(0, -wh)
+	o.moveTo(sh, -wh)
+	o.quadraticCurveTo(wh, -wh, wh, -sh)
+	o.moveTo(wh, sh)
+	o.quadraticCurveTo(wh, wh, sh, wh)
+	o.moveTo(-sh, wh)
+	o.quadraticCurveTo(-wh, wh, -wh, sh)
+	o.moveTo(-wh, -sh)
+	o.quadraticCurveTo(-wh, -wh, -sh, -wh)
+	o.moveTo(0, -wh)
+}
 
 Tower.init = (tileSize) => {
 	backingGeometry = new THREE.PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
