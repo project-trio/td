@@ -14,7 +14,6 @@ export default class Game {
 		random.init(this.id)
 
 		this.container = container
-		this.players = []
 
 		this.updateCount = 0
 		this.updateQueue = {}
@@ -150,27 +149,14 @@ export default class Game {
 		store.state.game.playing = false
 	}
 
-	// Players
-
-	playerForId (id) {
-		for (const player of this.players) {
-			if (player.id === id) {
-				return player
-			}
-		}
-		return null
-	}
-
 	updatePlayer (gameData) {
 		const pid = gameData.pid
-		const player = this.playerForId(pid)
-		const storePlayer = store.state.game.players[pid]
-		if (!player || !storePlayer) {
-			console.error('Updated player DNE', player, storePlayer, gameData, this.players)
+		const player = store.state.game.players[pid]
+		if (!player) {
+			console.error('Updated player DNE', player, gameData, store.state.game.players)
 			return
 		}
 		player.isActive = gameData.joined
-		storePlayer.isActive = gameData.joined
 		store.state.chatMessages.push({ name: player.name, active: player.isActive })
 	}
 

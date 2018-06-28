@@ -32,6 +32,15 @@ export default {
 				names.splice(index, 1)
 			}
 		})
+
+		bridge.on('joined game', (data) => {
+			if (data.error) {
+				window.alert('Unable to join game: ' + data.error)
+			}
+			const gid = data.gid
+			this.$store.state.game.id = gid
+			this.$router.push({ name: 'Game', params: { gid } })
+		})
 	},
 
 	beforeDestroy () {

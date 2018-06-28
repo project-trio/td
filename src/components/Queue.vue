@@ -10,20 +10,20 @@
 		<p class="mode-description">Compete against other players to clear the creeps the fastest!</p>
 		<div class="queue-action">
 			<div v-if="enoughPlayersForGame">
-				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }">{{ readyRequested ? 'ready!' : `ready? (${queueTimer - readyAt})` }}</button>
+				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }">Ready{{ readyRequested ? '!' : `?` }} ({{ queueWait - readyAt }})</button>
 			</div>
 			<div v-else class="text-faint">
 				No one else is in queue for game yet. Why not send the link to a friend?
 			</div>
 		</div>
-		<div v-if="multiplayer && notificationPermission !== 'granted'" class="queue-notification">
+		<div v-if="multiplayer && notificationPermission !== 'granted'" class="notification-aside">
 			<div v-if="notificationPermission === 'unavailable'">
 				(Notifications are unavailable in your browser.)
 			</div>
 			<div v-else-if="notificationPermission === 'denied'">
 				To be notified when a game becomes available while this page is in the background, please enable notifications for this site in your browser settings.
 			</div>
-			<div v-else class="notifications">
+			<div v-else>
 				<button @click="onNotifications" class="big" :class="{ selected: readyRequested }">Enable notifications!</button>
 				<p class="text-small text-faint">Lets you know when a game is available while the page is in the background.</p>
 			</div>
@@ -38,12 +38,11 @@
 
 <script>
 import bridge from '@/xjs/bridge'
-import router from '@/xjs/router'
 
 export default {
 	data () {
 		return {
-			queueTimer: 20,
+			queueWait: 20,
 			multiplayer: false,
 			readyRequested: false,
 			readyAt: 0,
@@ -53,6 +52,8 @@ export default {
 	},
 
 	baseUrl: process.env.BASE_URL,
+	notification: null,
+	readyTimer: null,
 
 	computed: {
 		enoughPlayersForGame () {
@@ -97,26 +98,25 @@ export default {
 
 	methods: {
 		onMultiplayer (multiplayer) {
+			this.readyRequested = false
 			this.multiplayer = multiplayer
-			bridge.emit('queue', multiplayer)
-		},
-
-		onPlaySingleplayer () {
-			bridge.emit('singleplayer', null, (data) => {
-				const gid = data.gid
-				this.$store.state.game.id = gid
-				this.$router.push({ name: 'Game', params: { gid } })
+			bridge.emit('queue', multiplayer, (wait) => {
+				this.queueWait = wait
 			})
 		},
 
+		onPlaySingleplayer () {
+			bridge.emit('singleplayer')
+		},
+
 		cancelTimer () {
-			if (this.notification) {
-				this.notification.close()
-				this.notification = null
+			if (this.$options.notification) {
+				this.$options.notification.close()
+				this.$options.notification = null
 			}
-			if (this.readyTimer) {
-				window.clearInterval(this.readyTimer)
-				this.readyTimer = null
+			if (this.$options.readyTimer) {
+				window.clearInterval(this.$options.readyTimer)
+				this.$options.readyTimer = null
 			}
 			this.hasFocusedWindow = false
 		},
@@ -132,26 +132,26 @@ export default {
 
 			if (enabled) {
 				this.readyAt = 0
-				this.readyTimer = window.setInterval(() => {
-					if (this.readyAt >= this.queueTimer) {
+				this.$options.readyTimer = window.setInterval(() => {
+					if (this.readyAt >= this.queueWait) {
 						this.cancelTimer()
 						if (!this.readyRequested) {
-							router.replace({ name: 'Lobby' })
+							this.onMultiplayer(false)
 							window.alert('Removed from the queue due to inactivity')
 						}
 					} else {
 						this.readyAt += 1
 						this.checkFocus()
-						if (this.readyAt === 3 && !this.hasFocusedWindow && this.notificationPermission === 'granted') {
-							this.notification = new Notification('moba queue ready!', {
+						if (this.readyAt === 3 && !this.readyRequested && !this.hasFocusedWindow && this.notificationPermission === 'granted') {
+							this.$options.notification = new Notification('moba queue ready!', {
 								icon: `${this.$options.baseUrl}icon.png`,
 							})
-							this.notification.onclick = () => {
+							this.$options.notification.onclick = () => {
 								if (window.parent) {
 									parent.focus()
 								}
 								window.focus()
-								this.notification.close()
+								this.$options.notification.close()
 							}
 						}
 					}
@@ -165,7 +165,7 @@ export default {
 
 		sendQueue () {
 			this.setReadyTimer(this.enoughPlayersForGame)
-			// Bridge.emit('queue', { ready: this.readyRequested })
+			bridge.emit('queue ready', this.readyRequested)
 		},
 
 		onNotifications () {
@@ -197,4 +197,9 @@ export default {
 
 .mode-description
 	margin-bottom 32px
+
+.notification-aside
+	margin-top 32px
+	& button
+		width 256px
 </style>
