@@ -28,19 +28,22 @@ export default class Waves {
 			creepIndex = 0
 		}
 		const data = creeps[creepIndex]
-		const count = data.count * 2
-		store.state.game.waveCreepCount = count
-		this.creepCount += count
+		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
+		const waveSize = data.count
+		const gold = Math.ceil(this.count / CREEP_TYPE_COUNT * 10 / waveSize)
+		const waveCount = waveSize * 2
+		store.state.game.waveCreepCount = waveCount
+		this.creepCount += waveCount
 		this.waveStart = renderTime
 
 		this.spawning.push({
 			index: 0,
 			startAt: renderTime,
-			health: data.health[0],
+			health: health,
 			speed: data.speed,
 			name: data.name,
-			count: data.count,
-			gold: data.gold,
+			count: waveSize,
+			gold: gold,
 			grouped: data.grouped,
 			attackBit: data.attackBit,
 			isBoss: waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0,
