@@ -6,7 +6,7 @@ import Unit from '@/play/Game/entity/Unit'
 import store from '@/xjs/store'
 
 const PId2 = Math.PI / 2
-const MOVE_DIVISOR = 15
+const MOVE_DIVISOR = 12.5
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2

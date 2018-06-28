@@ -20,9 +20,10 @@ export default class Waves {
 	}
 
 	spawn (renderTime) {
-		store.state.game.wave += 1
-		this.count += 1
-		const waveIndex = this.count - 1
+		const waveNumber = this.count + 1
+		store.state.game.wave = waveNumber
+		this.count = waveNumber
+		const waveIndex = waveNumber - 1
 		let creepIndex = waveIndex % CREEP_TYPE_COUNT
 		if (waveIndex < 20 && creepIndex === 4) {
 			creepIndex = 0
@@ -30,7 +31,7 @@ export default class Waves {
 		const data = creeps[creepIndex]
 		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
 		const waveSize = data.count
-		const gold = Math.ceil(this.count / CREEP_TYPE_COUNT * 10 / waveSize)
+		const gold = Math.ceil(waveNumber / CREEP_TYPE_COUNT * 10 / waveSize)
 		const waveCount = waveSize * 2
 		store.state.game.waveCreepCount = waveCount
 		this.creepCount += waveCount
@@ -56,7 +57,7 @@ export default class Waves {
 		const spawning = this.spawning
 		for (let sidx = spawning.length - 1; sidx >= 0; sidx -= 1) {
 			const spawnData = spawning[sidx]
-			if (renderTime >= spawnData.startAt + spawnData.index * (spawnData.grouped ? 100 : 1000)) {
+			if (renderTime >= spawnData.startAt + spawnData.index * (spawnData.grouped ? 50 : 500)) {
 				if (spawnData.index >= spawnData.count - 1) {
 					spawning.splice(sidx, 1)
 				} else {
