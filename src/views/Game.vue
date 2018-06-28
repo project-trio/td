@@ -51,6 +51,9 @@ export default {
 	},
 
 	beforeDestroy () {
+		if (this.gid) {
+			bridge.emit('leave game', this.gid)
+		}
 		bridge.off('start game')
 	},
 
