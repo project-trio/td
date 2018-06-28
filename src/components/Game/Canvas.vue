@@ -8,6 +8,7 @@ import Game from '@/play/Game'
 
 import bridge from '@/xjs/bridge'
 import local from '@/xjs/local'
+import store from '@/xjs/store'
 
 export default {
 	props: {
@@ -29,6 +30,18 @@ export default {
 				const update = data.update
 				if (game.serverUpdate !== update - 1) {
 					console.error('Invalid update', game.serverUpdate, update)
+				}
+				const players = store.state.game.players
+				for (let pidx = players.length - 1; pidx >= 0; pidx -= 1) {
+					const player = players[pidx]
+					const state = data.states[pidx]
+					if (state.lives !== undefined) {
+						player.lives = state.lives
+					}
+					player.creeps = state.creeps
+					if (state.towers) {
+						player.towers = state.towers
+					}
 				}
 				game.enqueueUpdate(update, data.actions)
 				bridge.emit('updated', { update })

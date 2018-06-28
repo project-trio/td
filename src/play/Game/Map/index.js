@@ -139,11 +139,9 @@ export default class GameMap {
 			}
 			store.state.game.local.gold -= cost
 			placement.visible = false
-			const tower = new Tower(towerName, towerData, placement.position.x, placement.position.y, this.container, true)
+			new Tower(towerName, towerData, this.container, cx, cy, placement.position.x, placement.position.y)
 			this.paths.toggleTower(cx, cy, true)
 			this.paths.apply()
-			tower.tX = cx
-			tower.tY = cy
 			for (const unit of Creep.all()) {
 				unit.updatePath(true)
 			}

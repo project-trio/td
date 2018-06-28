@@ -5,12 +5,14 @@ const defaultGameState = () => {
 		id: null,
 		players: [],
 		wave: 0,
+		waveCreepCount: 0,
 		playing: false,
 		missingUpdate: false,
 		renderTime: 0,
 		build: 'pellet',
 		local: {
 			lives: 20,
+			livesChange: null,
 			gold: 80,
 		},
 	}

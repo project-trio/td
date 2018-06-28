@@ -43,29 +43,35 @@ for (const name in towers) {
 
 export default class Tower extends Unit {
 
-	constructor (name, stats, x, y, parent, live) {
+	constructor (name, stats, parent, tX, tY, x, y) {
+		const live = tX !== undefined
 		super(parent, live)
-
-		this.id = `${x},${y}`
-		this.container.position.x = x
-		this.container.position.y = y
-		this.cX = x
-		this.cY = y
-
-		this.target = null
-		this.firedAt = 0
 
 		this.name = name
 		this.stats = stats
-		this.level = 0
-		this.gold = stats.cost[0]
-		this.damage = stats.damage[0]
-		this.speed = stats.speed[0]
-		this.range = stats.range[0]
-		this.speedCheck = (10 - this.speed) * 100
-		this.rangeCheck = gameMath.checkRadius(this.range)
-		if (stats.radius) {
-			this.explosionRadius = stats.radius[0]
+
+		if (live) {
+			this.id = `${tX},${tY}`
+			this.tX = tX
+			this.tY = tY
+			this.container.position.x = x
+			this.container.position.y = y
+			this.cX = x
+			this.cY = y
+
+			this.target = null
+			this.firedAt = 0
+
+			this.level = 0
+			this.gold = stats.cost[0]
+			this.damage = stats.damage[0]
+			this.speed = stats.speed[0]
+			this.range = stats.range[0]
+			this.speedCheck = (10 - this.speed) * 100
+			this.rangeCheck = gameMath.checkRadius(this.range)
+			if (stats.radius) {
+				this.explosionRadius = stats.radius[0]
+			}
 		}
 
 		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
@@ -78,8 +84,11 @@ export default class Tower extends Unit {
 		this.container.add(outline)
 		this.container.add(this.top)
 
-		this.select()
-		allTowers.push(this)
+		if (live) {
+			this.select()
+			allTowers.push(this)
+			local.syncTowers.push([ tX, tY, true ])
+		}
 	}
 
 	select () {
@@ -145,6 +154,7 @@ export default class Tower extends Unit {
 	destroy () {
 		store.state.game.local.gold += this.gold
 		local.game.map.removeTower(this)
+		local.syncTowers.push([ this.tX, this.tY, false ])
 
 		super.destroy()
 	}

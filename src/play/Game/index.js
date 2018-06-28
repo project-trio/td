@@ -1,3 +1,5 @@
+import bridge from '@/xjs/bridge'
+import local from '@/xjs/local'
 import store from '@/xjs/store'
 import random from '@/xjs/random'
 
@@ -57,7 +59,8 @@ export default class Game {
 			renderTime = this.ticksRendered * this.tickDuration
 			store.state.game.renderTime = renderTime
 
-			if (this.ticksRendered % this.ticksPerUpdate === 0) {
+			const ticksFromUpdate = this.ticksRendered % this.ticksPerUpdate
+			if (ticksFromUpdate === 0) {
 				if (this.dequeueUpdate(renderTime)) {
 					store.state.game.missingUpdate = false
 				} else {
@@ -74,6 +77,20 @@ export default class Game {
 				Creep.update(renderTime, this.tickDuration, false)
 				Tower.update(renderTime, this.tickDuration, false)
 				this.map.waves.update(renderTime)
+
+				if (ticksFromUpdate === Math.floor(this.ticksPerUpdate / 2)) {
+					const data = { creeps: this.map.waves.creepCount }
+					const livesChange = store.state.game.local.livesChange
+					if (livesChange !== null) {
+						data.lives = livesChange
+						store.state.game.local.livesChange = null
+					}
+					if (local.syncTowers.length) {
+						data.towers = local.syncTowers
+						local.syncTowers = []
+					}
+					bridge.emit('player update', data)
+				}
 			} else if (renderTime === 0) {
 				this.startPlaying()
 			}

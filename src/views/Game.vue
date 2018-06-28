@@ -7,6 +7,7 @@
 
 <script>
 import bridge from '@/xjs/bridge'
+import local from '@/xjs/local'
 import store from '@/xjs/store'
 
 import GameCanvas from '@/components/Game/Canvas'
@@ -38,12 +39,18 @@ export default {
 		bridge.on('start game', (data) => {
 			console.log('start game', data)
 			const players = data.players
-			for (const player of players) {
+			const localId = this.$store.state.signin.user
+			for (let idx = players.length - 1; idx >= 0; idx -= 1) {
+				const player = players[idx]
 				player.score = 0
 				player.lives = 20
 				player.waves = new Array(data.waves)
-				player.creepsTotal = 0
-				player.creepsAlive = 0
+				player.creeps = 0
+				player.towers = []
+				// player.creepsTotal = 0 //TODO?
+				if (player.id === localId) {
+					local.playerIndex = idx
+				}
 			}
 			store.state.game.players = data.players
 			this.gameData = data

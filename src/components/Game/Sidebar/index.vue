@@ -6,19 +6,19 @@
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
 		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
 	</div>
-	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
-		<div>{{ player.name }}</div>
-		<div class="waves">
-			<div v-for="(won, idx) in player.waves" class="wave-box" :class="{ won }" :key="idx" />
-		</div>
-	</div>
+	<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" />
 </div>
 </template>
 
 <script>
 import towers from '@/play/data/towers'
+import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
 
 export default {
+	components: {
+		PlayerBox,
+	},
+
 	towers: towers.names.map(name => {
 		const tower = towers[name]
 		tower.name = name
@@ -28,6 +28,10 @@ export default {
 	computed: {
 		storeStateGame () {
 			return this.$store.state.game
+		},
+
+		waveCreeps () {
+			return this.storeStateGame.waveCreepCount
 		},
 
 		gold () {
@@ -138,28 +142,4 @@ export default {
 	transform scale(0.89)
 	border 1px solid #9
 	box-shadow 0px 0px 8px 2px #f
-
-.player-box
-	margin 8px
-	padding 6px 8px
-	background #0
-
-.player-box.local
-	background #212
-
-.waves
-	display flex
-	flex-wrap wrap
-	margin-top 4px
-	margin-right -2px
-	margin-bottom -2px
-
-.wave-box
-	margin-right 2px
-	margin-bottom 2px
-	width 7px
-	height 7px
-	background #6
-	&.won
-		background #ca4
 </style>

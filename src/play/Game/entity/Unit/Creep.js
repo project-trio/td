@@ -89,6 +89,7 @@ export default class Creep extends Unit {
 			if (escaped) {
 				this.die()
 				store.state.game.local.lives -= 1
+				store.state.game.local.livesChange = store.state.game.local.lives
 			}
 		}
 
