@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
 import Unit from '@/play/Game/entity/Unit'
 import Creep from '@/play/Game/entity/Unit/Creep'
@@ -22,20 +22,20 @@ let turretGeometry
 
 const rangesCache = {}
 const materialsCache = {}
-const rangeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+const rangeMaterial = new MeshBasicMaterial({ color: 0xffffff })
 for (const name in towers) {
 	if (name === 'names') {
 		continue
 	}
 	const towerData = towers[name]
 	const ranges = towerData.range
-	materialsCache[name] = new THREE.MeshBasicMaterial({ color: towerData.color })
+	materialsCache[name] = new MeshBasicMaterial({ color: towerData.color })
 	let range = 0
 	for (const diff of ranges) {
 		if (diff) {
 			range += diff
 			if (!rangesCache[range]) {
-				rangesCache[range] = new THREE.RingBufferGeometry(range * 2, range * 2 + 1, range)
+				rangesCache[range] = new RingBufferGeometry(range * 2, range * 2 + 1, range)
 			}
 		}
 	}
@@ -74,10 +74,10 @@ export default class Tower extends Unit {
 			}
 		}
 
-		this.backing = new THREE.Mesh(backingGeometry, backingMaterial)
+		this.backing = new Mesh(backingGeometry, backingMaterial)
 		this.backing.owner = this
-		const outline = new THREE.Mesh(baseGeometry, baseMaterial)
-		this.top = new THREE.Mesh(turretGeometry, materialsCache[name])
+		const outline = new Mesh(baseGeometry, baseMaterial)
+		this.top = new Mesh(turretGeometry, materialsCache[name])
 		this.top.rotation.z = Math.random() * Math.PI * 2
 		this.top.position.z = 10
 		this.container.add(this.backing)
@@ -103,7 +103,7 @@ export default class Tower extends Unit {
 			}
 		}
 		const cacheGeometry = rangesCache[this.range]
-		const selection = new THREE.Mesh(cacheGeometry, rangeMaterial)
+		const selection = new Mesh(cacheGeometry, rangeMaterial)
 		selection.position.z = 10
 		this.container.add(selection)
 		local.game.selection = {
@@ -204,7 +204,8 @@ export default class Tower extends Unit {
 
 //STATIC
 
-const roundedRectOf = (o, width, r) => {
+const roundedRect = (width, r) => {
+	const o = new Shape()
 	const wh = width / 2
 	const sh = wh - r
 	o.moveTo(0, -wh)
@@ -217,27 +218,28 @@ const roundedRectOf = (o, width, r) => {
 	o.moveTo(-wh, -sh)
 	o.quadraticCurveTo(-wh, -wh, -sh, -wh)
 	o.moveTo(0, -wh)
+	return o
 }
 
 Tower.init = (tileSize) => {
 	allTowers = []
 
-	backingGeometry = new THREE.PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
-	backingMaterial = new THREE.MeshLambertMaterial({ color: 0xaabbaa })
+	backingGeometry = new PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
+	backingMaterial = new MeshLambertMaterial({ color: 0xafbbaf })
 
-	const baseShape = new THREE.Shape()
-	const hole = new THREE.Shape()
 	const outlineSize = tileSize * 2 - 10
 	const outlineRadius = Math.floor(tileSize / 4)
-	roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
-	roundedRectOf(hole, outlineSize, outlineRadius)
-	baseShape.holes.push(hole)
-	baseGeometry = new THREE.ExtrudeGeometry(baseShape, { depth: 0 })
-	baseMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 })
+	const holeShape = roundedRect(outlineSize+6, outlineRadius)
+	const baseShape = roundedRect(0, outlineRadius / 2)
+	// roundedRectOf(hole, outlineSize, outlineRadius)
+	// roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
+	baseShape.holes.push(holeShape)
+	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 0 })
+	baseMaterial = new MeshBasicMaterial({ color: 0x333333 })
 
 	const turretLength = tileSize * 1.5
-	turretGeometry = new THREE.ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
-	turretGeometry.translate(0, turretLength / 2 - 4, 0)
+	turretGeometry = new ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
+	turretGeometry.translate(0, turretLength / 2 - 6, 0)
 }
 
 Tower.destroy = function () {

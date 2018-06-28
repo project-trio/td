@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { CircleBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
@@ -26,11 +26,11 @@ for (const name in towers) {
 		continue
 	}
 	const towerData = towers[name]
-	const geometry = new THREE.SphereBufferGeometry(towerData.bulletSize || 4)
-	const material = new THREE.MeshBasicMaterial({ color: towerData.color })
+	const geometry = new SphereBufferGeometry(towerData.bulletSize || 4)
+	const material = new MeshBasicMaterial({ color: towerData.color })
 	bulletsCache[name] = [ geometry, material ]
 
-	const splashMaterial = new THREE.MeshBasicMaterial({ color: towerData.color })
+	const splashMaterial = new MeshBasicMaterial({ color: towerData.color })
 	splashMaterial.transparent = true
 	splashMaterial.opacity = 0.3
 	splashesCache[name] = splashMaterial
@@ -42,7 +42,7 @@ for (const name in towers) {
 			if (diff) {
 				range += diff
 				if (!rangesCache[range]) {
-					rangesCache[range] = new THREE.CircleBufferGeometry(range * 2, range * 2)
+					rangesCache[range] = new CircleBufferGeometry(range * 2, range * 2)
 				}
 			}
 		}
@@ -63,7 +63,7 @@ class Bullet {
 
 		this.container = render.group(parent)
 		const cached = bulletsCache[source.name]
-		const ball = new THREE.Mesh(cached[0], cached[1])
+		const ball = new Mesh(cached[0], cached[1])
 		this.container.add(ball)
 
 		this.attackDamage = data.attackDamage
@@ -121,7 +121,7 @@ class Bullet {
 		const damage = this.attackDamage
 		const targetAlive = !this.target.dead
 		if (this.explosionRadius) {
-			const area = new THREE.Mesh(rangesCache[this.explosionRadius], splashesCache[this.name].clone())
+			const area = new Mesh(rangesCache[this.explosionRadius], splashesCache[this.name].clone())
 			const aX = this.target.cX
 			const aY = this.target.cY
 			area.position.x = aX

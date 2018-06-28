@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { Geometry, Matrix4, FaceColors, Vector2, Vector3, Face3, Color, Mesh, MeshPhongMaterial, Texture } from 'three'
 
 /* eslint-disable */
 /**
@@ -413,8 +413,8 @@ export default vox;
 		 * Voxelデータからジオメトリとマテリアルを作成する.
 		 */
 		vox.MeshBuilder.prototype.build = function() {
-				this.geometry = new THREE.Geometry();
-				this.material = new THREE.MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
+				this.geometry = new Geometry();
+				this.material = new MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
 
 				// 隣接ボクセル検索用ハッシュテーブル
 				this.hashTable = createHashTable(this.voxelData.voxels);
@@ -422,7 +422,7 @@ export default vox;
 				var offsetX = (this.voxelData.size.x - 1) * -0.5;
 				var offsetY = (this.voxelData.size.y - 1) * -0.5;
 				var offsetZ = (this.originToBottom) ? 0 : (this.voxelData.size.z - 1) * -0.5;
-				var matrix = new THREE.Matrix4();
+				var matrix = new Matrix4();
 				this.voxelData.voxels.forEach(function(voxel) {
 						var voxGeometry = this._createVoxGeometry(voxel);
 						if (voxGeometry) {
@@ -437,7 +437,7 @@ export default vox;
 				this.geometry.computeFaceNormals();
 
 				if (this.vertexColor) {
-						this.material.vertexColors = THREE.FaceColors;
+						this.material.vertexColors = FaceColors;
 				} else {
 						this.material.map = vox.MeshBuilder.textureFactory.getTexture(this.voxelData);
 				}
@@ -467,24 +467,24 @@ export default vox;
 
 				// 頂点データ
 				var voxVertices = voxVerticesSource.map(function(voxel) {
-						return new THREE.Vector3(voxel.x * this.voxelSize * 0.5, voxel.y * this.voxelSize * 0.5, voxel.z * this.voxelSize * 0.5);
+						return new Vector3(voxel.x * this.voxelSize * 0.5, voxel.y * this.voxelSize * 0.5, voxel.z * this.voxelSize * 0.5);
 				}.bind(this));
 
 				// 面データ
 				var voxFaces = voxFacesSource.map(function(f) {
 						return {
-								faceA: new THREE.Face3(f.faceA.a, f.faceA.b, f.faceA.c),
-								faceB: new THREE.Face3(f.faceB.a, f.faceB.b, f.faceB.c),
+								faceA: new Face3(f.faceA.a, f.faceA.b, f.faceA.c),
+								faceB: new Face3(f.faceB.a, f.faceB.b, f.faceB.c),
 						};
 				});
 
 				// 頂点色
 				if (this.vertexColor) {
 						var c = this.voxelData.palette[voxel.colorIndex];
-						var color = new THREE.Color(c.r / 255, c.g / 255, c.b / 255);
+						var color = new Color(c.r / 255, c.g / 255, c.b / 255);
 				}
 
-				var vox = new THREE.Geometry();
+				var vox = new Geometry();
 				vox.faceVertexUvs[0] = [];
 
 				// 面を作る
@@ -495,7 +495,7 @@ export default vox;
 								faces.faceA.color = color;
 								faces.faceB.color = color;
 						} else {
-								var uv = new THREE.Vector2((voxel.colorIndex + 0.5) / 256, 0.5);
+								var uv = new Vector2((voxel.colorIndex + 0.5) / 256, 0.5);
 								vox.faceVertexUvs[0].push([uv, uv, uv], [uv, uv, uv]);
 						}
 						vox.faces.push(faces.faceA, faces.faceB);
@@ -536,7 +536,7 @@ export default vox;
 		 * @return {THREE.Mesh}
 		 */
 		vox.MeshBuilder.prototype.createMesh = function() {
-				return new THREE.Mesh(this.geometry, this.material);
+				return new Mesh(this.geometry, this.material);
 		};
 
 		/**
@@ -638,7 +638,7 @@ export default vox;
 		vox.TextureFactory.prototype.getTexture = function(voxelData) {
 				var palette = voxelData.palette;
 				var canvas = this.createCanvas(voxelData);
-				var texture = new THREE.Texture(canvas);
+				var texture = new Texture(canvas);
 				texture.needsUpdate = true;
 				return texture;
 		};

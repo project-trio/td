@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { Geometry, PlaneGeometry, Mesh, MeshBasicMaterial } from 'three'
 
 import store from '@/xjs/store'
 
@@ -60,15 +60,15 @@ export default class GameMap {
 			[ TWH + EH + EX,  TILES_TALL - 1, TWH - EH - EX, 1             ],
 			[ TILES_WIDE - 1, TTH + EH - EY,  1,             TTH - EH + EY ],
 		]
-		const wallGeometries = new THREE.Geometry()
+		const wallGeometries = new Geometry()
 		for (const wall of walls) {
 			const ww = wall[2] * TILE_SIZE, wh = wall[3] * TILE_SIZE
-			const geometry = new THREE.PlaneGeometry(ww, wh)
+			const geometry = new PlaneGeometry(ww, wh)
 			geometry.translate(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2)
 			wallGeometries.merge(geometry)
 		}
-		const material = new THREE.MeshBasicMaterial({ color: 0xddddcc })
-		const mesh = new THREE.Mesh(wallGeometries, material)
+		const material = new MeshBasicMaterial({ color: 0xddddcc })
+		const mesh = new Mesh(wallGeometries, material)
 		mesh.castShadow = true
 		mesh.receiveShadow = true
 		this.container.add(mesh)

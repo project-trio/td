@@ -1,11 +1,11 @@
-import * as THREE from 'three'
+import { Cache, Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera, OrthographicCamera, BasicShadowMap, PCFSoftShadowMap } from 'three'
 
 import store from '@/xjs/store'
 
 import Pointer from '@/play/render/Pointer'
 import render from '@/play/render'
 
-THREE.Cache.enabled = true
+Cache.enabled = true
 
 const CAMERA_FOV = 90
 
@@ -14,12 +14,12 @@ const PERSPECTIVE_CAMERA = false //TODO
 export default class Renderer {
 
 	constructor (canvas) {
-		const gameScene = new THREE.Scene()
+		const gameScene = new Scene()
 
-		const ambientLight = new THREE.AmbientLight(0x666666, 1)
+		const ambientLight = new AmbientLight(0x666666, 1)
 		gameScene.add(ambientLight)
 
-		const gameLight = new THREE.DirectionalLight(0xdddddd, 1)
+		const gameLight = new DirectionalLight(0xdddddd, 1)
 		gameScene.add(gameLight)
 		gameLight.position.set(10, -50, 20)
 		gameLight.target.position.set(15, -40, 0)
@@ -37,7 +37,7 @@ export default class Renderer {
 
 		// audioListener = RenderSound.create(audioListener)
 
-		// const helper = new THREE.CameraHelper(gameLight.shadow.camera)
+		// const helper = new CameraHelper(gameLight.shadow.camera)
 		// gameScene.add(helper)
 
 		this.canvas = canvas
@@ -98,14 +98,14 @@ export default class Renderer {
 	createRenderer () {
 		this.pixelMultiplier = null
 
-		this.renderer = new THREE.WebGLRenderer({
+		this.renderer = new WebGLRenderer({
 			antialias: true,
 			canvas: this.canvas,
 		})
 
-		this.perspectiveCamera = new THREE.PerspectiveCamera(CAMERA_FOV)
+		this.perspectiveCamera = new PerspectiveCamera(CAMERA_FOV)
 		this.perspectiveCamera.position.z = 192 / (CAMERA_FOV / 180)
-		this.orthoCamera = new THREE.OrthographicCamera()
+		this.orthoCamera = new OrthographicCamera()
 		this.orthoCamera.position.z = 100
 
 		const shadowQuality = store.state.settings.shadows
@@ -113,7 +113,7 @@ export default class Renderer {
 		this.gameLight.castShadow = renderShadow
 		this.renderer.shadowMap.enabled = renderShadow
 		if (renderShadow) {
-			this.renderer.shadowMap.type = shadowQuality >= 2 ? THREE.PCFSoftShadowMap : THREE.BasicShadowMap
+			this.renderer.shadowMap.type = shadowQuality >= 2 ? PCFSoftShadowMap : BasicShadowMap
 		}
 
 		this.resize()
