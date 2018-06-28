@@ -10,7 +10,7 @@
 		<p class="mode-description">Compete against other players to clear the creeps the fastest!</p>
 		<div class="queue-action">
 			<div v-if="enoughPlayersForGame">
-				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }">Ready{{ readyRequested ? '!' : `?` }} ({{ queueWait - readyAt }})</button>
+				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
 			</div>
 			<div v-else class="text-faint">
 				No one else is in queue for game yet. Why not send the link to a friend?
@@ -56,6 +56,10 @@ export default {
 	readyTimer: null,
 
 	computed: {
+		readyRemaining () {
+			return this.queueWait - this.readyAt
+		},
+
 		enoughPlayersForGame () {
 			return this.queueCount > 1
 		},
@@ -73,15 +77,17 @@ export default {
 	},
 
 	watch: {
-		enoughPlayersForGame (enough) {
+		queuedNames (names) {
+			const enough = names.length > 1
+			this.setReadyTimer(enough)
 			if (!enough && this.readyRequested) {
+				this.readyRequested = false
 				window.alert('Another player did not respond, and has been removed from the queue.')
 			}
-			this.setReadyTimer(enough)
 		},
 
-		readyRequested () {
-			this.sendQueue()
+		readyRequested (requested) {
+			bridge.emit('queue ready', requested)
 		},
 	},
 
@@ -161,11 +167,6 @@ export default {
 
 		onReady () {
 			this.readyRequested = !this.readyRequested
-		},
-
-		sendQueue () {
-			this.setReadyTimer(this.enoughPlayersForGame)
-			bridge.emit('queue ready', this.readyRequested)
 		},
 
 		onNotifications () {
