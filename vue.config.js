@@ -10,4 +10,17 @@ module.exports = {
 	pages: {
 		index: { entry: 'src/app/main.js' },
 	},
+
+	chainWebpack (config) {
+		config.module
+			.rule('vox')
+				.test(/\.(vox|typeface)$/)
+				.use('url')
+					.loader('url-loader')
+					.options({
+						query: {
+							limit: 1024,
+						},
+					})
+	},
 }
