@@ -13,7 +13,7 @@ export default class Loop {
 	constructor (game) {
 		this.game = game
 		this.animateThis = this.animate.bind(this)
-		window.requestAnimationFrame(this.animateThis)
+		this.animationId = window.requestAnimationFrame(this.animateThis)
 
 		this.previousTimestamp = 0
 		this.lastTickTime = 0
@@ -40,7 +40,7 @@ export default class Loop {
 		if (!game || game.finished) {
 			return
 		}
-		window.requestAnimationFrame(this.animateThis)
+		this.animationId = window.requestAnimationFrame(this.animateThis)
 
 		const isPlaying = store.state.game.playing
 		if (isPlaying && this.framePanel) {
@@ -76,6 +76,18 @@ export default class Loop {
 			this.framePanel.end()
 		}
 		this.previousTimestamp = timestamp
+	}
+
+	stop () {
+		window.cancelAnimationFrame(this.animationId)
+
+		if (this.framePanel) {
+			this.framePanel.dom.remove()
+			if (this.updatePanel) {
+				this.updatePanel.dom.remove()
+				this.tickPanel.dom.remove()
+			}
+		}
 	}
 
 }

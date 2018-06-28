@@ -4,7 +4,6 @@
 
 <script>
 import Renderer from '@/play/render/Renderer'
-import Loop from '@/play/render/Loop'
 import Game from '@/play/Game'
 
 import bridge from '@/xjs/bridge'
@@ -47,14 +46,15 @@ export default {
 
 	beforeDestroy () {
 		bridge.off('server update')
-		local.game = null
+		if (local.game) {
+			local.game.destroy()
+			local.game = null
+		}
 	},
 
 	methods: {
 		createGame () {
-			local.game = new Game(this.$options.renderer.container, this.gameData)
-			local.game.renderer = this.$options.renderer
-			local.game.loop = new Loop(local.game)
+			local.game = new Game(this.$options.renderer, this.gameData)
 		},
 	},
 }

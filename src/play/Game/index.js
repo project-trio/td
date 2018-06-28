@@ -1,6 +1,8 @@
 import store from '@/xjs/store'
 import random from '@/xjs/random'
 
+import Loop from '@/play/render/Loop'
+
 import GameMap from '@/play/Game/Map'
 
 import Bullet from '@/play/Game/entity/Bullet'
@@ -9,11 +11,12 @@ import Tower from '@/play/Game/entity/Unit/Tower'
 
 export default class Game {
 
-	constructor (container, data) {
+	constructor (renderer, data) {
 		this.id = data.gid
 		random.init(this.id)
 
-		this.container = container
+		this.renderer = renderer
+		this.container = renderer.container
 
 		this.updateCount = 0
 		this.updateQueue = {}
@@ -32,11 +35,11 @@ export default class Game {
 		this.updatesUntilStart = data.updatesUntilStart
 
 		this.started = true
-
-		this.map = new GameMap(this.container)
-
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
 		this.lastTickTime = performance.now()
+
+		this.map = new GameMap(this.container)
+		this.loop = new Loop(this)
 	}
 
 	// Update
@@ -139,6 +142,8 @@ export default class Game {
 	// Setup
 
 	destroy () {
+		this.loop.stop()
+		this.renderer.destroy()
 		store.resetGameState()
 		Creep.destroy()
 		Tower.destroy()

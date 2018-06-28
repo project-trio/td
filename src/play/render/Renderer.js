@@ -49,12 +49,13 @@ export default class Renderer {
 
 		this.createRenderer()
 
-		window.addEventListener('resize', this.resize.bind(this))
+		this.resizeThis = this.resize.bind(this)
+		window.addEventListener('resize', this.resizeThis)
 	}
 
 	destroy () {
 		this.pointer.destroy(this.canvas)
-		window.removeEventListener('resize')
+		window.removeEventListener('resize', this.resizeThis)
 	}
 
 	resize () {
