@@ -1,5 +1,9 @@
-import { PlaneBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 import render from '@/play/render'
+
+import creeps from '@/play/data/creeps'
+
+import Vox from '@/play/external/vox'
 
 import Unit from '@/play/Game/entity/Unit'
 
@@ -14,17 +18,32 @@ const MOVEMENT_PADDING = 2
 let allCreeps = null
 let gameMap
 
-let creepGeometry, creepMaterial
-
-const HP_HEIGHT = 3
-const HP_WIDTH = 40
-const hpOutlineGeometry = new PlaneBufferGeometry(HP_WIDTH + 1, HP_HEIGHT + 1)
-const hpOutlineMaterial = new MeshBasicMaterial({ color: 0x000000 })
+const HP_HEIGHT = 5
+const HP_WIDTH = 36
+// const hpOutlineGeometry = new PlaneBufferGeometry(HP_WIDTH + 1, HP_HEIGHT + 1)
+// const hpOutlineMaterial = new MeshBasicMaterial({ color: 0x000000 })
 const hpBackingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
-const hpBackingMaterial = new MeshBasicMaterial({ color: 0xFF3333 })
+const hpBackingMaterial = new MeshBasicMaterial({ color: 0xee3333 })
 const hpRemainingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
 hpRemainingGeometry.translate(HP_WIDTH / 2, 0, 0)
-const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x33FF99 })
+const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x88ee77 })
+
+const creepModelBuilders = {}
+{
+	const voxParser = new Vox.Parser()
+	for (const creep of creeps) {
+		const modelName = creep.model
+		if (creepModelBuilders[modelName] !== undefined) {
+			continue
+		}
+		store.state.loading += 1
+		creepModelBuilders[modelName] = null
+		voxParser.parse(require(`@/assets/creeps/${modelName}.vox`)).then((voxelData) => {
+			store.state.loading -= 1
+			creepModelBuilders[modelName] = new Vox.MeshBuilder(voxelData, { voxelSize: 2 })
+		})
+	}
+}
 
 export default class Creep extends Unit {
 
@@ -33,9 +52,11 @@ export default class Creep extends Unit {
 		super(gameMap.container, live)
 
 		this.unitContainer = render.group(this.container)
-		this.container.position.z = 50
 
-		const body = new Mesh(creepGeometry, creepMaterial)
+		const body = creepModelBuilders[data.model].createMesh()
+		body.material.color.setHex(data.color)
+		body.rotation.x = Math.PI / 2
+		body.castShadow = true
 		this.unitContainer.add(body)
 
 		if (live) {
@@ -61,15 +82,15 @@ export default class Creep extends Unit {
 			this.healthScheduled = this.healthRemaining
 
 			this.healthContainer = render.group(this.container)
-			this.healthContainer.position.y = 32
-			this.healthContainer.position.z = 30
+			this.healthContainer.position.y = 24
+			this.healthContainer.position.z = 24
 
-			const outline = new Mesh(hpOutlineGeometry, hpOutlineMaterial)
+			// const outline = new Mesh(hpOutlineGeometry, hpOutlineMaterial)
 			const backing = new Mesh(hpBackingGeometry, hpBackingMaterial)
 			this.healthBar = new Mesh(hpRemainingGeometry, hpRemainingMaterial)
 			this.healthBar.position.x = -HP_WIDTH / 2
 
-			this.healthContainer.add(outline)
+			// this.healthContainer.add(outline)
 			this.healthContainer.add(backing)
 			this.healthContainer.add(this.healthBar)
 		}
@@ -198,13 +219,9 @@ Creep.all = function () {
 	return allCreeps
 }
 
-Creep.init = (map, tileSize) => {
+Creep.init = (map, _tileSize) => {
 	allCreeps = []
 	gameMap = map
-
-	const creepSize = tileSize / 2 - 1
-	creepGeometry = new SphereBufferGeometry(creepSize, creepSize / 2)
-	creepMaterial = new MeshBasicMaterial({ color: 0x6688ee })
 }
 
 Creep.destroy = () => {

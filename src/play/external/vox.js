@@ -1,4 +1,4 @@
-import { Geometry, Matrix4, FaceColors, Vector2, Vector3, Face3, Color, Mesh, MeshPhongMaterial, Texture } from 'three'
+import { Geometry, Matrix4, FaceColors, Vector2, Vector3, Face3, Color, Mesh, MeshLambertMaterial, Texture } from 'three'
 
 /* eslint-disable */
 /**
@@ -414,7 +414,8 @@ export default vox;
 		 */
 		vox.MeshBuilder.prototype.build = function() {
 				this.geometry = new Geometry();
-				this.material = new MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
+				this.material = new MeshLambertMaterial();
+				// this.material = new MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
 
 				// 隣接ボクセル検索用ハッシュテーブル
 				this.hashTable = createHashTable(this.voxelData.voxels);

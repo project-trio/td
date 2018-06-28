@@ -1,6 +1,8 @@
 export default [
 	{
 		name: 'normal',
+		model: 'base',
+		color: 0xa1a1a1,
 		count: 10,
 		health: 20,
 		speed: 1,
@@ -9,6 +11,8 @@ export default [
 	},
 	{
 		name: 'immune',
+		model: 'spiky',
+		color: 0xaf8bb9,
 		count: 10,
 		health: 20,
 		speed: 1,
@@ -17,6 +21,8 @@ export default [
 	},
 	{
 		name: 'group',
+		model: 'base',
+		color: 0x8da1ba,
 		grouped: true,
 		count: 6,
 		health: 20,
@@ -26,6 +32,8 @@ export default [
 	},
 	{
 		name: 'fast',
+		model: 'sleek',
+		color: 0xaff8886,
 		count: 10,
 		health: 20,
 		speed: 1.25,
@@ -34,6 +42,8 @@ export default [
 	},
 	{
 		name: 'dark',
+		model: 'arc',
+		color: 0x222222,
 		count: 6,
 		health: 100,
 		speed: 0.75,
@@ -42,6 +52,8 @@ export default [
 	},
 	{
 		name: 'spawn',
+		model: 'split',
+		color: 0x8e8f88,
 		count: 4,
 		health: 50,
 		speed: 1,
@@ -50,6 +62,8 @@ export default [
 	},
 	{
 		name: 'flying',
+		model: 'triangle',
+		color: 0xbfbd91,
 		count: 10,
 		health: 20,
 		speed: 1,

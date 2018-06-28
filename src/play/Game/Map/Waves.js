@@ -41,6 +41,8 @@ export default class Waves {
 			index: 0,
 			startAt: renderTime,
 			health: health,
+			model: data.model,
+			color: data.color,
 			speed: data.speed,
 			name: data.name,
 			count: waveSize,
