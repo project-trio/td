@@ -1,3 +1,4 @@
+import { PlaneBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 import render from '@/play/render'
 
 import Unit from '@/play/Game/entity/Unit'
@@ -11,7 +12,19 @@ const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2
 
 let allCreeps = null
-let gameMap, creepSize
+let gameMap
+
+let creepGeometry, creepMaterial
+
+const HP_HEIGHT = 3
+const HP_WIDTH = 40
+const hpOutlineGeometry = new PlaneBufferGeometry(HP_WIDTH + 1, HP_HEIGHT + 1)
+const hpOutlineMaterial = new MeshBasicMaterial({ color: 0x000000 })
+const hpBackingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
+const hpBackingMaterial = new MeshBasicMaterial({ color: 0xFF3333 })
+const hpRemainingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
+hpRemainingGeometry.translate(HP_WIDTH / 2, 0, 0)
+const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x33FF99 })
 
 export default class Creep extends Unit {
 
@@ -21,11 +34,14 @@ export default class Creep extends Unit {
 
 		this.unitContainer = render.group(this.container)
 		this.container.position.z = 50
-		render.circle(creepSize, { color: 0x6688ee, parent: this.unitContainer })
+
+		const body = new Mesh(creepGeometry, creepMaterial)
+		this.unitContainer.add(body)
 
 		if (live) {
 			this.id = `${wave}${data.name}${vertical}`
 			this.stats = data
+			this.immune = data.immune || false
 
 			this.vertical = vertical
 			this.currentIndex = null
@@ -44,18 +60,18 @@ export default class Creep extends Unit {
 			this.healthRemaining = this.stats.health
 			this.healthScheduled = this.healthRemaining
 
-			const hpHeight = 3
-			const hpWidth = 40
 			this.healthContainer = render.group(this.container)
 			this.healthContainer.position.y = 32
 			this.healthContainer.position.z = 30
 
-			const outlineWeight = 1
-			render.rectangle(hpWidth + outlineWeight, hpHeight + outlineWeight, { color: 0x000000, parent: this.healthContainer })
-			render.rectangle(hpWidth, hpHeight, { color: 0xFF3333, parent: this.healthContainer })
-			this.healthBar = render.rectangle(hpWidth, hpHeight, { color: 0x33FF99, parent: this.healthContainer })
-			this.healthBar.position.x = -hpWidth / 2
-			this.healthBar.geometry.translate(hpWidth / 2, 0, 0)
+			const outline = new Mesh(hpOutlineGeometry, hpOutlineMaterial)
+			const backing = new Mesh(hpBackingGeometry, hpBackingMaterial)
+			this.healthBar = new Mesh(hpRemainingGeometry, hpRemainingMaterial)
+			this.healthBar.position.x = -HP_WIDTH / 2
+
+			this.healthContainer.add(outline)
+			this.healthContainer.add(backing)
+			this.healthContainer.add(this.healthBar)
 		}
 
 		allCreeps.push(this)
@@ -185,7 +201,10 @@ Creep.all = function () {
 Creep.init = (map, tileSize) => {
 	allCreeps = []
 	gameMap = map
-	creepSize = tileSize / 2 - 1
+
+	const creepSize = tileSize / 2 - 1
+	creepGeometry = new SphereBufferGeometry(creepSize, creepSize / 2)
+	creepMaterial = new MeshBasicMaterial({ color: 0x6688ee })
 }
 
 Creep.destroy = () => {

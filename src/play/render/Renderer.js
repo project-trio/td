@@ -1,11 +1,9 @@
-import { Cache, Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera, OrthographicCamera, BasicShadowMap, PCFSoftShadowMap } from 'three'
+import { Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera, OrthographicCamera, BasicShadowMap, PCFSoftShadowMap } from 'three'
 
 import store from '@/xjs/store'
 
 import Pointer from '@/play/render/Pointer'
 import render from '@/play/render'
-
-Cache.enabled = true
 
 const CAMERA_FOV = 90
 
