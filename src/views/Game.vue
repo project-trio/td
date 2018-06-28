@@ -41,7 +41,7 @@ export default {
 			for (const player of players) {
 				player.score = 0
 				player.lives = 20
-				player.waves = []
+				player.waves = new Array(data.waves)
 				player.creepsTotal = 0
 				player.creepsAlive = 0
 			}

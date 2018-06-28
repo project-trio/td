@@ -8,7 +8,9 @@
 	</div>
 	<div v-for="player in players" class="player-box" :class="{ local: player.id === localId }" :key="player.id">
 		<div>{{ player.name }}</div>
-		<div>{{ player.lives }}</div>
+		<div class="waves">
+			<div v-for="(won, idx) in player.waves" class="wave-box" :class="{ won }" :key="idx" />
+		</div>
 	</div>
 </div>
 </template>
@@ -144,4 +146,20 @@ export default {
 
 .player-box.local
 	background #212
+
+.waves
+	display flex
+	flex-wrap wrap
+	margin-top 4px
+	margin-right -2px
+	margin-bottom -2px
+
+.wave-box
+	margin-right 2px
+	margin-bottom 2px
+	width 7px
+	height 7px
+	background #6
+	&.won
+		background #ca4
 </style>

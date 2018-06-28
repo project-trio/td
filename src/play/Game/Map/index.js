@@ -177,7 +177,6 @@ export default class GameMap {
 	}
 
 	spawn (renderTime) {
-		store.state.game.wave += 1
 		this.waves.spawn(renderTime, store.state.game.wave)
 	}
 

@@ -4,6 +4,7 @@ import Creep from '@/play/Game/entity/Unit/Creep'
 
 import bridge from '@/xjs/bridge'
 import random from '@/xjs/random'
+import store from '@/xjs/store'
 
 const CREEP_TYPE_COUNT = creeps.length
 
@@ -19,6 +20,7 @@ export default class Waves {
 	}
 
 	spawn (renderTime) {
+		store.state.game.wave += 1
 		this.count += 1
 		const waveIndex = this.count - 1
 		let creepIndex = waveIndex % CREEP_TYPE_COUNT

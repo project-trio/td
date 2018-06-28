@@ -50,7 +50,7 @@ export default {
 	winWave (playerIds) {
 		const waveNumber = this.state.game.wave
 		for (const id of playerIds) {
-			this.state.game.players[id].waves.push(waveNumber)
+			this.state.game.players[id].waves[waveNumber - 1] = true
 		}
 	},
 
