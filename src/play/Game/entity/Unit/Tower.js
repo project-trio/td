@@ -67,7 +67,7 @@ export default class Tower extends Unit {
 			this.damage = stats.damage[0]
 			this.speed = stats.speed[0]
 			this.range = stats.range[0]
-			this.speedCheck = (10 - this.speed) * 100
+			this.speedCheck = 2000 / this.speed
 			this.rangeCheck = gameMath.checkRadius(this.range)
 			if (stats.radius) {
 				this.explosionRadius = stats.radius[0]
