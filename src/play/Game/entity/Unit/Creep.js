@@ -214,19 +214,20 @@ export default class Creep extends Unit {
 	}
 
 	die (renderTime, killed) {
-		const deathDuration = killed ? 200 : 600
+		const deathDuration = killed ? 250 : 600
 		this.dead = renderTime + deathDuration
 		this.healthScheduled = 0
 		if (killed) {
-			animate.add(this.unitContainer.scale, 'z', {
+			animate.add(this.unitContainer.position, 'z', {
 				start: renderTime,
-				to: 0.01,
+				to: -24,
 				duration: deathDuration,
 				removes: true,
 			})
 			animate.add(this.body, 'opacity', {
 				start: renderTime,
-				to: 0,
+				from: 1,
+				to: 0.2,
 				duration: deathDuration,
 				removes: true,
 			})

@@ -4,7 +4,7 @@ export default {
 
 	pellet: {
 		targets: true,
-		color: 0x222222,
+		color: 0x333333,
 		cost:   [ 5,   5,  10, 20, 40, 120 ],
 		damage: [ 10,  10, 20, 40, 80, 240 ],
 		range:  [ 60,  0,  0,  0,  0,  120 ],

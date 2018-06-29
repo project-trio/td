@@ -24,7 +24,7 @@ export default class Waves {
 		store.state.game.wave = waveNumber
 		this.count = waveNumber
 		const waveIndex = waveNumber - 1
-		let creepIndex = waveIndex % CREEP_TYPE_COUNT
+		let creepIndex = waveIndex % CREEP_TYPE_COUNT //SAMPLE waveIndex + 6 % CREEP_TYPE_COUNT
 		if (waveIndex < 20 && creepIndex === 4) {
 			creepIndex = 0
 		}
