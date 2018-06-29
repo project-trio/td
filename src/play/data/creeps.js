@@ -53,7 +53,7 @@ export default [
 	{
 		name: 'spawn',
 		model: 'split',
-		color: 0x8e8f88,
+		color: 0x8e9f88,
 		count: 4,
 		health: 50,
 		speed: 1,

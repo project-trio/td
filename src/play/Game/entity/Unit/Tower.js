@@ -304,7 +304,7 @@ Tower.init = (tileSize) => {
 
 	const outlineSize = tileSize * 2 - 4
 	const outlineRadius = Math.floor(tileSize / 4)
-	const holeShape = roundedRect(outlineSize - tileSize / 4, outlineRadius / 2)
+	const holeShape = roundedRect(outlineSize - tileSize / 4, outlineRadius / 2 - 2)
 	const baseShape = roundedRect(outlineSize, outlineRadius / 2)
 	// roundedRectOf(hole, outlineSize, outlineRadius)
 	// roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
