@@ -2,6 +2,8 @@ import Stats from 'stats.js'
 
 import store from '@/xjs/store'
 
+import animate from '@/play/render/animate'
+
 import Bullet from '@/play/Game/entity/Bullet'
 import Creep from '@/play/Game/entity/Unit/Creep'
 import Tower from '@/play/Game/entity/Unit/Tower'
@@ -47,6 +49,7 @@ export default class Loop {
 			this.framePanel.begin()
 		}
 		const ticksToRender = game.calculateTicksToRender(timestamp)
+		let renderTime
 		if (ticksToRender > 0) {
 			const processUpdate = isPlaying && this.tickPanel
 			if (processUpdate) {
@@ -59,12 +62,13 @@ export default class Loop {
 				this.tickPanel.end()
 			}
 			this.lastTickTime = timestamp
+			renderTime = store.state.game.renderTime
 		} else if (isPlaying) { // Tween
 			if (storeSettings.fpsCap) {
 				return
 			}
 			const tweenTimeDelta = timestamp - this.previousTimestamp
-			const renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
+			renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
 			Bullet.update(renderTime, tweenTimeDelta, true)
 			Creep.update(renderTime, tweenTimeDelta, true)
 			Tower.update(renderTime, tweenTimeDelta, true)
@@ -72,6 +76,7 @@ export default class Loop {
 			Tower.update(null)
 		}
 
+		animate.update(renderTime)
 		game.renderer.update()
 
 		if (this.framePanel && isPlaying) {
