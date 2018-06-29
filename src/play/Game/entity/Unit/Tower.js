@@ -325,7 +325,8 @@ Tower.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allTowers.length - 1; idx >= 0; idx -= 1) {
 		const tower = allTowers[idx]
 		if (tower.dead) {
-			if (local.game.selection.id === tower.id) {
+			const selection = local.game.selection
+			if (selection && selection.id === tower.id) {
 				local.game.selection = null
 			}
 			if (tower.crackle && !tower.pop()) {
