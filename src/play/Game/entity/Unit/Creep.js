@@ -246,21 +246,20 @@ export default class Creep extends Unit {
 
 //STATIC
 
-Creep.all = function () {
+Creep.all = () => {
 	return allCreeps
 }
 
 Creep.init = (map, _tileSize) => {
-	allCreeps = []
 	gameMap = map
 }
 
 Creep.destroy = () => {
-	allCreeps = null
+	allCreeps = []
 	gameMap = null
 }
 
-Creep.update = function (renderTime, timeDelta, tweening) {
+Creep.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allCreeps.length - 1; idx >= 0; idx -= 1) {
 		const creep = allCreeps[idx]
 		if (creep.dead) {

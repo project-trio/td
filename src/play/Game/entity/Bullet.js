@@ -1,4 +1,4 @@
-import { CircleBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
@@ -9,6 +9,7 @@ import towers from '@/play/data/towers'
 
 import gameMath from '@/play/Game/math'
 
+import Splash from '@/play/Game/entity/Splash'
 import Creep from '@/play/Game/entity/Unit/Creep'
 
 //LOCAL
@@ -16,11 +17,8 @@ import Creep from '@/play/Game/entity/Unit/Creep'
 const COLLISION_DISTANCE = 300
 
 let allBullets = []
-let allSplashes = []
 
 const bulletsCache = {}
-const rangesCache = {}
-const splashesCache = {}
 for (const name in towers) {
 	if (name === 'names') {
 		continue
@@ -29,24 +27,6 @@ for (const name in towers) {
 	const geometry = new SphereBufferGeometry(towerData.bulletSize || 4)
 	const material = new MeshBasicMaterial({ color: towerData.color })
 	bulletsCache[name] = [ geometry, material ]
-
-	const splashMaterial = new MeshBasicMaterial({ color: towerData.color })
-	splashMaterial.transparent = true
-	splashMaterial.opacity = 0.3
-	splashesCache[name] = splashMaterial
-
-	const ranges = towerData.radius
-	if (ranges) {
-		let range = 0
-		for (const diff of ranges) {
-			if (diff) {
-				range += diff
-				if (!rangesCache[range]) {
-					rangesCache[range] = new CircleBufferGeometry(range * 2, range * 2)
-				}
-			}
-		}
-	}
 }
 
 class Bullet {
@@ -121,21 +101,16 @@ class Bullet {
 		const damage = this.attackDamage
 		const targetAlive = !this.target.dead
 		if (this.explosionRadius) {
-			const area = new Mesh(rangesCache[this.explosionRadius], splashesCache[this.name].clone())
-			const aX = this.target.cX
-			const aY = this.target.cY
-			area.position.x = aX
-			area.position.y = aY
-			this.container.parent.add(area)
-			allSplashes.push(area)
+			new Splash(this, this.target, this.explosionRadius, this.container.parent)
 			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
 			const slow = this.slow
 			const slowUntil = renderTime + 1000
+			const { cX, cY } = this
 			for (const creep of Creep.all()) {
 				if (slow && creep.immune) {
 					continue
 				}
-				if (creep.distanceTo(aX, aY) <= radiusCheck) {
+				if (creep.distanceTo(cX, cY) <= radiusCheck) {
 					creep.takeDamage(damage, creep !== this.target)
 					if (slow && !creep.dead) {
 						creep.setSlow(slow, slowUntil)
@@ -209,12 +184,12 @@ class Bullet {
 
 //STATIC
 
-Bullet.destroy = function () {
+Bullet.destroy = () => {
 	allBullets = []
-	allSplashes = []
+	Splash.destroy()
 }
 
-Bullet.update = function (renderTime, timeDelta, tweening) {
+Bullet.update = (renderTime, timeDelta, tweening) => {
 	if (!tweening) {
 		for (let idx = allBullets.length - 1; idx >= 0; idx -= 1) {
 			const bullet = allBullets[idx]
@@ -234,16 +209,7 @@ Bullet.update = function (renderTime, timeDelta, tweening) {
 		}
 	}
 
-	const splashFade = timeDelta / 1000
-	for (let idx = allSplashes.length - 1; idx >= 0; idx -= 1) {
-		const splash = allSplashes[idx]
-		if (splash.opacity < splashFade) {
-			allBullets.splice(idx, 1)
-			render.remove(splash.container)
-		} else {
-			splash.material.opacity -= splashFade
-		}
-	}
+	Splash.update(renderTime, timeDelta, tweening)
 }
 
 export default Bullet

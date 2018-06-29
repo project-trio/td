@@ -9,6 +9,7 @@ import towers from '@/play/data/towers'
 
 import gameMath from '@/play/Game/math'
 
+import Splash from '@/play/Game/entity/Splash'
 import Bullet from '@/play/Game/entity/Bullet'
 
 import local from '@/xjs/local'
@@ -200,11 +201,16 @@ export default class Tower extends Unit {
 			if (this.readyToFire(renderTime)) {
 				const radiusCheck = gameMath.checkRadius(this.explosionRadius)
 				const { cX, cY } = this
+				let hitCreep = false
 				//TODO stun
 				for (const creep of Creep.all()) {
 					if (creep.distanceTo(cX, cY) <= radiusCheck) {
 						creep.takeDamage(this.damage, true)
+						hitCreep = true
 					}
+				}
+				if (hitCreep) {
+					new Splash(this, null, this.explosionRadius, this.container)
 				}
 			}
 		}
