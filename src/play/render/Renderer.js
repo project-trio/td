@@ -13,24 +13,24 @@ export default class Renderer {
 	constructor (canvas) {
 		const gameScene = new Scene()
 
-		const ambientLight = new AmbientLight(0x666666, 1)
+		const ambientLight = new AmbientLight(0x888888, 1)
 		gameScene.add(ambientLight)
 
-		const gameLight = new DirectionalLight(0xdddddd, 1)
+		const gameLight = new DirectionalLight(0xaaaaaa, 1)
 		gameScene.add(gameLight)
-		gameLight.position.set(10, -50, 20)
-		gameLight.target.position.set(15, -40, 0)
+		gameLight.position.set(0, 0, 128)
+		gameLight.target.position.set(10, -10, -128)
 		gameScene.add(gameLight.target)
 
-		// const projectionSize = 1500
-		// gameLight.shadow.camera.left = -projectionSize
-		// gameLight.shadow.camera.right = projectionSize
-		// gameLight.shadow.camera.top = projectionSize
-		// gameLight.shadow.camera.bottom = -projectionSize
-		// gameLight.shadow.camera.near = 1
-		// gameLight.shadow.camera.far = 2048
-		// gameLight.shadow.mapSize.width = 2048
-		// gameLight.shadow.mapSize.height = 2048
+		const projectionSize = 400
+		gameLight.shadow.camera.left = -projectionSize
+		gameLight.shadow.camera.right = projectionSize
+		gameLight.shadow.camera.top = projectionSize
+		gameLight.shadow.camera.bottom = -projectionSize
+
+		gameLight.shadow.mapSize.width = 1028
+		gameLight.shadow.mapSize.height = 1028
+		gameLight.shadow.bias = 0.1
 
 		// audioListener = RenderSound.create(audioListener)
 

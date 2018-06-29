@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, Mesh, MeshLambertMaterial } from 'three'
+import { BoxBufferGeometry, PlaneBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial } from 'three'
 
 import store from '@/xjs/store'
 
@@ -47,7 +47,10 @@ export default class GameMap {
 		Tower.init(TILE_SIZE)
 		Creep.init(this, TILE_SIZE)
 
-		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99
+		const groundGeometry = new PlaneBufferGeometry(MAP_WIDTH, MAP_HEIGHT)
+		const groundMaterial = new MeshLambertMaterial({ color: 0x77aa80 }) //0xccbb99
+		const ground = new Mesh(groundGeometry, groundMaterial)
+		this.container.add(ground)
 		ground.receiveShadow = true
 		ground.owner = ground
 
@@ -61,18 +64,22 @@ export default class GameMap {
 			[ TWH + EH + EX,  TILES_TALL - 1, TWH - EH - EX, 1             ],
 			[ TILES_WIDE - 1, TTH + EH - EY,  1,             TTH - EH + EY ],
 		]
-		const material = new MeshLambertMaterial({ color: 0xeeeedd })
+		const WALL_HEIGHT = 36
+		const wallMaterial = new MeshLambertMaterial({ color: 0xeeeedd })
 		for (const wall of walls) {
 			const ww = wall[2] * TILE_SIZE, wh = wall[3] * TILE_SIZE
-			const geometry = new BoxBufferGeometry(ww, wh, 64)
-			const mesh = new Mesh(geometry, material)
-			mesh.position.set(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2, 0)
+			const geometry = new BoxBufferGeometry(ww, wh, WALL_HEIGHT)
+			const mesh = new Mesh(geometry, wallMaterial)
+			mesh.position.set(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2, WALL_HEIGHT)
 			mesh.castShadow = true
-			mesh.receiveShadow = true
+			// mesh.receiveShadow = true
 			this.container.add(mesh)
 		}
 
-		const placement = render.rectangle(TILE_SIZE * 2, TILE_SIZE * 2, { color: 0xffffff, parent: ground })
+		const placementGeometry = new PlaneBufferGeometry(TILE_SIZE * 2, TILE_SIZE * 2)
+		const placementMaterial = new MeshBasicMaterial({ color: 0xffffff })
+		const placement = new Mesh(placementGeometry, placementMaterial)
+		ground.add(placement)
 		placement.visible = false
 
 		let cx = null, cy = null
