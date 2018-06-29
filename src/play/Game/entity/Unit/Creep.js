@@ -15,7 +15,7 @@ const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2
 
-let allCreeps = null
+let allCreeps = []
 let gameMap
 
 const HP_HEIGHT = 5

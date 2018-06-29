@@ -61,6 +61,8 @@ export default class Tower extends Unit {
 
 			this.target = null
 			this.firedAt = 0
+			this.targets = stats.targets
+			this.crackle = false
 
 			this.level = 0
 			this.gold = stats.cost[0]
@@ -100,24 +102,34 @@ export default class Tower extends Unit {
 		}
 	}
 
-	select () {
+	deselect () {
 		const currentSelection = local.game.selection
 		if (currentSelection) {
 			if (currentSelection.mesh) {
 				render.remove(currentSelection.mesh)
 			}
 			if (currentSelection.id === this.id) {
-				local.game.selection = null
+				if (this.name === 'snap') {
+					this.crackle = true
+					this.dead = true
+				} else {
+					local.game.selection = null
+				}
 				return
 			}
 		}
+	}
+
+	select () {
+		this.deselect()
+
 		const cacheGeometry = rangesCache[this.range]
-		const selection = new Mesh(cacheGeometry, rangeMaterial)
-		selection.position.z = 10
-		this.container.add(selection)
+		const selectionMesh = new Mesh(cacheGeometry, rangeMaterial)
+		selectionMesh.position.z = 10
+		this.container.add(selectionMesh)
 		local.game.selection = {
 			id: this.id,
-			mesh: selection,
+			mesh: selectionMesh,
 		}
 	}
 
@@ -164,14 +176,41 @@ export default class Tower extends Unit {
 	//UPDATE
 
 	destroy () {
-		store.state.game.local.gold += this.gold
+		if (!this.crackle) {
+			store.state.game.local.gold += this.gold
+		}
 		local.game.map.removeTower(this)
 		local.syncTowers.push([ this.tX, this.tY, false ])
 
 		super.destroy()
 	}
 
+	readyToFire (renderTime) {
+		if (this.firedAt + this.speedCheck < renderTime) {
+			this.firedAt = renderTime
+			return true
+		}
+		return false
+	}
+
 	update (renderTime, timeDelta, tweening) {
+		if (this.targets) {
+			this.updateTarget(renderTime, timeDelta, tweening)
+		} else if (this.explosionRadius) {
+			if (this.readyToFire(renderTime)) {
+				const radiusCheck = gameMath.checkRadius(this.explosionRadius)
+				const { cX, cY } = this
+				//TODO stun
+				for (const creep of Creep.all()) {
+					if (creep.distanceTo(cX, cY) <= radiusCheck) {
+						creep.takeDamage(this.damage, true)
+					}
+				}
+			}
+		}
+	}
+
+	updateTarget (renderTime, timeDelta, tweening) {
 		const cX = this.cX, cY = this.cY
 		if (!tweening) {
 			const attackBit = this.stats.attackBit
@@ -196,8 +235,7 @@ export default class Tower extends Unit {
 					this.target = newTarget
 				}
 			}
-			if (this.target && this.firedAt + this.speedCheck < renderTime) {
-				this.firedAt = renderTime
+			if (this.target && this.readyToFire(renderTime)) {
 				const data = {
 					attackDamage: this.damage,
 					bulletSpeed: this.stats.bulletSpeed,
@@ -212,6 +250,23 @@ export default class Tower extends Unit {
 			const targetPosition = this.target.container.position
 			this.top.rotation.z = Math.atan2(targetPosition.y - cY, targetPosition.x - cX)
 		}
+	}
+
+	pop () {
+		let hasTarget = false
+		const { cX, cY } = this
+		const data = {
+			attackDamage: this.damage,
+			bulletSpeed: this.stats.bulletSpeed,
+			bulletAcceleration: this.stats.bulletAcceleration,
+		}
+		for (const creep of Creep.all()) {
+			if (creep.distanceTo(cX, cY) <= this.rangeCheck) {
+				hasTarget = true
+				new Bullet(this, creep, data, this.container.parent)
+			}
+		}
+		return hasTarget
 	}
 
 }
@@ -256,14 +311,22 @@ Tower.init = (tileSize) => {
 	turretGeometry.translate(0, turretLength / 2 - 4, 0)
 }
 
-Tower.destroy = function () {
+Tower.destroy = () => {
 	allTowers = null
 }
 
-Tower.update = function (renderTime, timeDelta, tweening) {
+Tower.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allTowers.length - 1; idx >= 0; idx -= 1) {
 		const tower = allTowers[idx]
 		if (tower.dead) {
+			if (local.game.selection.id === tower.id) {
+				local.game.selection = null
+			}
+			if (tower.crackle && !tower.pop()) {
+				tower.crackle = false
+				tower.dead = false
+				continue
+			}
 			tower.destroy(renderTime)
 			allTowers.splice(idx, 1)
 		} else {

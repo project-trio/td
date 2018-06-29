@@ -3,6 +3,7 @@ export default {
 	names: [ 'pellet', 'squirt', 'dart', 'swarm', 'frost', 'bash', 'snap', 'boost' ],
 
 	pellet: {
+		targets: true,
 		color: 0x222222,
 		cost:   [ 5,   5,  10, 20, 40, 120 ],
 		damage: [ 10,  10, 20, 40, 80, 240 ],
@@ -13,6 +14,7 @@ export default {
 	},
 
 	squirt: {
+		targets: true,
 		color: 0x4444cc,
 		cost:   [ 15, 12, 23, 35, 75, 290 ],
 		damage: [ 5,  5,  8,  16, 31, 255 ],
@@ -23,6 +25,7 @@ export default {
 	},
 
 	dart: {
+		targets: true,
 		color: 0xdd4444,
 		cost:   [ 20, 15, 35, 60, 110, 160 ],
 		damage: [ 8,  8,  16, 32, 64,  128 ],
@@ -36,6 +39,7 @@ export default {
 	},
 
 	swarm: {
+		targets: true,
 		color: 0x66aa44,
 		cost:   [ 50, 30, 50, 75, 125, 310 ],
 		damage: [ 20, 20, 40, 80, 160, 160 ],
@@ -47,6 +51,7 @@ export default {
 	},
 
 	frost: {
+		targets: true,
 		color: 0x00aaee,
 		cost:   [ 50,  25, 25, 25, 25, 50 ],
 		damage: [ 10,  5,  5,  5,  5,  10 ],
@@ -59,16 +64,19 @@ export default {
 	},
 
 	bash: {
+		targets: false,
 		color: 0xbb44ee,
 		cost:   [ 100, 120, 145, 175, 260, 450 ],
 		damage: [ 60,  60,  120, 240, 480, 1040 ],
 		range:  [ 40,  0,   0,   0,   5,   5 ],
+		radius:  [ 40,  0,   0,   0,   5,   5 ],
 		speed:  [ 1.3, 0,   0,   0,   0,   0.3 ],
-		stun:   [ 25,  5,   5,   5,   5,  5 ],
+		stun:   [ 25,  5,   5,   5,   5,   5 ],
 		attackBit: 1,
 	},
 
 	snap: {
+		targets: false,
 		color: 0x000000,
 		cost:   [ 15,  15,  15,  30,  45,  60 ],
 		damage: [ 100, 100, 200, 400, 800, 1600 ],
@@ -80,6 +88,7 @@ export default {
 	},
 
 	boost: {
+		targets: false,
 		color: 0xccbb33,
 		cost:   [ 100, 100, 100, 100, 100 ],
 		damage: [ 10,  10,  10,  10,  10 ],
