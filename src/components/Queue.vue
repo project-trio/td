@@ -92,10 +92,15 @@ export default {
 	},
 
 	created () {
-		if (this.$util.TESTING) { //SAMPLE
-			return this.onPlaySingleplayer()
-		}
 		this.notificationPermission = window.Notification ? Notification.permission : 'unavailable'
+	},
+
+	mounted () {
+		this.$nextTick(() => {
+			if (this.$util.TESTING) { //SAMPLE
+				return this.onPlaySingleplayer()
+			}
+		})
 	},
 
 	beforeDestroy () {

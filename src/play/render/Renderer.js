@@ -81,10 +81,10 @@ export default class Renderer {
 
 		if (this.usePerspectiveCamera) {
 			this.gameCamera.aspect = width / height
-			const visibleFOV = this.gameCamera.fov * Math.PI / 180
-			const visibleHeight = 2 * Math.tan(visibleFOV / 2) * 192 / (CAMERA_FOV / 180)
-			const visibleWidth = visibleHeight * this.gameCamera.aspect
-			console.log(visibleWidth, visibleHeight)
+			// const visibleFOV = this.gameCamera.fov * Math.PI / 180
+			// const visibleHeight = 2 * Math.tan(visibleFOV / 2) * 192 / (CAMERA_FOV / 180)
+			// const visibleWidth = visibleHeight * this.gameCamera.aspect
+			// console.log(visibleWidth, visibleHeight)
 		} else {
 			const zoom = 2
 			this.gameCamera.left = -width / zoom
