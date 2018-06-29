@@ -82,6 +82,8 @@ export default class Tower extends Unit {
 		}
 
 		this.backing = new Mesh(backingGeometry, backingMaterial)
+		this.backing.position.z = 1
+		this.backing.receiveShadow = true
 		this.backing.owner = this
 		const outline = new Mesh(baseGeometry, baseMaterial)
 		outline.castShadow = true

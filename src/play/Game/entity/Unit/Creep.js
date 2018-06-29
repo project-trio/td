@@ -25,9 +25,11 @@ const HP_WIDTH = 36
 // const hpOutlineMaterial = new MeshBasicMaterial({ color: 0x000000 })
 const hpBackingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
 const hpBackingMaterial = new MeshBasicMaterial({ color: 0xee3333 })
+hpBackingMaterial.depthTest = false
 const hpRemainingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
 hpRemainingGeometry.translate(HP_WIDTH / 2, 0, 0)
 const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x88ee77 })
+hpRemainingMaterial.depthTest = false
 
 const creepModelBuilders = {}
 {
@@ -65,6 +67,12 @@ export default class Creep extends Unit {
 		this.targetable = false
 
 		if (live) {
+			const name = data.name
+			const flying = data.attackBit === 2
+			if (flying) {
+				this.unitContainer.position.z = 64
+			}
+
 			animate.add(this.unitContainer.position, 'z', {
 				start: renderTime,
 				from: -256,
@@ -87,7 +95,6 @@ export default class Creep extends Unit {
 				},
 			})
 
-			const name = data.name
 			this.id = `${wave}${name}${vertical}`
 			this.stats = data
 			this.immune = name === 'immune'
@@ -95,7 +102,7 @@ export default class Creep extends Unit {
 
 			this.vertical = vertical
 			this.currentIndex = null
-			this.setDestination(entranceIndex, data.attackBit === 2)
+			this.setDestination(entranceIndex, flying)
 			const startX = this.destinationX - (vertical ? 0 : START_DISTANCE)
 			const startY = this.destinationY + (vertical ? START_DISTANCE : 0)
 			this.container.position.x = startX
@@ -119,6 +126,10 @@ export default class Creep extends Unit {
 			const backing = new Mesh(hpBackingGeometry, hpBackingMaterial)
 			this.healthBar = new Mesh(hpRemainingGeometry, hpRemainingMaterial)
 			this.healthBar.position.x = -HP_WIDTH / 2
+
+			// outline.renderOrder = 9000
+			backing.renderOrder = 9001
+			this.healthBar.renderOrder = 9002
 
 			// this.healthContainer.add(outline)
 			this.healthContainer.add(backing)
