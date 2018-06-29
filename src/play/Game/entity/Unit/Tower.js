@@ -336,7 +336,7 @@ Tower.update = (renderTime, timeDelta, tweening) => {
 			}
 			tower.destroy(renderTime)
 			allTowers.splice(idx, 1)
-		} else {
+		} else if (renderTime !== null) {
 			tower.update(renderTime, timeDelta, tweening)
 		}
 	}

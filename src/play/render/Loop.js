@@ -68,6 +68,8 @@ export default class Loop {
 			Bullet.update(renderTime, tweenTimeDelta, true)
 			Creep.update(renderTime, tweenTimeDelta, true)
 			Tower.update(renderTime, tweenTimeDelta, true)
+		} else {
+			Tower.update(null)
 		}
 
 		game.renderer.update()
