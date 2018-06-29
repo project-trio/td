@@ -1,4 +1,4 @@
-import { Geometry, PlaneGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { BoxBufferGeometry, Mesh, MeshLambertMaterial } from 'three'
 
 import store from '@/xjs/store'
 
@@ -48,6 +48,7 @@ export default class GameMap {
 		Creep.init(this, TILE_SIZE)
 
 		const ground = render.rectangle(MAP_WIDTH, MAP_HEIGHT, { color: 0x88bb99, parent: this.container }) //0xccbb99
+		ground.receiveShadow = true
 		ground.owner = ground
 
 		const walls = [
@@ -60,18 +61,16 @@ export default class GameMap {
 			[ TWH + EH + EX,  TILES_TALL - 1, TWH - EH - EX, 1             ],
 			[ TILES_WIDE - 1, TTH + EH - EY,  1,             TTH - EH + EY ],
 		]
-		const wallGeometries = new Geometry()
+		const material = new MeshLambertMaterial({ color: 0xeeeedd })
 		for (const wall of walls) {
 			const ww = wall[2] * TILE_SIZE, wh = wall[3] * TILE_SIZE
-			const geometry = new PlaneGeometry(ww, wh)
-			geometry.translate(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2)
-			wallGeometries.merge(geometry)
+			const geometry = new BoxBufferGeometry(ww, wh, 64)
+			const mesh = new Mesh(geometry, material)
+			mesh.position.set(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2, 0)
+			mesh.castShadow = true
+			mesh.receiveShadow = true
+			this.container.add(mesh)
 		}
-		const material = new MeshBasicMaterial({ color: 0xddddcc })
-		const mesh = new Mesh(wallGeometries, material)
-		mesh.castShadow = true
-		mesh.receiveShadow = true
-		this.container.add(mesh)
 
 		const placement = render.rectangle(TILE_SIZE * 2, TILE_SIZE * 2, { color: 0xffffff, parent: ground })
 		placement.visible = false

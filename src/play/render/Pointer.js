@@ -4,10 +4,11 @@ const raycaster = new Raycaster()
 const pointerLocation = new Vector2()
 
 let intersecting = null
+let canvas = null
 
 const onMouseMove = (event) => {
-	pointerLocation.x = (event.clientX / window.innerWidth) * 2 - 1
-	pointerLocation.y = -(event.clientY / window.innerHeight) * 2 + 1
+	pointerLocation.x = ((event.clientX - 256) / canvas.width) * 2 - 1
+	pointerLocation.y = -(event.clientY / canvas.height) * 2 + 1
 }
 
 const onClick = (event) => {
@@ -24,19 +25,21 @@ const onClick = (event) => {
 
 export default class Pointer {
 
-	constructor (canvas, container) {
+	constructor (_canvas, container) {
 		this.intersectContainer = container
 		intersecting = []
 		this.hovering = {}
+		canvas = _canvas
 
 		canvas.addEventListener('mousedown', onClick)
 		canvas.addEventListener('mousemove', onMouseMove)
 	}
 
-	destroy (canvas) {
+	destroy () {
 		intersecting = null
 		canvas.removeEventListener('mousedown', onClick)
 		canvas.removeEventListener('mousemove', onMouseMove)
+		canvas = null
 	}
 
 	update (camera) {

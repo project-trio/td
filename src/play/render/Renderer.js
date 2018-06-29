@@ -3,11 +3,10 @@ import { Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera
 import store from '@/xjs/store'
 
 import Pointer from '@/play/render/Pointer'
-import render from '@/play/render'
 
-const CAMERA_FOV = 90
+const CAMERA_FOV = 20
 
-const PERSPECTIVE_CAMERA = false //TODO
+const PERSPECTIVE_CAMERA = true
 
 export default class Renderer {
 
@@ -42,8 +41,8 @@ export default class Renderer {
 		this.gameScene = gameScene
 		this.gameLight = gameLight
 
-		this.container = render.group(gameScene)
-		this.pointer = new Pointer(canvas, this.container)
+		this.container = gameScene
+		this.pointer = new Pointer(canvas, gameScene)
 
 		this.createRenderer()
 
@@ -52,12 +51,12 @@ export default class Renderer {
 	}
 
 	destroy () {
-		this.pointer.destroy(this.canvas)
+		this.pointer.destroy()
 		window.removeEventListener('resize', this.resizeThis)
 	}
 
 	resize () {
-		const width = window.innerWidth
+		const width = window.innerWidth - 256
 		const height = window.innerHeight
 
 		if (PERSPECTIVE_CAMERA !== this.usePerspectiveCamera) {
@@ -70,7 +69,6 @@ export default class Renderer {
 			} else {
 				this.gameCamera = this.orthoCamera
 			}
-			this.gameCamera.position.x = -128
 			// this.gameCamera.add(this.audioListener)
 		}
 
@@ -83,6 +81,10 @@ export default class Renderer {
 
 		if (this.usePerspectiveCamera) {
 			this.gameCamera.aspect = width / height
+			const visibleFOV = this.gameCamera.fov * Math.PI / 180
+			const visibleHeight = 2 * Math.tan(visibleFOV / 2) * 192 / (CAMERA_FOV / 180)
+			const visibleWidth = visibleHeight * this.gameCamera.aspect
+			console.log(visibleWidth, visibleHeight)
 		} else {
 			const zoom = 2
 			this.gameCamera.left = -width / zoom
@@ -103,6 +105,7 @@ export default class Renderer {
 
 		this.perspectiveCamera = new PerspectiveCamera(CAMERA_FOV)
 		this.perspectiveCamera.position.z = 192 / (CAMERA_FOV / 180)
+		this.perspectiveCamera.zoom = 0.75
 		this.orthoCamera = new OrthographicCamera()
 		this.orthoCamera.position.z = 100
 

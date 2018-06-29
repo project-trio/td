@@ -21,7 +21,7 @@ let baseGeometry, baseMaterial
 let turretGeometry
 
 const rangesCache = {}
-const materialsCache = {}
+const turretMaterialsCache = {}
 const rangeMaterial = new MeshBasicMaterial({ color: 0xffffff })
 for (const name in towers) {
 	if (name === 'names') {
@@ -29,7 +29,7 @@ for (const name in towers) {
 	}
 	const towerData = towers[name]
 	const ranges = towerData.range
-	materialsCache[name] = new MeshBasicMaterial({ color: towerData.color })
+	turretMaterialsCache[name] = new MeshLambertMaterial({ color: towerData.color })
 	let range = 0
 	for (const diff of ranges) {
 		if (diff) {
@@ -77,9 +77,11 @@ export default class Tower extends Unit {
 		this.backing = new Mesh(backingGeometry, backingMaterial)
 		this.backing.owner = this
 		const outline = new Mesh(baseGeometry, baseMaterial)
-		this.top = new Mesh(turretGeometry, materialsCache[name])
+		outline.castShadow = true
+		this.top = new Mesh(turretGeometry, turretMaterialsCache[name])
+		this.top.castShadow = true
 		this.top.rotation.z = Math.random() * Math.PI * 2
-		this.top.position.z = 10
+		this.top.position.z = 24
 		this.container.add(this.backing)
 		this.container.add(outline)
 		this.container.add(this.top)
@@ -227,19 +229,19 @@ Tower.init = (tileSize) => {
 	backingGeometry = new PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
 	backingMaterial = new MeshLambertMaterial({ color: 0xafbbaf })
 
-	const outlineSize = tileSize * 2 - 10
+	const outlineSize = tileSize * 2 - 4
 	const outlineRadius = Math.floor(tileSize / 4)
-	const holeShape = roundedRect(outlineSize+6, outlineRadius)
-	const baseShape = roundedRect(0, outlineRadius / 2)
+	const holeShape = roundedRect(outlineSize - tileSize / 4, outlineRadius / 2)
+	const baseShape = roundedRect(outlineSize, outlineRadius / 2)
 	// roundedRectOf(hole, outlineSize, outlineRadius)
 	// roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
 	baseShape.holes.push(holeShape)
-	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 0 })
-	baseMaterial = new MeshBasicMaterial({ color: 0x333333 })
+	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 16, bevelEnabled: false })
+	baseMaterial = new MeshLambertMaterial({ color: 0x333333 })
 
 	const turretLength = tileSize * 1.5
 	turretGeometry = new ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
-	turretGeometry.translate(0, turretLength / 2 - 6, 0)
+	turretGeometry.translate(0, turretLength / 2 - 4, 0)
 }
 
 Tower.destroy = function () {
