@@ -111,14 +111,14 @@ class Bullet {
 					continue
 				}
 				if (creep.distanceTo(cX, cY) <= radiusCheck) {
-					creep.takeDamage(damage, creep !== this.target)
+					creep.takeDamage(renderTime, damage, creep !== this.target)
 					if (slow && !creep.dead) {
 						creep.setSlow(slow, slowUntil)
 					}
 				}
 			}
 		} else if (targetAlive) {
-			this.target.takeDamage(damage, false)
+			this.target.takeDamage(renderTime, damage, false)
 		}
 
 		this.remove = true

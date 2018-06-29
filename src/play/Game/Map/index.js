@@ -31,8 +31,8 @@ export default class GameMap {
 
 	constructor (parent) {
 		store.state.game.wave = 0
-		this.killY = -(TILES_TALL + 1) * TILE_SIZE / 2
-		this.killX = (TILES_WIDE + 1) * TILE_SIZE / 2
+		this.killY = -(TILES_TALL + 2) * TILE_SIZE / 2
+		this.killX = (TILES_WIDE + 2) * TILE_SIZE / 2
 
 		const EH = ENTRANCE_SIZE / 2
 		const TWH = TILES_WIDE / 2

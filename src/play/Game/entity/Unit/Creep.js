@@ -1,5 +1,6 @@
 import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 import render from '@/play/render'
+import animate from '@/play/render/animate'
 
 import creeps from '@/play/data/creeps'
 
@@ -12,7 +13,7 @@ import store from '@/xjs/store'
 
 const PId2 = Math.PI / 2
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
-const START_DISTANCE = 64
+const START_DISTANCE = 96
 const MOVEMENT_PADDING = 2
 
 let allCreeps = []
@@ -47,19 +48,44 @@ const creepModelBuilders = {}
 
 export default class Creep extends Unit {
 
-	constructor (data, entranceIndex, vertical, wave) {
+	constructor (renderTime, data, entranceIndex, vertical, wave) {
 		const live = data !== undefined
 		super(gameMap.container, live)
 
 		this.unitContainer = render.group(this.container)
 
 		const body = creepModelBuilders[data.model].createMesh()
+		body.material = body.material.clone()
 		body.material.color.setHex(data.color)
 		body.rotation.x = Math.PI / 2
 		body.castShadow = true
+		this.body = body
 		this.unitContainer.add(body)
 
+		this.targetable = false
+
 		if (live) {
+			animate.add(this.unitContainer.position, 'z', {
+				start: renderTime,
+				from: -256,
+				duration: 500,
+				pow: 2,
+			})
+			animate.add(body.rotation, 'z', {
+				start: renderTime,
+				from: Math.PI,
+				duration: 500,
+			})
+			animate.add(body, 'opacity', {
+				start: renderTime,
+				from: 0.1,
+				to: 1,
+				duration: 250,
+				onComplete: () => {
+					this.targetable = true
+				},
+			})
+
 			const name = data.name
 			this.id = `${wave}${name}${vertical}`
 			this.stats = data
@@ -140,7 +166,7 @@ export default class Creep extends Unit {
 					? positionY < gameMap.killY
 					: positionX > gameMap.killX
 			if (escaped) {
-				this.die()
+				this.die(renderTime, false)
 				store.state.game.local.lives -= 1
 				store.state.game.local.livesChange = store.state.game.local.lives
 			}
@@ -175,12 +201,43 @@ export default class Creep extends Unit {
 		super.destroy()
 	}
 
-	die () {
-		this.dead = true
+	die (renderTime, killed) {
+		const deathDuration = killed ? 200 : 600
+		this.dead = renderTime + deathDuration
 		this.healthScheduled = 0
+		if (killed) {
+			animate.add(this.unitContainer.scale, 'z', {
+				start: renderTime,
+				to: 0.01,
+				duration: deathDuration,
+			})
+			animate.add(this.body, 'opacity', {
+				start: renderTime,
+				to: 0,
+				duration: deathDuration,
+			})
+			this.body.castShadow = false
+		} else {
+			animate.add(this.unitContainer.position, 'z', {
+				start: renderTime,
+				to: -256,
+				duration: deathDuration,
+				pow: 2,
+			})
+			animate.add(this.body.rotation, 'x', {
+				start: renderTime,
+				to: (Math.random() - 0.5) * Math.PI * 4,
+				duration: 500,
+			})
+			animate.add(this.body.rotation, 'y', {
+				start: renderTime,
+				to: (Math.random() - 0.5) * Math.PI,
+				duration: 500,
+			})
+		}
 	}
 
-	takeDamage (damage, splash) {
+	takeDamage (renderTime, damage, splash) {
 		const newHealth = Math.max(0, this.healthRemaining - damage)
 		this.healthRemaining = newHealth
 
@@ -191,7 +248,8 @@ export default class Creep extends Unit {
 				this.healthScheduled -= damage
 			}
 		} else {
-			this.die()
+			this.healthBar.scale.x = 0
+			this.die(renderTime, true)
 			store.state.game.local.gold += this.stats.gold
 		}
 	}
@@ -263,8 +321,10 @@ Creep.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allCreeps.length - 1; idx >= 0; idx -= 1) {
 		const creep = allCreeps[idx]
 		if (creep.dead) {
-			creep.destroy(renderTime)
-			allCreeps.splice(idx, 1)
+			if (!tweening && renderTime > creep.dead) {
+				creep.destroy(renderTime)
+				allCreeps.splice(idx, 1)
+			}
 		} else {
 			creep.update(renderTime, timeDelta, tweening)
 		}

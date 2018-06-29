@@ -205,7 +205,7 @@ export default class Tower extends Unit {
 				//TODO stun
 				for (const creep of Creep.all()) {
 					if (creep.distanceTo(cX, cY) <= radiusCheck) {
-						creep.takeDamage(this.damage, true)
+						creep.takeDamage(renderTime, this.damage, true)
 						hitCreep = true
 					}
 				}
@@ -229,7 +229,7 @@ export default class Tower extends Unit {
 				let newTarget = null
 				let nearestDistance = this.rangeCheck + 1
 				for (const creep of Creep.all()) {
-					if (creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit) && (!this.slow || !creep.immune)) {
+					if (creep.targetable && creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit) && (!this.slow || !creep.immune)) {
 						const distance = creep.distanceTo(cX, cY)
 						if (distance < nearestDistance) {
 							newTarget = creep
