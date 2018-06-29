@@ -203,8 +203,9 @@ export default class Tower extends Unit {
 				const { cX, cY } = this
 				let hitCreep = false
 				//TODO stun
+				const attackBit = this.stats.attackBit
 				for (const creep of Creep.all()) {
-					if (creep.distanceTo(cX, cY) <= radiusCheck) {
+					if ((attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
 						creep.takeDamage(renderTime, this.damage, true)
 						hitCreep = true
 					}
