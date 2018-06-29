@@ -127,6 +127,10 @@ export default class GameMap {
 		}
 
 		ground.onBlur = () => {
+			if (cx !== null) {
+				this.paths.toggleTower(cx, cy, false)
+				cx = null
+			}
 			placement.visible = false
 		}
 
