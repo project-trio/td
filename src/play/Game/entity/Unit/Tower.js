@@ -72,6 +72,10 @@ export default class Tower extends Unit {
 			if (stats.radius) {
 				this.explosionRadius = stats.radius[0]
 			}
+			const slowStats = stats.slow
+			if (slowStats) {
+				this.slow = stats.slow[0]
+			}
 		}
 
 		this.backing = new Mesh(backingGeometry, backingMaterial)
@@ -149,6 +153,9 @@ export default class Tower extends Unit {
 		if (this.explosionRadius) {
 			this.explosionRadius += this.stats.radius[levelIndex]
 		}
+		if (this.slow) {
+			this.slow += this.stats.slow[levelIndex]
+		}
 	}
 
 	//UPDATE
@@ -174,7 +181,7 @@ export default class Tower extends Unit {
 				let newTarget = null
 				let nearestDistance = this.rangeCheck + 1
 				for (const creep of Creep.all()) {
-					if (creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit)) {
+					if (creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit) && (!this.slow || !creep.immune)) {
 						const distance = creep.distanceTo(cX, cY)
 						if (distance < nearestDistance) {
 							newTarget = creep
@@ -195,6 +202,7 @@ export default class Tower extends Unit {
 						bulletSpeed: this.stats.bulletSpeed,
 						bulletAcceleration: this.stats.bulletAcceleration,
 						explosionRadius: this.explosionRadius,
+						slow: this.slow,
 					}
 					new Bullet(this, this.target, data, this.container.parent)
 				}

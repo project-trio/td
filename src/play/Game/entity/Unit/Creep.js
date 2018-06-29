@@ -10,7 +10,6 @@ import Unit from '@/play/Game/entity/Unit'
 import store from '@/xjs/store'
 
 const PId2 = Math.PI / 2
-const MOVE_DIVISOR = 12.5
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 64
 const MOVEMENT_PADDING = 2
@@ -60,9 +59,11 @@ export default class Creep extends Unit {
 		this.unitContainer.add(body)
 
 		if (live) {
-			this.id = `${wave}${data.name}${vertical}`
+			const name = data.name
+			this.id = `${wave}${name}${vertical}`
 			this.stats = data
-			this.immune = data.immune || false
+			this.immune = name === 'immune'
+			this.setSlow(0, 0)
 
 			this.vertical = vertical
 			this.currentIndex = null
@@ -98,22 +99,35 @@ export default class Creep extends Unit {
 		allCreeps.push(this)
 	}
 
+	setSlow (slowPercent, until) {
+		if (!slowPercent || slowPercent > this.slow) {
+			this.moveSpeedCheck = this.stats.speed * (1 - slowPercent / 100) / 12.5
+			this.slow = slowPercent
+		}
+		this.slowUntil = until
+	}
+
 	update (renderTime, timeDelta, tweening) {
-		if (!tweening && this.destinationIndex) {
-			let atDest = false
-			if (this.dX !== 0) {
-				atDest = this.dX > 0 ? this.cX > this.destinationX - MOVEMENT_PADDING : this.cX < this.destinationX + MOVEMENT_PADDING
+		if (!tweening) {
+			if (this.slowUntil && this.slowUntil <= renderTime) {
+				this.setSlow(0, 0)
 			}
-			if (!atDest && this.dY !== 0) {
-				atDest = this.dY < 0 ? this.cY > this.destinationY - MOVEMENT_PADDING : this.cY < this.destinationY + MOVEMENT_PADDING
-			}
-			if (atDest) {
-				this.nextTarget()
+			if (this.destinationIndex) {
+				let atDest = false
+				if (this.dX !== 0) {
+					atDest = this.dX > 0 ? this.cX > this.destinationX - MOVEMENT_PADDING : this.cX < this.destinationX + MOVEMENT_PADDING
+				}
+				if (!atDest && this.dY !== 0) {
+					atDest = this.dY < 0 ? this.cY > this.destinationY - MOVEMENT_PADDING : this.cY < this.destinationY + MOVEMENT_PADDING
+				}
+				if (atDest) {
+					this.nextTarget()
+				}
 			}
 		}
 		const startX = tweening ? this.container.position.x : this.cX
 		const startY = tweening ? this.container.position.y : this.cY
-		const updateSpeed = this.stats.speed * timeDelta / MOVE_DIVISOR
+		const updateSpeed = this.moveSpeedCheck * timeDelta
 		const diffX = this.moveX * updateSpeed
 		const diffY = this.moveY * updateSpeed
 		const positionX = startX + diffX
