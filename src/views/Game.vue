@@ -1,7 +1,12 @@
 <template>
 <div class="page-game">
-	<Sidebar />
-	<GameCanvas :gameData="gameData" />
+	<div v-if="loading">
+		Loading... {{ loading }}
+	</div>
+	<div v-else>
+		<Sidebar />
+		<GameCanvas :gameData="gameData" />
+	</div>
 </div>
 </template>
 
@@ -30,6 +35,10 @@ export default {
 	},
 
 	computed: {
+		loading () {
+			return this.$store.state.loading
+		},
+
 		joined () {
 			return this.$store.state.game.id === this.gid
 		},

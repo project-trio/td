@@ -20,6 +20,8 @@ const defaultGameState = () => {
 
 export default {
 	state: {
+		loading: 0,
+
 		queue: {
 			names: [],
 		},
