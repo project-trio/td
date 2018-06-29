@@ -1,3 +1,6 @@
+const PI = Math.PI
+const PIt2 = PI * 2
+
 export default {
 
 	pointDistance (x1, y1, x2, y2) {
@@ -12,6 +15,11 @@ export default {
 
 	checkRadius (value) {
 		return value * value * 4
+	},
+
+	radianDistance (a, b) {
+		let diff = ((b - a + PI) % PIt2) - PI
+		return diff < -PI ? diff + PIt2 : diff
 	},
 
 }

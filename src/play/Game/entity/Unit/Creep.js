@@ -5,6 +5,7 @@ import creeps from '@/play/data/creeps'
 
 import Vox from '@/play/external/vox'
 
+import gameMath from '@/play/Game/math'
 import Unit from '@/play/Game/entity/Unit'
 
 import store from '@/xjs/store'
@@ -76,6 +77,7 @@ export default class Creep extends Unit {
 			this.cY = startY
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
+			this.destinationAngle = null
 
 			// Health bar
 
@@ -150,6 +152,21 @@ export default class Creep extends Unit {
 			this.cX = positionX
 			this.cY = positionY
 		}
+
+		const destinationAngle = this.destinationAngle
+		if (destinationAngle !== null) {
+			const currentAngle = this.unitContainer.rotation.z
+			const angleDiff = gameMath.radianDistance(currentAngle, destinationAngle)
+			const turnDistance = timeDelta / 200
+			let newAngle
+			if (Math.abs(angleDiff) < turnDistance) {
+				newAngle = destinationAngle
+			} else {
+				let spinDirection = angleDiff < 0 ? -1 : 1
+				newAngle = currentAngle + (turnDistance * spinDirection)
+			}
+			this.unitContainer.rotation.z = newAngle
+		}
 	}
 
 	destroy (renderTime) {
@@ -219,7 +236,7 @@ export default class Creep extends Unit {
 	setMovement (dX, dY) {
 		this.dX = dX
 		this.dY = dY
-		this.destinationAngle = PId2 * (1 - dX) * (dY || 0)
+		this.destinationAngle = Math.atan2(-dY, dX)
 		const diagonal = dX && dY && DIAGONAL_DISTANCE
 		this.moveX = diagonal * dX || dX
 		this.moveY = diagonal * -dY || -dY
