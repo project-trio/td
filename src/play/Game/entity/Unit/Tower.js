@@ -82,14 +82,17 @@ export default class Tower extends Unit {
 		this.backing.owner = this
 		const outline = new Mesh(baseGeometry, baseMaterial)
 		outline.castShadow = true
-		this.top = new Mesh(turretGeometry, turretMaterialsCache[name])
-		this.top.castShadow = true
-		this.top.rotation.z = Math.random() * Math.PI * 2
-		this.top.position.z = 24
 		this.container.add(this.backing)
 		this.container.add(outline)
-		this.container.add(this.top)
 
+		this.top = render.group(this.container)
+		const turret = new Mesh(turretGeometry, turretMaterialsCache[name])
+		turret.rotation.z = -Math.PI / 2
+		turret.castShadow = true
+		this.top.add(turret)
+
+		this.top.rotation.z = Math.random() * Math.PI * 2
+		this.top.position.z = 24
 		if (live) {
 			this.select()
 			allTowers.push(this)
@@ -169,9 +172,9 @@ export default class Tower extends Unit {
 	}
 
 	update (renderTime, timeDelta, tweening) {
+		const cX = this.cX, cY = this.cY
 		if (!tweening) {
 			const attackBit = this.stats.attackBit
-			const cX = this.cX, cY = this.cY
 			if (this.target) {
 				if (this.target.healthScheduled <= 0 || this.target.distanceTo(cX, cY) > this.rangeCheck) {
 					this.target = null
@@ -193,20 +196,21 @@ export default class Tower extends Unit {
 					this.target = newTarget
 				}
 			}
-			if (this.target) {
-				this.top.rotation.z = Math.atan2(this.target.cY - cY, this.target.cX - cX) - Math.PI / 2
-				if (this.firedAt + this.speedCheck < renderTime) {
-					this.firedAt = renderTime
-					const data = {
-						attackDamage: this.damage,
-						bulletSpeed: this.stats.bulletSpeed,
-						bulletAcceleration: this.stats.bulletAcceleration,
-						explosionRadius: this.explosionRadius,
-						slow: this.slow,
-					}
-					new Bullet(this, this.target, data, this.container.parent)
+			if (this.target && this.firedAt + this.speedCheck < renderTime) {
+				this.firedAt = renderTime
+				const data = {
+					attackDamage: this.damage,
+					bulletSpeed: this.stats.bulletSpeed,
+					bulletAcceleration: this.stats.bulletAcceleration,
+					explosionRadius: this.explosionRadius,
+					slow: this.slow,
 				}
+				new Bullet(this, this.target, data, this.container.parent)
 			}
+		}
+		if (this.target) {
+			const targetPosition = this.target.container.position
+			this.top.rotation.z = Math.atan2(targetPosition.y - cY, targetPosition.x - cX)
 		}
 	}
 
