@@ -1,6 +1,8 @@
 let TILES_WIDE, TILES_TALL, TILES_TOTAL
 let ENTRANCE_SIZE, EX, EY
 
+let errorPath
+
 const tileArray = () => {
 	return new Array(TILES_TOTAL)
 }
@@ -25,8 +27,6 @@ const entrance = (enter, vertical) => {
 	return result
 }
 
-let errorPath
-
 export default class Paths {
 
 	constructor (tilesWide, tilesTall, entranceSize, ex, ey) {
@@ -36,11 +36,11 @@ export default class Paths {
 		TILES_TOTAL = TILES_WIDE * TILES_TALL
 		EX = ex
 		EY = ey
-		this.blockCheck = [0, -1, -TILES_WIDE, 1]
+		this.blockCheck = [ 0, -1, -TILES_WIDE, 1 ]
 
 		this.blocked = tileArray()
-		this.move = [ tileArray(), tileArray() ]
-		this.test = [ tileArray(), tileArray() ]
+		this.moves = [ tileArray(), tileArray() ]
+		this.tests = [ tileArray(), tileArray() ]
 		this.entrances = [ entrance(true, 0), entrance(true, 1) ]
 		this.exits = [ entrance(false, 0), entrance(false, 1) ]
 		this.ordinals = [
@@ -119,8 +119,8 @@ export default class Paths {
 			return false
 		}
 		for (let vertical = 0; vertical < 2; vertical += 1) {
-			const resultPath = this.move[vertical]
-			const testPath = this.test[vertical]
+			const resultPath = this.moves[vertical]
+			const testPath = this.tests[vertical]
 			for (let idx = testPath.length - 1; idx >= 0; idx -= 1) {
 				const testMove = testPath[idx]
 				if (testMove) {
@@ -131,17 +131,14 @@ export default class Paths {
 	}
 
 	find (vertical, additionalIndicies) {
-		//TODO if test === false then include creep occupied squares
 		// console.time('path ' + vertical)
-		const path = this.test[vertical]
+		const testPath = this.tests[vertical]
 		const requiredIndecies = new Set(this.entrances[vertical])
-		let positions = [ ...this.exits[vertical] ]
 		if (additionalIndicies) {
 			for (const additionalIndex of additionalIndicies) {
 				requiredIndecies.add(additionalIndex)
 			}
 		}
-
 		const searchedIndexes = new Set()
 		const blocked = this.blocked
 		for (let idx = 0; idx < TILES_TOTAL; idx += 1) {
@@ -149,12 +146,13 @@ export default class Paths {
 				searchedIndexes.add(idx)
 			}
 		}
+		let positions = [ ...this.exits[vertical] ]
 		for (const position of positions) {
 			searchedIndexes.add(position)
 		}
 
-		let firstSearch = true
-		let foundPath = false
+		let cardinalsOnly = true
+		let reachedAllRequiredIndicies = false
 		while (positions.length) {
 			const nextSearch = []
 			let diagonal = false
@@ -167,8 +165,7 @@ export default class Paths {
 						if (edgeCheck && diffX === edgeCheck) {
 							continue
 						}
-						const change = diffX + diffY
-						const newIndex = position + change
+						const newIndex = position + diffX + diffY
 						if (newIndex <= 0 || newIndex >= TILES_TOTAL || searchedIndexes.has(newIndex)) {
 							continue
 						}
@@ -176,14 +173,15 @@ export default class Paths {
 							continue
 						}
 						if (requiredIndecies.delete(newIndex) && !requiredIndecies.size) {
-							foundPath = true
+							reachedAllRequiredIndicies = true
 						}
-						path[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY) ]
+						testPath[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY) ]
 						nextSearch.push(newIndex)
 						searchedIndexes.add(newIndex)
 					}
 				}
-				if (firstSearch) {
+				if (cardinalsOnly) {
+					cardinalsOnly = false
 					break
 				}
 				diagonal = !diagonal
@@ -191,11 +189,10 @@ export default class Paths {
 			if (!nextSearch.length) {
 				break
 			}
-			firstSearch = false
 			positions = nextSearch
 		}
 		// console.timeEnd('path ' + vertical)
-		return !foundPath && path
+		return !reachedAllRequiredIndicies && testPath
 	}
 
 	debugPath (path, entrance) {

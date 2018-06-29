@@ -23,6 +23,7 @@ As a result, you'll need to run Trio, or modify TD for your own infrastructure.
 
 Install:
 ```console
+cd td
 yarn
 ```
 

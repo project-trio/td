@@ -162,7 +162,7 @@ export default class GameMap {
 	}
 
 	tilePath (index, vertical) {
-		return this.paths.move[vertical][index]
+		return this.paths.moves[vertical][index]
 	}
 
 	tileBlocked (index) {
