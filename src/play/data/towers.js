@@ -66,7 +66,7 @@ export default {
 	bash: {
 		targets: false,
 		color: 0xbb44ee,
-		cost:   [ 100, 120, 145, 175, 260, 450 ],
+		cost:   [ 80, 120, 145, 175, 260, 450 ],
 		damage: [ 60,  60,  120, 240, 480, 1040 ],
 		range:  [ 40,  0,   0,   0,   5,   5 ],
 		radius:  [ 40,  0,   0,   0,   5,   5 ],
