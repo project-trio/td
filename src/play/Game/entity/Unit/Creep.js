@@ -79,6 +79,7 @@ export default class Creep extends Unit {
 			animate.add(body, 'opacity', {
 				start: renderTime,
 				from: 0.1,
+				setFrom: true,
 				to: 1,
 				duration: 250,
 				onComplete: () => {
@@ -210,11 +211,13 @@ export default class Creep extends Unit {
 				start: renderTime,
 				to: 0.01,
 				duration: deathDuration,
+				removes: true,
 			})
 			animate.add(this.body, 'opacity', {
 				start: renderTime,
 				to: 0,
 				duration: deathDuration,
+				removes: true,
 			})
 			this.body.castShadow = false
 		} else {
@@ -223,16 +226,19 @@ export default class Creep extends Unit {
 				to: -256,
 				duration: deathDuration,
 				pow: 2,
+				removes: true,
 			})
 			animate.add(this.body.rotation, 'x', {
 				start: renderTime,
 				to: (Math.random() - 0.5) * Math.PI * 4,
 				duration: 500,
+				removes: true,
 			})
 			animate.add(this.body.rotation, 'y', {
 				start: renderTime,
 				to: (Math.random() - 0.5) * Math.PI,
 				duration: 500,
+				removes: true,
 			})
 		}
 	}
@@ -248,7 +254,7 @@ export default class Creep extends Unit {
 				this.healthScheduled -= damage
 			}
 		} else {
-			this.healthBar.scale.x = 0
+			this.healthBar.visible = false
 			this.die(renderTime, true)
 			store.state.game.local.gold += this.stats.gold
 		}

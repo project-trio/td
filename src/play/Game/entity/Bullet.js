@@ -110,7 +110,7 @@ class Bullet {
 				if (slow && creep.immune) {
 					continue
 				}
-				if (creep.distanceTo(cX, cY) <= radiusCheck) {
+				if (!creep.dead && creep.distanceTo(cX, cY) <= radiusCheck) {
 					creep.takeDamage(renderTime, damage, creep !== this.target)
 					if (slow && !creep.dead) {
 						creep.setSlow(slow, slowUntil)

@@ -33,6 +33,9 @@ export default {
 		data.target = target
 		data.property = property
 		if (data.from !== undefined) {
+			if (data.setFrom) {
+				target[property] = data.from
+			}
 			if (!data.to !== undefined) {
 				data.to = target[property]
 			}
@@ -55,7 +58,7 @@ export default {
 			const animation = animations[idx]
 			const startTime = animation.start
 			const timeElapsed = renderTime - startTime
-			if (timeElapsed < 0) {
+			if (timeElapsed <= 0) {
 				continue
 			}
 			let target = animation.target
@@ -63,12 +66,15 @@ export default {
 			let currentValue
 			if (renderTime >= startTime + duration) {
 				animations.splice(idx, 1)
+				if (animation.onComplete) {
+					animation.onComplete()
+				}
+				if (animation.removes) {
+					continue
+				}
 				currentValue = animation.to
 				if (animation.resetTransparent) {
 					target.transparent = false
-				}
-				if (animation.onComplete) {
-					animation.onComplete()
 				}
 			} else if (animation.parabola) {
 				const halfDuration = duration / 2
