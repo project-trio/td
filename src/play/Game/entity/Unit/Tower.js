@@ -211,7 +211,7 @@ export default class Tower extends Unit {
 					}
 				}
 				if (hitCreep) {
-					new Splash(this, null, this.explosionRadius, this.container)
+					new Splash(renderTime, this, null, this.explosionRadius, this.container)
 				}
 			}
 		}

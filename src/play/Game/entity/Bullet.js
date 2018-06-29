@@ -101,7 +101,7 @@ class Bullet {
 		const damage = this.attackDamage
 		const targetAlive = !this.target.dead
 		if (this.explosionRadius) {
-			new Splash(this, this.target, this.explosionRadius, this.container.parent)
+			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
 			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
 			const slow = this.slow
 			const slowUntil = renderTime + 1000
@@ -186,7 +186,6 @@ class Bullet {
 
 Bullet.destroy = () => {
 	allBullets = []
-	Splash.destroy()
 }
 
 Bullet.update = (renderTime, timeDelta, tweening) => {
@@ -208,8 +207,6 @@ Bullet.update = (renderTime, timeDelta, tweening) => {
 			bullet.updateAnimations(renderTime)
 		}
 	}
-
-	Splash.update(renderTime, timeDelta, tweening)
 }
 
 export default Bullet
