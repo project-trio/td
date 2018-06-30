@@ -65,6 +65,7 @@ export default class Tower extends Unit {
 			this.firedAt = 0
 			this.targets = stats.targets
 			this.crackle = false
+			this.multi = stats.multi
 
 			this.level = 0
 			this.gold = stats.cost[0]
@@ -204,25 +205,53 @@ export default class Tower extends Unit {
 		return this.firedAt + this.speedCheck < renderTime
 	}
 
+	bulletData () {
+		return {
+			attackBit: this.attackBit,
+			attackDamage: this.damage,
+			bulletSpeed: this.stats.bulletSpeed,
+			bulletAcceleration: this.stats.bulletAcceleration,
+			explosionRadius: this.explosionRadius,
+			slow: this.slow,
+		}
+	}
+
+	fireAt (creep, data) {
+		new Bullet(this, creep, data || this.bulletData(), this.container.parent)
+	}
+
 	update (renderTime, timeDelta, tweening) {
 		if (this.targets) {
 			this.updateTarget(renderTime, timeDelta, tweening)
-		} else if (this.explosionRadius) {
+		} else if (this.multi) {
 			if (this.readyToFire(renderTime)) {
-				const radiusCheck = distance.checkRadius(this.explosionRadius)
+				const radiusCheck = this.rangeCheck
 				const { cX, cY } = this
-				let hitCreep = false
-				//TODO stun
+				let attackedCreep = false
+				let creepsRemaining = this.multi
+				let explodes = this.name === 'bash'
+				const data = !explodes && this.bulletData()
 				const attackBit = this.stats.attackBit
 				for (const creep of Creep.all()) {
 					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
-						creep.takeDamage(renderTime, this.damage, true)
-						hitCreep = true
+						if (explodes) {
+							creep.takeDamage(renderTime, this.damage, true)
+							//TODO stun
+						} else {
+							this.fireAt(creep, data)
+							if (creepsRemaining <= 1) {
+								break
+							}
+							creepsRemaining -= 1
+						}
+						attackedCreep = true
 					}
 				}
-				if (hitCreep) {
+				if (attackedCreep) {
 					this.firedAt = renderTime
-					new Splash(renderTime, this, null, this.explosionRadius, this.container)
+					if (explodes) {
+						new Splash(renderTime, this, null, this.explosionRadius, this.container)
+					}
 				}
 			}
 		}
@@ -255,14 +284,7 @@ export default class Tower extends Unit {
 			}
 			if (this.target && this.readyToFire(renderTime)) {
 				this.firedAt = renderTime
-				const data = {
-					attackDamage: this.damage,
-					bulletSpeed: this.stats.bulletSpeed,
-					bulletAcceleration: this.stats.bulletAcceleration,
-					explosionRadius: this.explosionRadius,
-					slow: this.slow,
-				}
-				new Bullet(this, this.target, data, this.container.parent)
+				this.fireAt(this.target, null)
 			}
 		}
 		if (this.target) {
@@ -274,15 +296,11 @@ export default class Tower extends Unit {
 	pop () {
 		let hasTarget = false
 		const { cX, cY } = this
-		const data = {
-			attackDamage: this.damage,
-			bulletSpeed: this.stats.bulletSpeed,
-			bulletAcceleration: this.stats.bulletAcceleration,
-		}
+		const data = this.bulletData()
 		for (const creep of Creep.all()) {
 			if (creep.distanceTo(cX, cY) <= this.rangeCheck) {
 				hasTarget = true
-				new Bullet(this, creep, data, this.container.parent)
+				this.fireAt(creep, data)
 			}
 		}
 		return hasTarget

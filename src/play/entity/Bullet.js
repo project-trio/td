@@ -37,6 +37,7 @@ class Bullet {
 		this.unitTarget = target.stats !== undefined
 		this.name = source.name
 
+		this.attackBit = data.attackBit
 		this.explosionRadius = data.explosionRadius
 		this.slow = data.slow
 
@@ -103,13 +104,14 @@ class Bullet {
 			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
 			const radiusCheck = distance.checkRadius(this.explosionRadius)
 			const slow = this.slow
+			const attackBit = this.attackBit
 			const slowUntil = renderTime + 1000
 			const { cX, cY } = this
 			for (const creep of Creep.all()) {
 				if (slow && creep.immune) {
 					continue
 				}
-				if (!creep.spawningAt && creep.distanceTo(cX, cY) <= radiusCheck) {
+				if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
 					creep.takeDamage(renderTime, damage, creep !== this.target)
 					if (slow && !creep.deadAt) {
 						creep.setSlow(slow, slowUntil)

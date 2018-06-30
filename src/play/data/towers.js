@@ -39,7 +39,8 @@ export default {
 	},
 
 	swarm: {
-		targets: true,
+		targets: false,
+		multi: 4,
 		color: 0x66aa44,
 		cost:   [ 50, 30, 50, 75, 125, 310 ],
 		damage: [ 20, 20, 40, 80, 160, 160 ],
@@ -65,6 +66,7 @@ export default {
 
 	bash: {
 		targets: false,
+		multi: 9001,
 		color: 0xbb44ee,
 		cost:   [ 80, 120, 145, 175, 260, 450 ],
 		damage: [ 60,  60,  120, 240, 480, 1040 ],
