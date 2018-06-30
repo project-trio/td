@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
+import { BoxBufferGeometry, ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
@@ -19,7 +19,7 @@ let allTowers = null
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
-let turretGeometry
+let turretGeometry, globeGeometry
 let upgradeGeometry, upgradeSize
 
 const rangesCache = {}
@@ -93,8 +93,13 @@ export default class Tower extends Unit {
 		this.container.add(outline)
 
 		this.top = render.group(this.container)
-		const turret = new Mesh(turretGeometry, turretMaterialsCache[name])
-		turret.rotation.z = -Math.PI / 2
+		let turret
+		if (stats.targets) {
+			turret = new Mesh(turretGeometry, turretMaterialsCache[name])
+			turret.rotation.z = -Math.PI / 2
+		} else {
+			turret = new Mesh(globeGeometry, turretMaterialsCache[name])
+		}
 		turret.castShadow = true
 		this.top.add(turret)
 
@@ -350,6 +355,7 @@ Tower.init = (_tileSize) => {
 	const turretLength = TILE_SIZE * 1.5
 	turretGeometry = new ConeBufferGeometry(TILE_SIZE / 3, turretLength,  TILE_SIZE / 4)
 	turretGeometry.translate(0, turretLength / 2 - 4, 0)
+	globeGeometry = new SphereBufferGeometry(TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE / 2)
 }
 
 Tower.destroy = () => {
