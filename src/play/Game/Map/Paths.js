@@ -38,7 +38,6 @@ export default class Paths {
 		EY = ey
 		this.blockCheck = [ 0, -1, -TILES_WIDE, 1 ]
 
-		this.blocked = tileArray()
 		this.moves = [ tileArray(), tileArray() ]
 		this.tests = [ tileArray(), tileArray() ]
 		this.entrances = [ entrance(true, 0), entrance(true, 1) ]
@@ -62,7 +61,8 @@ export default class Paths {
 					isBlocked = true
 				}
 			}
-			this.blocked[idx] = isBlocked
+			this.block(idx, isBlocked)
+
 			if (blockCol < TILES_WIDE) {
 				blockCol += 1
 			} else {
@@ -74,19 +74,24 @@ export default class Paths {
 		this.apply()
 	}
 
+	block (index, blocking) {
+		this.tests[0][index] = blocking ? 0 : null
+		this.tests[1][index] = blocking ? 0 : null
+	}
 	toggleTower (cx, cy, blocking) {
 		let index = cx + (TILES_TALL - cy) * TILES_WIDE
 		for (const diff of this.blockCheck) {
 			index += diff
-			this.blocked[index] = blocking
+			this.block(index, blocking)
 		}
 	}
 
 	blockedSquare (cx, cy) {
+		const testPath = this.tests[0]
 		let index = cx + (TILES_TALL - cy) * TILES_WIDE
 		for (const diff of this.blockCheck) {
 			index += diff
-			if (this.blocked[index]) {
+			if (testPath[index] === 0) {
 				return true
 			}
 		}
@@ -123,9 +128,7 @@ export default class Paths {
 			const testPath = this.tests[vertical]
 			for (let idx = testPath.length - 1; idx >= 0; idx -= 1) {
 				const testMove = testPath[idx]
-				if (testMove) {
-					resultPath[idx] = [ testMove[0], testMove[1] ]
-				}
+				resultPath[idx] = testMove ? [ testMove[0], testMove[1] ] : null
 			}
 		}
 	}
@@ -140,10 +143,11 @@ export default class Paths {
 			}
 		}
 		const searchedIndexes = new Set()
-		const blocked = this.blocked
 		for (let idx = 0; idx < TILES_TOTAL; idx += 1) {
-			if (blocked[idx]) {
+			if (testPath[idx] === 0) {
 				searchedIndexes.add(idx)
+			} else {
+				testPath[idx] = null
 			}
 		}
 		let positions = [ ...this.exits[vertical] ]
@@ -169,7 +173,7 @@ export default class Paths {
 						if (newIndex <= 0 || newIndex >= TILES_TOTAL || searchedIndexes.has(newIndex)) {
 							continue
 						}
-						if (diagonal && (blocked[position + diffX] || blocked[position + diffY])) {
+						if (diagonal && (testPath[position + diffX] === 0 || testPath[position + diffY] === 0)) {
 							continue
 						}
 						if (requiredIndecies.delete(newIndex) && !requiredIndecies.size) {
@@ -192,6 +196,7 @@ export default class Paths {
 			positions = nextSearch
 		}
 		// console.timeEnd('path ' + vertical)
+		// this.debugPath(testPath, true) //SAMPLE
 		return !reachedAllRequiredIndicies && testPath
 	}
 

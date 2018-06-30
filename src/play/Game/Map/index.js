@@ -15,6 +15,7 @@ import Waves from '@/play/Game/Map/Waves'
 const TILE_SIZE = 28
 const TILES_WIDE = 22
 const TILES_TALL = 18
+const TILES_TOTAL = TILES_WIDE * TILES_TALL
 const MAP_WIDTH = TILE_SIZE * TILES_WIDE
 const MAP_HEIGHT = TILE_SIZE * TILES_TALL
 
@@ -177,11 +178,22 @@ export default class GameMap {
 	}
 
 	tileBlocked (index) {
-		return this.paths.blocked[index]
+		return !this.paths.moves[0][index]
 	}
 
 	moveIndex (index, dx, dy) {
 		return index + dx + dy * TILES_WIDE
+	}
+	safeMoveIndex (index, dx, dy) {
+		let result = index + dx
+		if (dx < 0 && Math.floor(index / TILES_WIDE) !== Math.floor(result / TILES_WIDE)) {
+			return null
+		}
+		result += dy * TILES_WIDE
+		if (result <= 0 || result >= TILES_TOTAL) {
+			return null
+		}
+		return this.tileBlocked(result) ? null : result
 	}
 
 	spawn (renderTime) {

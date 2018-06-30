@@ -24,15 +24,21 @@ export default class Waves {
 		store.state.game.wave = waveNumber
 		this.count = waveNumber
 		const waveIndex = waveNumber - 1
-		let creepIndex = waveIndex % CREEP_TYPE_COUNT //SAMPLE waveIndex + 6 % CREEP_TYPE_COUNT
+
+		let creepIndex = waveIndex % CREEP_TYPE_COUNT
 		if (waveIndex < 20 && creepIndex === 4) {
 			creepIndex = 0
 		}
+		// creepIndex = 5 //SAMPLE
+		const boss = waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0
+		// const boss = true //SAMPLE
 		const data = creeps[creepIndex]
+		const grouped = data.grouped
 		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
-		const waveSize = data.count
+		const waveSize = boss ? (grouped ? 3 : 1) : data.count
 		const gold = Math.ceil(waveNumber / CREEP_TYPE_COUNT * 10 / waveSize)
-		const waveCount = waveSize * 2
+		const children = data.name === 'spawn' ? (boss ? 6 : 2) : 0
+		let waveCount = waveSize * (children + 1) * 2
 		store.state.game.waveCreepCount = waveCount
 		this.creepCount += waveCount
 		this.waveStart = renderTime
@@ -40,16 +46,17 @@ export default class Waves {
 		this.spawning.push({
 			index: 0,
 			startAt: renderTime,
-			health: health,
+			health: health * (boss ? (grouped ? 2 : 4) : 1),
 			model: data.model,
 			color: data.color,
-			speed: data.speed,
+			speed: data.speed * (boss ? 0.8 : 1),
 			name: data.name,
 			count: waveSize,
-			gold: gold,
-			grouped: data.grouped,
+			gold,
+			boss,
+			children,
+			grouped: grouped,
 			attackBit: data.attackBit,
-			isBoss: waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0,
 		})
 		// console.log('Wave', this.count, data)
 	}
@@ -79,8 +86,8 @@ export default class Waves {
 
 	}
 
-	killCreep (renderTime) {
-		this.creepCount -= 1
+	killCreep (renderTime, children) {
+		this.creepCount -= children + 1
 		if (this.creepCount === 0) {
 			const waveTime = renderTime - this.waveStart
 			// console.log('Wave complete!', this.count, waveTime)

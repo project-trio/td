@@ -9,6 +9,7 @@ import Vox from '@/play/external/vox'
 import gameMath from '@/play/Game/math'
 import Unit from '@/play/Game/entity/Unit'
 
+import random from '@/xjs/random'
 import store from '@/xjs/store'
 
 const PId2 = Math.PI / 2
@@ -48,6 +49,23 @@ const creepModelBuilders = {}
 	}
 }
 
+const SPLIT_ARRAY = []
+const MAX_SPAWN_DISTANCE = 2
+for (let x = 0; x <= MAX_SPAWN_DISTANCE; x += 1) {
+	for (let y = x === 0 ? 1 : 0; y <= MAX_SPAWN_DISTANCE; y += 1) {
+		SPLIT_ARRAY.push([ x, y ])
+		if (x !== 0) {
+			SPLIT_ARRAY.push([ -x, y ])
+		}
+		if (y !== 0) {
+			SPLIT_ARRAY.push([ x, -y ])
+		}
+		if (x !== 0 && y !== 0) {
+			SPLIT_ARRAY.push([ -x, -y ])
+		}
+	}
+}
+
 export default class Creep extends Unit {
 
 	constructor (renderTime, data, entranceIndex, vertical, wave) {
@@ -73,28 +91,7 @@ export default class Creep extends Unit {
 				this.unitContainer.position.z = 64
 			}
 
-			animate.add(this.unitContainer.position, 'z', {
-				start: renderTime,
-				from: -256,
-				duration: 500,
-				pow: 2,
-			})
-			animate.add(body.rotation, 'z', {
-				start: renderTime,
-				from: Math.PI,
-				duration: 500,
-			})
-			animate.add(body, 'opacity', {
-				start: renderTime,
-				from: 0.1,
-				setFrom: true,
-				to: 1,
-				duration: 250,
-				onComplete: () => {
-					this.targetable = true
-				},
-			})
-
+			this.wave = wave
 			this.id = `${wave}${name}${vertical}`
 			this.stats = data
 			this.immune = name === 'immune'
@@ -102,13 +99,36 @@ export default class Creep extends Unit {
 
 			this.vertical = vertical
 			this.currentIndex = null
-			this.setDestination(entranceIndex, flying)
-			const startX = this.destinationX - (vertical ? 0 : START_DISTANCE)
-			const startY = this.destinationY + (vertical ? START_DISTANCE : 0)
-			this.container.position.x = startX
-			this.container.position.y = startY
-			this.cX = startX
-			this.cY = startY
+			if (entranceIndex !== null) {
+				this.setDestination(entranceIndex, flying)
+				const startX = this.destinationX - (vertical ? 0 : START_DISTANCE)
+				const startY = this.destinationY + (vertical ? START_DISTANCE : 0)
+				this.container.position.x = startX
+				this.container.position.y = startY
+				this.cX = startX
+				this.cY = startY
+
+				animate.add(this.unitContainer.position, 'z', {
+					start: renderTime,
+					from: -256,
+					duration: 500,
+					pow: 2,
+				})
+				animate.add(body.rotation, 'z', {
+					start: renderTime,
+					from: Math.PI,
+					duration: 500,
+				})
+				animate.add(body, 'opacity', {
+					start: renderTime,
+					from: 0.1,
+					to: 1,
+					duration: 250,
+					onComplete: () => {
+						this.targetable = true
+					},
+				})
+			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
 			this.destinationAngle = null
@@ -134,9 +154,9 @@ export default class Creep extends Unit {
 			// this.healthContainer.add(outline)
 			this.healthContainer.add(backing)
 			this.healthContainer.add(this.healthBar)
-		}
 
-		allCreeps.push(this)
+			allCreeps.push(this)
+		}
 	}
 
 	setSlow (slowPercent, until) {
@@ -208,16 +228,82 @@ export default class Creep extends Unit {
 	}
 
 	destroy (renderTime) {
-		gameMap.waves.killCreep(renderTime)
+		const childrenKilled = this.healthRemaining <= 0 ? 0 : this.stats.children
+		gameMap.waves.killCreep(renderTime, childrenKilled)
 
 		super.destroy()
 	}
 
 	die (renderTime, killed) {
 		const deathDuration = killed ? 250 : 600
-		this.dead = renderTime + deathDuration
+		this.deadAt = renderTime + deathDuration
+		this.targetable = false
 		this.healthScheduled = 0
 		if (killed) {
+			if (this.stats.name === 'spawn' && this.destinationIndex === null) {
+				console.log('Dont split at exits!') //TODO
+			}
+			if (this.stats.name === 'spawn' && this.destinationIndex !== null) {
+				const data = {
+					health: this.stats.health / 2,
+					color: this.stats.color,
+					attackBit: this.stats.attackBit,
+					speed: this.stats.speed,
+					gold: 0,
+				}
+				if (this.stats.boss) {
+					data.name = 'spawn'
+					data.model = 'split'
+					data.children = 2
+				} else {
+					data.name = 'spawnlet'
+					data.model = 'base'
+					data.scale = 0.67
+					data.children = 0
+				}
+
+				for (let split = 0; split < 2; split += 1) {
+					let spawnIndex = this.currentIndex
+					for (const [ dX, dY ] of random.shuffle(SPLIT_ARRAY)) { //TODO shuffle once
+						const checkIndex = gameMap.safeMoveIndex(this.currentIndex, dX, dY)
+						if (checkIndex) {
+							spawnIndex = checkIndex
+							break
+						}
+					}
+					const creep = new Creep(renderTime, data, null, this.vertical, this.wave)
+					const [ splitX, splitY ] = gameMap.tileCenter(spawnIndex)
+					creep.cX = splitX
+					creep.cY = splitY
+					creep.tweening = true
+					creep.targetable = false
+					creep.destinationIndex = spawnIndex
+					creep.nextTarget()
+
+					const sourceX = this.cX, sourceY = this.cY
+					creep.container.position.x = sourceX
+					creep.container.position.y = sourceY
+					const splitDuration = 200
+					animate.add(creep.container.position, 'x', {
+						start: renderTime,
+						from: sourceX,
+						to: splitX,
+						duration: splitDuration,
+						pow: 2,
+					})
+					animate.add(creep.container.position, 'y', {
+						start: renderTime,
+						from: sourceY,
+						to: splitY,
+						duration: splitDuration,
+						pow: 2,
+						onComplete: () => {
+							creep.tweening = false
+							creep.targetable = true
+						},
+					})
+				}
+			}
 			animate.add(this.unitContainer.position, 'z', {
 				start: renderTime,
 				to: -24,
@@ -226,7 +312,6 @@ export default class Creep extends Unit {
 			})
 			animate.add(this.body, 'opacity', {
 				start: renderTime,
-				from: 1,
 				to: 0.2,
 				duration: deathDuration,
 				removes: true,
@@ -278,9 +363,7 @@ export default class Creep extends Unit {
 		if (!flying) {
 			this.destinationIndex = index
 		}
-		const center = gameMap.tileCenter(index)
-		this.destinationX = center[0]
-		this.destinationY = center[1]
+		[ this.destinationX, this.destinationY ] = gameMap.tileCenter(index)
 	}
 
 	nextTarget () {
@@ -338,12 +421,12 @@ Creep.destroy = () => {
 Creep.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allCreeps.length - 1; idx >= 0; idx -= 1) {
 		const creep = allCreeps[idx]
-		if (creep.dead) {
-			if (!tweening && renderTime > creep.dead) {
+		if (creep.deadAt) {
+			if (!tweening && renderTime > creep.deadAt) {
 				creep.destroy(renderTime)
 				allCreeps.splice(idx, 1)
 			}
-		} else {
+		} else if (!creep.tweening) {
 			creep.update(renderTime, timeDelta, tweening)
 		}
 	}

@@ -99,7 +99,7 @@ class Bullet {
 
 	reachedDestination (renderTime) {
 		const damage = this.attackDamage
-		const targetAlive = !this.target.dead
+		const targetable = this.target.targetable
 		if (this.explosionRadius) {
 			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
 			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
@@ -110,14 +110,14 @@ class Bullet {
 				if (slow && creep.immune) {
 					continue
 				}
-				if (!creep.dead && creep.distanceTo(cX, cY) <= radiusCheck) {
+				if (creep.targetable && creep.distanceTo(cX, cY) <= radiusCheck) {
 					creep.takeDamage(renderTime, damage, creep !== this.target)
-					if (slow && !creep.dead) {
+					if (slow && !creep.deadAt) {
 						creep.setSlow(slow, slowUntil)
 					}
 				}
 			}
-		} else if (targetAlive) {
+		} else if (targetable) {
 			this.target.takeDamage(renderTime, damage, false)
 		}
 
@@ -173,7 +173,7 @@ class Bullet {
 
 	updateTarget (force) {
 		const targ = this.target
-		if (!force && targ.dead) {
+		if (!force && !targ.targetable) {
 			this.unitTarget = false
 			return
 		}
