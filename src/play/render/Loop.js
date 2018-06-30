@@ -4,9 +4,9 @@ import store from '@/xjs/store'
 
 import animate from '@/play/render/animate'
 
-import Bullet from '@/play/Game/entity/Bullet'
-import Creep from '@/play/Game/entity/Unit/Creep'
-import Tower from '@/play/Game/entity/Unit/Tower'
+import Bullet from '@/play/entity/Bullet'
+import Creep from '@/play/entity/Unit/Creep'
+import Tower from '@/play/entity/Unit/Tower'
 
 const storeSettings = store.state.settings
 

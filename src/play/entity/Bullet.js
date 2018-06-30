@@ -3,14 +3,13 @@ import { SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 import local from '@/xjs/local'
 import store from '@/xjs/store'
 
+import distance from '@/play/distance'
 import render from '@/play/render'
 
 import towers from '@/play/data/towers'
 
-import gameMath from '@/play/Game/math'
-
-import Splash from '@/play/Game/entity/Splash'
-import Creep from '@/play/Game/entity/Unit/Creep'
+import Splash from '@/play/entity/Splash'
+import Creep from '@/play/entity/Unit/Creep'
 
 //LOCAL
 
@@ -102,7 +101,7 @@ class Bullet {
 		const targetable = this.target.targetable
 		if (this.explosionRadius) {
 			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
-			const radiusCheck = gameMath.checkRadius(this.explosionRadius)
+			const radiusCheck = distance.checkRadius(this.explosionRadius)
 			const slow = this.slow
 			const slowUntil = renderTime + 1000
 			const { cX, cY } = this
@@ -159,7 +158,7 @@ class Bullet {
 			const distX = this.destX - movingToX
 			const distY = this.destY - movingToY
 			if (Math.abs(distX) < COLLISION_DISTANCE && Math.abs(distY) < COLLISION_DISTANCE) {
-				reachedApproximate = gameMath.pointDistance(movingToX, movingToY, this.destX, this.destY) <= COLLISION_DISTANCE
+				reachedApproximate = distance.between(movingToX, movingToY, this.destX, this.destY) <= COLLISION_DISTANCE
 			}
 			if (reachedApproximate) {
 				this.reachedDestination(renderTime)

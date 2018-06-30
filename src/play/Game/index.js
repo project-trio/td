@@ -5,11 +5,11 @@ import random from '@/xjs/random'
 
 import Loop from '@/play/render/Loop'
 
-import GameMap from '@/play/Game/Map'
+import Bullet from '@/play/entity/Bullet'
+import Creep from '@/play/entity/Unit/Creep'
+import Tower from '@/play/entity/Unit/Tower'
 
-import Bullet from '@/play/Game/entity/Bullet'
-import Creep from '@/play/Game/entity/Unit/Creep'
-import Tower from '@/play/Game/entity/Unit/Tower'
+import GameMap from '@/play/Game/Map'
 
 export default class Game {
 

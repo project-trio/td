@@ -6,8 +6,8 @@ import render from '@/play/render'
 
 import towers from '@/play/data/towers'
 
-import Creep from '@/play/Game/entity/Unit/Creep'
-import Tower from '@/play/Game/entity/Unit/Tower'
+import Creep from '@/play/entity/Unit/Creep'
+import Tower from '@/play/entity/Unit/Tower'
 
 import Paths from '@/play/Game/Map/Paths'
 import Waves from '@/play/Game/Map/Waves'

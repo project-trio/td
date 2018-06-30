@@ -1,19 +1,17 @@
 import { ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
-import Unit from '@/play/Game/entity/Unit'
-import Creep from '@/play/Game/entity/Unit/Creep'
+import local from '@/xjs/local'
+import store from '@/xjs/store'
 
+import distance from '@/play/distance'
 import render from '@/play/render'
 
 import towers from '@/play/data/towers'
 
-import gameMath from '@/play/Game/math'
-
-import Splash from '@/play/Game/entity/Splash'
-import Bullet from '@/play/Game/entity/Bullet'
-
-import local from '@/xjs/local'
-import store from '@/xjs/store'
+import Bullet from '@/play/entity/Bullet'
+import Splash from '@/play/entity/Splash'
+import Unit from '@/play/entity/Unit'
+import Creep from '@/play/entity/Unit/Creep'
 
 let allTowers = null
 
@@ -71,7 +69,7 @@ export default class Tower extends Unit {
 			this.speed = stats.speed[0]
 			this.range = stats.range[0]
 			this.speedCheck = 2000 / this.speed
-			this.rangeCheck = gameMath.checkRadius(this.range)
+			this.rangeCheck = distance.checkRadius(this.range)
 			if (stats.radius) {
 				this.explosionRadius = stats.radius[0]
 			}
@@ -166,7 +164,7 @@ export default class Tower extends Unit {
 		const rangeDiff = this.stats.range[levelIndex]
 		if (rangeDiff !== 0) {
 			this.range += rangeDiff
-			this.rangeCheck = gameMath.checkRadius(this.range)
+			this.rangeCheck = distance.checkRadius(this.range)
 		}
 		if (this.explosionRadius) {
 			this.explosionRadius += this.stats.radius[levelIndex]
@@ -201,7 +199,7 @@ export default class Tower extends Unit {
 			this.updateTarget(renderTime, timeDelta, tweening)
 		} else if (this.explosionRadius) {
 			if (this.readyToFire(renderTime)) {
-				const radiusCheck = gameMath.checkRadius(this.explosionRadius)
+				const radiusCheck = distance.checkRadius(this.explosionRadius)
 				const { cX, cY } = this
 				let hitCreep = false
 				//TODO stun

@@ -1,10 +1,10 @@
-import creeps from '@/play/data/creeps'
-
-import Creep from '@/play/Game/entity/Unit/Creep'
-
 import bridge from '@/xjs/bridge'
 import random from '@/xjs/random'
 import store from '@/xjs/store'
+
+import creeps from '@/play/data/creeps'
+
+import Creep from '@/play/entity/Unit/Creep'
 
 const CREEP_TYPE_COUNT = creeps.length
 
@@ -36,6 +36,7 @@ export default class Waves {
 		const grouped = data.grouped
 		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
 		const waveSize = boss ? (grouped ? 3 : 1) : data.count
+		// const waveSize = 1 //SAMPLE
 		const gold = Math.ceil(waveNumber / CREEP_TYPE_COUNT * 10 / waveSize)
 		const children = data.name === 'spawn' ? (boss ? 6 : 2) : 0
 		let waveCount = waveSize * (children + 1) * 2

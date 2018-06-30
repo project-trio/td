@@ -1,9 +1,9 @@
 import { CircleBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
-import towers from '@/play/data/towers'
-
 import render from '@/play/render'
 import animate from '@/play/render/animate'
+
+import towers from '@/play/data/towers'
 
 const rangesCache = {}
 const splashesCache = {}

@@ -6,10 +6,10 @@
 </template>
 
 <script>
+import bridge from '@/xjs/bridge'
+
 import Chat from '@/components/Chat'
 import Queue from '@/components/Queue'
-
-import bridge from '@/xjs/bridge'
 
 export default {
 	components: {

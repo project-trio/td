@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import Renderer from '@/play/render/Renderer'
-import Game from '@/play/Game'
-
 import bridge from '@/xjs/bridge'
 import local from '@/xjs/local'
 import store from '@/xjs/store'
+
+import Renderer from '@/play/render/Renderer'
+import Game from '@/play/Game'
 
 export default {
 	props: {

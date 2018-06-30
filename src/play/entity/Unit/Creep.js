@@ -1,16 +1,17 @@
 import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
+
+import random from '@/xjs/random'
+import store from '@/xjs/store'
+
+import distance from '@/play/distance'
 import render from '@/play/render'
 import animate from '@/play/render/animate'
 
 import creeps from '@/play/data/creeps'
 
+import Unit from '@/play/entity/Unit'
+
 import Vox from '@/play/external/vox'
-
-import gameMath from '@/play/Game/math'
-import Unit from '@/play/Game/entity/Unit'
-
-import random from '@/xjs/random'
-import store from '@/xjs/store'
 
 const PId2 = Math.PI / 2
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
@@ -217,7 +218,7 @@ export default class Creep extends Unit {
 		const destinationAngle = this.destinationAngle
 		if (destinationAngle !== null) {
 			const currentAngle = this.unitContainer.rotation.z
-			const angleDiff = gameMath.radianDistance(currentAngle, destinationAngle)
+			const angleDiff = distance.betweenRadians(currentAngle, destinationAngle)
 			const turnDistance = timeDelta / 200
 			let newAngle
 			if (Math.abs(angleDiff) < turnDistance) {
