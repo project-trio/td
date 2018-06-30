@@ -76,7 +76,7 @@ export default class Waves {
 					let spawnPoints = this.spawnPoints[vertical]
 					if (spawnData.grouped) {
 						const center = Math.floor(spawnPoints.length / 2)
-						spawnPoints = spawnPoints.slice(center - 1, center)
+						spawnPoints = spawnPoints.slice(center - 1, center + 1)
 					}
 					const entranceIndex = random.choose(spawnPoints)
 					new Creep(renderTime, spawnData, entranceIndex, vertical, waveNumber)
