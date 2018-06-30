@@ -100,13 +100,13 @@ export default class Tower extends Unit {
 		this.top.rotation.z = Math.random() * Math.PI * 2
 		this.top.position.z = 24
 		if (live) {
-			this.select()
+			this.select(null)
 			allTowers.push(this)
 			local.syncTowers.push([ tX, tY, true ])
 		}
 	}
 
-	deselect () {
+	deselect (manual) {
 		const currentSelection = local.game.selection
 		if (currentSelection) {
 			if (currentSelection.mesh) {
@@ -119,13 +119,16 @@ export default class Tower extends Unit {
 				} else {
 					local.game.selection = null
 				}
-				return
+				return manual
 			}
 		}
+		return !manual
 	}
 
-	select () {
-		this.deselect()
+	select (manual) {
+		if (this.deselect(manual)) {
+			return
+		}
 
 		const cacheGeometry = rangesCache[this.range]
 		const selectionMesh = new Mesh(cacheGeometry, rangeMaterial)
@@ -140,7 +143,7 @@ export default class Tower extends Unit {
 	onClick (point, button) {
 		switch (button) {
 		case 0:
-			this.select()
+			this.select(true)
 			break
 		case 1:
 			this.dead = true
@@ -168,6 +171,7 @@ export default class Tower extends Unit {
 		if (rangeDiff !== 0) {
 			this.range += rangeDiff
 			this.rangeCheck = distance.checkRadius(this.range)
+			this.select(false)
 		}
 		if (this.explosionRadius) {
 			this.explosionRadius += this.stats.radius[levelIndex]
