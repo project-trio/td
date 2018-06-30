@@ -31,7 +31,7 @@ export default {
 		damage: [ 8,  8,  16, 32, 64,  128 ],
 		range:  [ 90, 10, 10, 10, 10,  10 ],
 		speed:  [ 1,  0,  0,  0,  0,   0 ],
-		radius: [ 20, 5,  5,  5,  5,   5 ],
+		radius: [ 25, 5,  5,  5,  5,   5 ],
 		attackBit: 1,
 		bulletSpeed: 5,
 		bulletAcceleration: 1,
