@@ -83,6 +83,9 @@ export default class Creep extends Unit {
 		this.unitContainer.add(body)
 
 		this.targetable = false
+		this.tweening = false
+		this.deadAt = 0
+		this.killed = false
 
 		if (live) {
 			const name = data.name
@@ -143,16 +146,16 @@ export default class Creep extends Unit {
 			this.healthContainer.position.z = 24
 
 			// const outline = new Mesh(hpOutlineGeometry, hpOutlineMaterial)
-			const backing = new Mesh(hpBackingGeometry, hpBackingMaterial)
+			this.healthBacking = new Mesh(hpBackingGeometry, hpBackingMaterial.clone())
 			this.healthBar = new Mesh(hpRemainingGeometry, hpRemainingMaterial)
 			this.healthBar.position.x = -HP_WIDTH / 2
 
 			// outline.renderOrder = 9000
-			backing.renderOrder = 9001
+			this.healthBacking.renderOrder = 9001
 			this.healthBar.renderOrder = 9002
 
 			// this.healthContainer.add(outline)
-			this.healthContainer.add(backing)
+			this.healthContainer.add(this.healthBacking)
 			this.healthContainer.add(this.healthBar)
 
 			allCreeps.push(this)
@@ -228,7 +231,7 @@ export default class Creep extends Unit {
 	}
 
 	destroy (renderTime) {
-		const childrenKilled = this.healthRemaining <= 0 ? 0 : this.stats.children
+		const childrenKilled = this.killed ? 0 : this.stats.children
 		gameMap.waves.killCreep(renderTime, childrenKilled)
 
 		super.destroy()
@@ -239,80 +242,84 @@ export default class Creep extends Unit {
 		this.deadAt = renderTime + deathDuration
 		this.targetable = false
 		this.healthScheduled = 0
+		this.killed = killed
 		if (killed) {
-			if (this.stats.name === 'spawn' && this.destinationIndex === null) {
-				console.log('Dont split at exits!') //TODO
-			}
-			if (this.stats.name === 'spawn' && this.destinationIndex !== null) {
-				const data = {
-					health: this.stats.health / 2,
-					color: this.stats.color,
-					attackBit: this.stats.attackBit,
-					speed: this.stats.speed,
-					gold: 0,
-				}
-				if (this.stats.boss) {
-					data.name = 'spawn'
-					data.model = 'split'
-					data.children = 2
+			if (this.stats.children) {
+				if (this.currentIndex === null) {
+					this.killed = false
 				} else {
-					data.name = 'spawnlet'
-					data.model = 'base'
-					data.scale = 0.67
-					data.children = 0
-				}
-
-				for (let split = 0; split < 2; split += 1) {
-					let spawnIndex = this.currentIndex
-					for (const [ dX, dY ] of random.shuffle(SPLIT_ARRAY)) { //TODO shuffle once
-						const checkIndex = gameMap.safeMoveIndex(this.currentIndex, dX, dY)
-						if (checkIndex) {
-							spawnIndex = checkIndex
-							break
-						}
+					const data = {
+						health: this.stats.health / 2,
+						color: this.stats.color,
+						attackBit: this.stats.attackBit,
+						speed: this.stats.speed,
+						gold: 0,
 					}
-					const creep = new Creep(renderTime, data, null, this.vertical, this.wave)
-					const [ splitX, splitY ] = gameMap.tileCenter(spawnIndex)
-					creep.cX = splitX
-					creep.cY = splitY
-					creep.tweening = true
-					creep.targetable = false
-					creep.destinationIndex = spawnIndex
-					creep.nextTarget()
+					if (this.stats.boss) {
+						data.name = 'spawn'
+						data.model = 'split'
+						data.children = 2
+					} else {
+						data.name = 'spawnlet'
+						data.model = 'base'
+						data.scale = 0.67
+						data.children = 0
+					}
 
-					const sourceX = this.cX, sourceY = this.cY
-					creep.container.position.x = sourceX
-					creep.container.position.y = sourceY
-					const splitDuration = 200
-					animate.add(creep.container.position, 'x', {
-						start: renderTime,
-						from: sourceX,
-						to: splitX,
-						duration: splitDuration,
-						pow: 2,
-					})
-					animate.add(creep.container.position, 'y', {
-						start: renderTime,
-						from: sourceY,
-						to: splitY,
-						duration: splitDuration,
-						pow: 2,
-						onComplete: () => {
-							creep.tweening = false
-							creep.targetable = true
-						},
-					})
+					for (let split = 0; split < 2; split += 1) {
+						let spawnIndex = this.currentIndex
+						for (const [ dX, dY ] of random.shuffle(SPLIT_ARRAY)) { //TODO shuffle once
+							const checkIndex = gameMap.safeMoveIndex(this.currentIndex, dX, dY)
+							if (checkIndex) {
+								console.log(spawnIndex, checkIndex, dX, dY)
+								spawnIndex = checkIndex
+								break
+							}
+						}
+						const creep = new Creep(renderTime, data, null, this.vertical, this.wave)
+						const [ splitX, splitY ] = gameMap.tileCenter(spawnIndex)
+						creep.cX = splitX
+						creep.cY = splitY
+						creep.tweening = true
+						creep.targetable = false
+						creep.destinationIndex = spawnIndex
+						creep.nextTarget()
+
+						const sourceX = this.cX, sourceY = this.cY
+						creep.container.position.x = sourceX
+						creep.container.position.y = sourceY
+						const splitDuration = 200
+						animate.add(creep.container.position, 'x', {
+							start: renderTime,
+							from: sourceX,
+							to: splitX,
+							duration: splitDuration,
+							pow: 2,
+						})
+						animate.add(creep.container.position, 'y', {
+							start: renderTime,
+							from: sourceY,
+							to: splitY,
+							duration: splitDuration,
+							pow: 2,
+							onComplete: () => {
+								creep.tweening = false
+								creep.targetable = true
+							},
+						})
+					}
 				}
 			}
+
 			animate.add(this.unitContainer.position, 'z', {
 				start: renderTime,
-				to: -24,
+				to: -28,
 				duration: deathDuration,
 				removes: true,
 			})
-			animate.add(this.body, 'opacity', {
+			animate.add(this.healthBacking, 'opacity', {
 				start: renderTime,
-				to: 0.2,
+				to: 0.1,
 				duration: deathDuration,
 				removes: true,
 			})

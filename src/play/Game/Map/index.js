@@ -196,7 +196,7 @@ export default class GameMap {
 	}
 	safeMoveIndex (index, dx, dy) {
 		let result = index + dx
-		if (dx < 0 && Math.floor(index / TILES_WIDE) !== Math.floor(result / TILES_WIDE)) {
+		if (dx !== 0 && Math.floor(index / TILES_WIDE) !== Math.floor(result / TILES_WIDE)) {
 			return null
 		}
 		result += dy * TILES_WIDE
