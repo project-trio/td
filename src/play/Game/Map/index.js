@@ -88,7 +88,7 @@ export default class GameMap {
 		lineGeometry.vertices.push(new Vector3(TILE_SIZE, 0, 0))
 		lineGeometry.vertices.push(new Vector3(0, -TILE_SIZE + 0, 0))
 		lineGeometry.vertices.push(new Vector3(0, TILE_SIZE + 0, 0))
-		lineGeometry.translate(EX * TILE_SIZE, -EY * TILE_SIZE - 0.5, 0)
+		lineGeometry.translate(EX * TILE_SIZE + 0.5, -EY * TILE_SIZE, 0)
 		const lineMaterial = new LineBasicMaterial({ color: 0xeeeeee })
 		const lines = new LineSegments(lineGeometry, lineMaterial)
 		ground.add(lines)

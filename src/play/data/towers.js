@@ -10,7 +10,7 @@ export default {
 		range:  [ 60,  0,  0,  0,  0,  120 ],
 		speed:  [ 1.5, 0,  0,  0,  0,  -0.4 ],
 		attackBit: 3,
-		bulletSpeed: 10,
+		bulletSpeed: 12,
 	},
 
 	squirt: {
@@ -21,7 +21,7 @@ export default {
 		range:  [ 70, 0,  0,  0,  0,  20 ],
 		speed:  [ 6,  0,  0,  0,  0,  3 ],
 		attackBit: 3,
-		bulletSpeed: 10,
+		bulletSpeed: 15,
 	},
 
 	dart: {
@@ -62,6 +62,7 @@ export default {
 		radius: [ 30,  0,  0,  0,  0,  20 ],
 		attackBit: 3,
 		bulletSpeed: 10,
+		bulletSize: 10,
 	},
 
 	bash: {
