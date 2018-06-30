@@ -207,7 +207,7 @@ export default class Tower extends Unit {
 
 	bulletData () {
 		return {
-			attackBit: this.attackBit,
+			attackBit: this.stats.attackBit,
 			attackDamage: this.damage,
 			bulletSpeed: this.stats.bulletSpeed,
 			bulletAcceleration: this.stats.bulletAcceleration,
