@@ -9,14 +9,6 @@ const spawn = [
 		},
 	},
 	{
-		traverse: [ 'body', 'rotation' ],
-		property: 'z',
-		durationMultiplier: 2,
-		data: {
-			from: Math.PI,
-		},
-	},
-	{
 		traverse: [ 'body' ],
 		property: 'opacity',
 		data: {
@@ -92,19 +84,91 @@ export default {
 	},
 
 	group: {
-		spawn,
+		spawn: [
+			{
+				traverse: [ 'body', 'scale' ],
+				property: 'xyz',
+				durationMultiplier: 2,
+				data: {
+					from: 0.01,
+					to: 1,
+					pow: 2,
+				},
+			},
+		],
 		leak,
 		kill,
 	},
 
 	fast: {
-		spawn,
-		leak,
+		spawn: [
+			{
+				traverse: [ 'unitContainer', 'position' ],
+				property: 'z',
+				durationMultiplier: 2,
+				data: {
+					from: -300,
+					pow: 2,
+				},
+			},
+			{
+				traverse: [ 'body', 'rotation' ],
+				property: 'z',
+				durationMultiplier: 2,
+				data: {
+					from: Math.PI,
+				},
+			},
+			{
+				traverse: [ 'body' ],
+				property: 'opacity',
+				data: {
+					from: 0.1,
+					to: 1,
+				},
+			},
+		],
+		leak: [
+			{
+				traverse: [ 'unitContainer', 'position' ],
+				property: 'z',
+				data: {
+					to: -300,
+					pow: 2,
+					removes: true,
+				},
+			},
+			{
+				traverse: [ 'body', 'rotation' ],
+				property: 'z',
+				data: {
+					to: -Math.PI,
+					removes: true,
+				},
+			},
+		],
 		kill,
 	},
 
 	dark: {
-		spawn,
+		spawn: [
+			{
+				traverse: [ 'body' ],
+				property: 'opacity',
+				data: {
+					from: 0.1,
+				},
+			},
+			{
+				traverse: [ 'body', 'rotation' ],
+				property: 'x',
+				durationMultiplier: 2,
+				from: () => Math.PI * 4 * (Math.round(Math.random()) * 2 - 1),
+				data: {
+					pow: 2,
+				},
+			},
+		],
 		leak,
 		kill,
 	},
@@ -116,8 +180,29 @@ export default {
 	},
 
 	flying: {
-		spawn,
-		leak,
+		spawn: [
+			{
+				traverse: [ 'body', 'position' ],
+				property: 'x',
+				durationMultiplier: 2,
+				data: {
+					from: -100,
+					delta: true,
+					pow: 2,
+				},
+			},
+		],
+		leak: [
+			{
+				traverse: [ 'unitContainer', 'position' ],
+				property: 'z',
+				data: {
+					to: 1024,
+					pow: 0.67,
+					removes: true,
+				},
+			},
+		],
 		kill,
 	},
 

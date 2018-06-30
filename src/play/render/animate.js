@@ -32,14 +32,27 @@ export default {
 		}
 		data.target = target
 		data.property = property
+		const checkProperty = property === 'xyz' ? 'x' : property
 		if (data.from !== undefined) {
 			if (data.to !== undefined) {
-				target[property] = data.from
+				if (property === 'xyz') {
+					target.set(data.from, data.from, data.from)
+				} else {
+					target[checkProperty] = data.from
+				}
 			} else {
-				data.to = target[property]
+				data.to = target[checkProperty]
+				if (data.delta) {
+					data.from = data.to + data.from
+					target[checkProperty] = data.from
+				}
 			}
 		} else {
-			data.from = target[property]
+			data.from = target[checkProperty]
+			if (data.delta) {
+				data.to = data.from + data.to
+				target[checkProperty] = data.to
+			}
 		}
 		if (data.from > data.to) {
 			data.change = -(data.from - data.to)
@@ -87,7 +100,11 @@ export default {
 				currentValue = animation.from + progress * animation.change
 			}
 			const property = animation.property
-			target[property] = currentValue
+			if (property === 'xyz') {
+				target.set(currentValue, currentValue, currentValue)
+			} else {
+				target[property] = currentValue
+			}
 		}
 	},
 

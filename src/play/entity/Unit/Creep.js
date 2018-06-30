@@ -127,6 +127,7 @@ export default class Creep extends Unit {
 			this.healthContainer = render.group(this.container)
 			this.healthContainer.position.y = 24
 			this.healthContainer.position.z = 24
+			this.healthContainer.visible = false
 
 			// const outline = new Mesh(hpOutlineGeometry, hpOutlineMaterial)
 			this.healthBacking = new Mesh(hpBackingGeometry, hpBackingMaterial.clone())
@@ -154,9 +155,11 @@ export default class Creep extends Unit {
 			const data = Object.assign({}, animation.data)
 			if (animation.to) {
 				data.to = animation.to()
+			} else if (animation.from) {
+				data.from = animation.from()
 			}
 			data.start = renderTime
-			data.duration = duration * (animation.multiplier || 1)
+			data.duration = duration * (animation.durationMultiplier || 1)
 			animate.add(target, animation.property, data)
 		}
 	}
@@ -410,6 +413,7 @@ Creep.update = (renderTime, timeDelta, tweening) => {
 			if (spawning) {
 				if (!tweening && renderTime >= spawning) {
 					creep.spawningAt = null
+					creep.healthContainer.visible = true
 				} else {
 					continue
 				}
