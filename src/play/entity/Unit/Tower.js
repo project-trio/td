@@ -155,7 +155,7 @@ export default class Tower extends Unit {
 	upgrade () {
 		const levelIndex = this.level + 1
 		const upgradeCost = this.stats.cost[levelIndex]
-		if (upgradeCost > store.state.game.local.gold) {
+		if (upgradeCost === undefined || upgradeCost > store.state.game.local.gold) {
 			return
 		}
 		store.state.game.local.gold -= upgradeCost
