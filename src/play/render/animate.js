@@ -33,10 +33,9 @@ export default {
 		data.target = target
 		data.property = property
 		if (data.from !== undefined) {
-			if (data.setFrom) {
+			if (data.to !== undefined) {
 				target[property] = data.from
-			}
-			if (!data.to !== undefined) {
+			} else {
 				data.to = target[property]
 			}
 		} else {
