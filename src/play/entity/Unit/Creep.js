@@ -39,7 +39,7 @@ const creepModelBuilders = {}
 	const voxParser = new Vox.Parser()
 	for (const creep of creeps) {
 		const modelName = creep.model
-		if (creepModelBuilders[modelName] !== undefined) {
+		if (!modelName || creepModelBuilders[modelName] !== undefined) {
 			continue
 		}
 		store.state.loading += 1
@@ -76,21 +76,25 @@ export default class Creep extends Unit {
 
 		this.unitContainer = render.group(this.container)
 
-		const body = creepModelBuilders[data.model].createMesh()
-		body.material = body.material.clone()
-		body.material.color.setHex(data.color)
-		body.rotation.x = Math.PI / 2
-		body.castShadow = true
-		this.body = body
-		this.unitContainer.add(body)
+		const name = data.name
+		if (name === 'spawn') {
+			this.body = render.group(this.unitContainer)
+		} else {
+			const body = creepModelBuilders[data.model].createMesh()
+			body.material = body.material.clone()
+			body.material.color.setHex(data.color)
+			body.rotation.x = Math.PI / 2
+			body.castShadow = true
+			this.body = body
+			this.unitContainer.add(body)
+		}
 
 		if (live) {
-			const spawnDuration = 250
+			const spawnDuration = 300 //SAMPLE
 			this.spawningAt = renderTime + spawnDuration
 			this.deadAt = 0
 			this.killed = false
 
-			const name = data.name
 			const flying = data.attackBit === 2
 			if (flying) {
 				this.unitContainer.position.z = 64
@@ -113,7 +117,11 @@ export default class Creep extends Unit {
 				this.cX = startX
 				this.cY = startY
 
-				this.applyAnimations(renderTime, 'spawn', spawnDuration)
+				if (name === 'spawn') {
+					this.splitSpawn(renderTime, spawnDuration)
+				} else {
+					this.applyAnimations(renderTime, 'spawn', spawnDuration)
+				}
 			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
@@ -256,6 +264,9 @@ export default class Creep extends Unit {
 				} else {
 					this.split(renderTime)
 				}
+				this.body.visible = false
+				this.healthContainer.visible = false
+				return
 			}
 			this.body.castShadow = false
 		}
@@ -323,7 +334,47 @@ export default class Creep extends Unit {
 		this.moveY = diagonal * -dY || -dY
 	}
 
-	// Creep-specific
+	// Spawns
+
+	splitSpawn (renderTime, spawnDuration) {
+		let sign = Math.round(Math.random()) * 2 - 1
+		for (let split = 0; split < 2; split += 1) {
+			const spawnlet = creepModelBuilders['base'].createMesh()
+			spawnlet.material = spawnlet.material.clone()
+			spawnlet.material.color.setHex(this.stats.color)
+			if (split) {
+				spawnlet.rotation.x = Math.PI / 2
+			} else {
+				spawnlet.rotation.x = -Math.PI / 2
+				spawnlet.position.z = 24
+			}
+			this.body.add(spawnlet)
+			const splitSign = split * 2 - 1
+			spawnlet.position.x = 9 * splitSign
+			spawnlet.castShadow = true
+			animate.add(spawnlet.position, 'y', {
+				start: renderTime,
+				from: 48 * sign,
+				to: 0,
+				duration: spawnDuration,
+				pow: 0.5,
+			})
+			animate.add(spawnlet, 'opacity', {
+				start: renderTime,
+				from: 0,
+				to: 1,
+				duration: spawnDuration,
+				pow: 2,
+			})
+			sign *= -1
+		}
+		animate.add(this.body.rotation, 'z', {
+			start: renderTime,
+			from: Math.PI * sign,
+			duration: spawnDuration,
+			pow: 0.5,
+		})
+	}
 
 	split (renderTime) {
 		const data = {

@@ -32,9 +32,9 @@ const kill = [
 	{
 		traverse: [ 'healthBacking' ],
 		property: 'opacity',
-		durationMultiplier: 2,
 		data: {
-			to: 0.1,
+			from: 1,
+			to: 0,
 			removes: true,
 		},
 	},
@@ -174,7 +174,10 @@ export default {
 	},
 
 	spawn: {
-		spawn,
+		leak,
+	},
+
+	spawnlet: {
 		leak,
 		kill,
 	},
