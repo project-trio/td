@@ -109,8 +109,9 @@ export default class Tower extends Unit {
 	deselect (manual) {
 		const currentSelection = local.game.selection
 		if (currentSelection) {
-			if (currentSelection.mesh) {
-				render.remove(currentSelection.mesh)
+			const parent = currentSelection.mesh.parent
+			if (parent) {
+				parent.remove(currentSelection.mesh)
 			}
 			if (currentSelection.id === this.id) {
 				if (this.name === 'snap') {
@@ -200,11 +201,7 @@ export default class Tower extends Unit {
 	}
 
 	readyToFire (renderTime) {
-		if (this.firedAt + this.speedCheck < renderTime) {
-			this.firedAt = renderTime
-			return true
-		}
-		return false
+		return this.firedAt + this.speedCheck < renderTime
 	}
 
 	update (renderTime, timeDelta, tweening) {
@@ -218,12 +215,13 @@ export default class Tower extends Unit {
 				//TODO stun
 				const attackBit = this.stats.attackBit
 				for (const creep of Creep.all()) {
-					if (creep.targetable && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
+					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
 						creep.takeDamage(renderTime, this.damage, true)
 						hitCreep = true
 					}
 				}
 				if (hitCreep) {
+					this.firedAt = renderTime
 					new Splash(renderTime, this, null, this.explosionRadius, this.container)
 				}
 			}
@@ -243,7 +241,7 @@ export default class Tower extends Unit {
 				let newTarget = null
 				let nearestDistance = this.rangeCheck + 1
 				for (const creep of Creep.all()) {
-					if (creep.targetable && creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit) && (!this.slow || !creep.immune)) {
+					if (!creep.spawningAt && creep.healthScheduled > 0 && (attackBit & creep.stats.attackBit) && (!this.slow || !creep.immune)) {
 						const distance = creep.distanceTo(cX, cY)
 						if (distance < nearestDistance) {
 							newTarget = creep
@@ -256,6 +254,7 @@ export default class Tower extends Unit {
 				}
 			}
 			if (this.target && this.readyToFire(renderTime)) {
+				this.firedAt = renderTime
 				const data = {
 					attackDamage: this.damage,
 					bulletSpeed: this.stats.bulletSpeed,
@@ -316,8 +315,8 @@ Tower.init = (_tileSize) => {
 
 	upgradeSize = TILE_SIZE / 5
 	const ugpradeOffset = -TILE_SIZE / 2 - upgradeSize / 2
-	upgradeGeometry = new BoxBufferGeometry(upgradeSize, upgradeSize, 15)
-	upgradeGeometry.translate(ugpradeOffset, ugpradeOffset, 5)
+	upgradeGeometry = new BoxBufferGeometry(upgradeSize, upgradeSize * 2 / 3, 15)
+	upgradeGeometry.translate(ugpradeOffset, ugpradeOffset * 4 / 3 + 4, 5)
 
 	backingGeometry = new PlaneBufferGeometry(TILE_SIZE * 2 - 8, TILE_SIZE * 2 - 8)
 	backingMaterial = new MeshLambertMaterial({ color: 0xafbbaf })

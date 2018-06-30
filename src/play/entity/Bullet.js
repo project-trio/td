@@ -1,4 +1,4 @@
-import { SphereBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { SphereBufferGeometry, Mesh, MeshLambertMaterial } from 'three'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
@@ -24,7 +24,7 @@ for (const name in towers) {
 	}
 	const towerData = towers[name]
 	const geometry = new SphereBufferGeometry(towerData.bulletSize || 4)
-	const material = new MeshBasicMaterial({ color: towerData.color })
+	const material = new MeshLambertMaterial({ color: towerData.color })
 	bulletsCache[name] = [ geometry, material ]
 }
 
@@ -98,7 +98,7 @@ class Bullet {
 
 	reachedDestination (renderTime) {
 		const damage = this.attackDamage
-		const targetable = this.target.targetable
+		const targetable = !this.target.spawningAt
 		if (this.explosionRadius) {
 			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
 			const radiusCheck = distance.checkRadius(this.explosionRadius)
@@ -109,7 +109,7 @@ class Bullet {
 				if (slow && creep.immune) {
 					continue
 				}
-				if (creep.targetable && creep.distanceTo(cX, cY) <= radiusCheck) {
+				if (!creep.spawningAt && creep.distanceTo(cX, cY) <= radiusCheck) {
 					creep.takeDamage(renderTime, damage, creep !== this.target)
 					if (slow && !creep.deadAt) {
 						creep.setSlow(slow, slowUntil)
@@ -172,7 +172,7 @@ class Bullet {
 
 	updateTarget (force) {
 		const targ = this.target
-		if (!force && !targ.targetable) {
+		if (!force && targ.deadAt) {
 			this.unitTarget = false
 			return
 		}
