@@ -1,4 +1,4 @@
-import { ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
+import { BoxBufferGeometry, ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
 import local from '@/xjs/local'
 import store from '@/xjs/store'
@@ -13,11 +13,14 @@ import Splash from '@/play/entity/Splash'
 import Unit from '@/play/entity/Unit'
 import Creep from '@/play/entity/Unit/Creep'
 
+let TILE_SIZE
+
 let allTowers = null
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
 let turretGeometry
+let upgradeGeometry, upgradeSize
 
 const rangesCache = {}
 const turretMaterialsCache = {}
@@ -172,6 +175,12 @@ export default class Tower extends Unit {
 		if (this.slow) {
 			this.slow += this.stats.slow[levelIndex]
 		}
+
+		const mesh = new Mesh(upgradeGeometry, turretMaterialsCache[this.name])
+		mesh.position.x = (levelIndex - 1) * upgradeSize * 1.5
+		mesh.castShadow = true
+		// mesh.receiveShadow = true
+		this.container.add(mesh)
 	}
 
 	//UPDATE
@@ -297,24 +306,28 @@ const roundedRect = (width, r) => {
 	return o
 }
 
-Tower.init = (tileSize) => {
+Tower.init = (_tileSize) => {
+	TILE_SIZE = _tileSize
 	allTowers = []
 
-	backingGeometry = new PlaneBufferGeometry(tileSize * 2 - 8, tileSize * 2 - 8)
+	upgradeSize = TILE_SIZE / 5
+	const ugpradeOffset = -TILE_SIZE / 2 - upgradeSize / 2
+	upgradeGeometry = new BoxBufferGeometry(upgradeSize, upgradeSize, 15)
+	upgradeGeometry.translate(ugpradeOffset, ugpradeOffset, 5)
+
+	backingGeometry = new PlaneBufferGeometry(TILE_SIZE * 2 - 8, TILE_SIZE * 2 - 8)
 	backingMaterial = new MeshLambertMaterial({ color: 0xafbbaf })
 
-	const outlineSize = tileSize * 2 - 4
-	const outlineRadius = Math.floor(tileSize / 4)
-	const holeShape = roundedRect(outlineSize - tileSize / 4, outlineRadius / 2 - 2)
+	const outlineSize = TILE_SIZE * 2 - 4
+	const outlineRadius = Math.floor(TILE_SIZE / 4)
+	const holeShape = roundedRect(outlineSize - TILE_SIZE / 4, outlineRadius / 2 - 2)
 	const baseShape = roundedRect(outlineSize, outlineRadius / 2)
-	// roundedRectOf(hole, outlineSize, outlineRadius)
-	// roundedRectOf(baseShape, outlineSize, outlineRadius / 2)
 	baseShape.holes.push(holeShape)
 	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 16, bevelEnabled: false })
 	baseMaterial = new MeshLambertMaterial({ color: 0x333333 })
 
-	const turretLength = tileSize * 1.5
-	turretGeometry = new ConeBufferGeometry(tileSize / 3, turretLength,  tileSize / 4)
+	const turretLength = TILE_SIZE * 1.5
+	turretGeometry = new ConeBufferGeometry(TILE_SIZE / 3, turretLength,  TILE_SIZE / 4)
 	turretGeometry.translate(0, turretLength / 2 - 4, 0)
 }
 
