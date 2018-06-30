@@ -8,6 +8,7 @@ import render from '@/play/render'
 import animate from '@/play/render/animate'
 
 import creeps from '@/play/data/creeps'
+import creepAnimations from '@/play/data/creep_animations'
 
 import Unit from '@/play/entity/Unit'
 
@@ -112,23 +113,7 @@ export default class Creep extends Unit {
 				this.cX = startX
 				this.cY = startY
 
-				animate.add(this.unitContainer.position, 'z', {
-					start: renderTime,
-					from: -256,
-					duration: spawnDuration * 2,
-					pow: 2,
-				})
-				animate.add(body.rotation, 'z', {
-					start: renderTime,
-					from: Math.PI,
-					duration: spawnDuration * 2,
-				})
-				animate.add(body, 'opacity', {
-					start: renderTime,
-					from: 0.1,
-					to: 1,
-					duration: spawnDuration,
-				})
+				this.applyAnimations(renderTime, 'spawn', spawnDuration)
 			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
@@ -157,6 +142,22 @@ export default class Creep extends Unit {
 			this.healthContainer.add(this.healthBar)
 
 			allCreeps.push(this)
+		}
+	}
+
+	applyAnimations (renderTime, type, duration) {
+		for (const animation of creepAnimations[this.stats.name][type]) {
+			let target = this
+			for (const key of animation.traverse) {
+				target = target[key]
+			}
+			const data = Object.assign({}, animation.data)
+			if (animation.to) {
+				data.to = animation.to()
+			}
+			data.start = renderTime
+			data.duration = duration * (animation.multiplier || 1)
+			animate.add(target, animation.property, data)
 		}
 	}
 
@@ -253,41 +254,9 @@ export default class Creep extends Unit {
 					this.split(renderTime)
 				}
 			}
-
-			animate.add(this.unitContainer.position, 'z', {
-				start: renderTime,
-				to: -28,
-				duration: deathDuration,
-				removes: true,
-			})
-			animate.add(this.healthBacking, 'opacity', {
-				start: renderTime,
-				to: 0.1,
-				duration: deathDuration,
-				removes: true,
-			})
 			this.body.castShadow = false
-		} else {
-			animate.add(this.unitContainer.position, 'z', {
-				start: renderTime,
-				to: -256,
-				duration: deathDuration,
-				pow: 2,
-				removes: true,
-			})
-			animate.add(this.body.rotation, 'x', {
-				start: renderTime,
-				to: (Math.random() - 0.5) * Math.PI * 4,
-				duration: 500,
-				removes: true,
-			})
-			animate.add(this.body.rotation, 'y', {
-				start: renderTime,
-				to: (Math.random() - 0.5) * Math.PI,
-				duration: 500,
-				removes: true,
-			})
 		}
+		this.applyAnimations(renderTime, killed ? 'kill' : 'leak', deathDuration)
 	}
 
 	takeDamage (renderTime, damage, splash) {
@@ -389,18 +358,19 @@ export default class Creep extends Unit {
 			creep.nextTarget()
 
 			const sourceX = this.cX, sourceY = this.cY
-			creep.container.position.x = sourceX
-			creep.container.position.y = sourceY
+			const position = creep.container.position
+			position.x = sourceX
+			position.y = sourceY
 			const splitDuration = 200
 			creep.spawningAt = renderTime + splitDuration
-			animate.add(creep.container.position, 'x', {
+			animate.add(position, 'x', {
 				start: renderTime,
 				from: sourceX,
 				to: splitX,
 				duration: splitDuration,
 				pow: 2,
 			})
-			animate.add(creep.container.position, 'y', {
+			animate.add(position, 'y', {
 				start: renderTime,
 				from: sourceY,
 				to: splitY,
