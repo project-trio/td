@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, PlaneBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial } from 'three'
+import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, Vector3 } from 'three'
 
 import store from '@/xjs/store'
 
@@ -82,6 +82,16 @@ export default class GameMap {
 		const placement = new Mesh(placementGeometry, placementMaterial)
 		ground.add(placement)
 		placement.visible = false
+
+		const lineGeometry = new Geometry()
+		lineGeometry.vertices.push(new Vector3(-TILE_SIZE, 0, 0))
+		lineGeometry.vertices.push(new Vector3(TILE_SIZE, 0, 0))
+		lineGeometry.vertices.push(new Vector3(0, -TILE_SIZE + 0, 0))
+		lineGeometry.vertices.push(new Vector3(0, TILE_SIZE + 0, 0))
+		lineGeometry.translate(EX * TILE_SIZE, -EY * TILE_SIZE - 0.5, 0)
+		const lineMaterial = new LineBasicMaterial({ color: 0xeeeeee })
+		const lines = new LineSegments(lineGeometry, lineMaterial)
+		ground.add(lines)
 
 		let cx = null, cy = null
 		ground.onHover = () => {}
