@@ -4,11 +4,12 @@
 
 <script>
 import bridge from '@/xjs/bridge'
-import local from '@/xjs/local'
 import store from '@/xjs/store'
 
-import Renderer from '@/play/render/Renderer'
 import Game from '@/play/Game'
+import local from '@/play/local'
+
+import Renderer from '@/play/render/Renderer'
 
 export default {
 	props: {

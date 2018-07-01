@@ -12,8 +12,9 @@
 
 <script>
 import bridge from '@/xjs/bridge'
-import local from '@/xjs/local'
 import store from '@/xjs/store'
+
+import local from '@/play/local'
 
 import GameCanvas from '@/components/Game/Canvas'
 import Sidebar from '@/components/Game/Sidebar'

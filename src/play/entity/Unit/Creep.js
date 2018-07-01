@@ -1,10 +1,10 @@
 import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
-import local from '@/xjs/local'
 import random from '@/xjs/random'
 import store from '@/xjs/store'
 
 import distance from '@/play/distance'
+import local from '@/play/local'
 import render from '@/play/render'
 import animate from '@/play/render/animate'
 

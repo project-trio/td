@@ -1,7 +1,8 @@
 import bridge from '@/xjs/bridge'
-import local from '@/xjs/local'
 import store from '@/xjs/store'
 import random from '@/xjs/random'
+
+import local from '@/play/local'
 
 import Loop from '@/play/render/Loop'
 
@@ -10,7 +11,7 @@ import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
 
 import GameMap from '@/play/Game/Map'
-import Waves from '@/play/Game/Map/Waves'
+import Waves from '@/play/Game/Waves'
 
 export default class Game {
 

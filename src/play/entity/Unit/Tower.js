@@ -1,9 +1,9 @@
 import { BoxBufferGeometry, ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
-import local from '@/xjs/local'
 import store from '@/xjs/store'
 
 import distance from '@/play/distance'
+import local from '@/play/local'
 import render from '@/play/render'
 
 import towers from '@/play/data/towers'
