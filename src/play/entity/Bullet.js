@@ -23,7 +23,8 @@ for (const name in towers) {
 		continue
 	}
 	const towerData = towers[name]
-	const geometry = new SphereBufferGeometry(towerData.bulletSize || 4)
+	const bulletSize = towerData.bulletSize || 4
+	const geometry = new SphereBufferGeometry(bulletSize, bulletSize, bulletSize)
 	const material = new MeshLambertMaterial({ color: towerData.color })
 	bulletsCache[name] = [ geometry, material ]
 }
@@ -50,7 +51,7 @@ class Bullet {
 		target.healthScheduled -= data.attackDamage
 		this.moveConstant = data.bulletSpeed / local.game.tickDuration
 		if (data.bulletAcceleration) {
-			this.moveAcceleration = 0.00000005
+			this.moveAcceleration = 0.0000001
 			this.startTime = store.state.game.renderTime
 		}
 

@@ -141,8 +141,10 @@ export default {
 			{
 				traverse: [ 'body', 'rotation' ],
 				property: 'z',
+				durationMultiplier: 0.5,
 				data: {
-					to: -Math.PI,
+					to: -Math.PI / 2,
+					pow: 2,
 					removes: true,
 				},
 			},

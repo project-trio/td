@@ -106,7 +106,7 @@ export default class Tower extends Unit {
 		this.top.rotation.z = Math.random() * Math.PI * 2
 		this.top.position.z = 24
 		if (live) {
-			this.select(null)
+			this.select(true)
 			allTowers.push(this)
 			local.syncTowers.push([ tX, tY, true ])
 		}
