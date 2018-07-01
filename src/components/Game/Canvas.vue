@@ -76,12 +76,4 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-canvas
-	display block
-	position absolute
-	width 100%
-	marign-left 256px
-	height 100%
-	display inline-block
-	left 256px
 </style>

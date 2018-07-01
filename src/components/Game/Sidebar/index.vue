@@ -96,6 +96,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.sidebar
+	width 256px
+	background #2
+	color #f
+
 .stats
 	text-align right
 	height 36px
@@ -112,16 +117,6 @@ export default {
 .emoji
 	height 0
 	margin-right -2px
-
-.sidebar
-	position fixed
-	top 0
-	left 0
-	bottom 0
-	width 256px
-	background #2
-	box-sizing border-box
-	color #f
 
 .tower-box
 	width 25%
