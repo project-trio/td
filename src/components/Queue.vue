@@ -97,8 +97,8 @@ export default {
 
 	mounted () {
 		this.$nextTick(() => {
-			if (this.$util.TESTING) { //SAMPLE
-				return this.onPlaySingleplayer()
+			if (this.$util.TESTING) {
+				// return this.onPlaySingleplayer() //SAMPLE autostart
 			}
 		})
 	},

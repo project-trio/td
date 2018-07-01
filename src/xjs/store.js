@@ -8,6 +8,7 @@ const defaultGameState = () => {
 		waveCreepCount: 0,
 		playing: false,
 		finished: false,
+		finalTime: 0,
 		missingUpdate: false,
 		renderTime: 0,
 		build: 'pellet',
@@ -16,6 +17,7 @@ const defaultGameState = () => {
 			livesChange: null,
 			gold: 80,
 		},
+		highscore: 0,
 	}
 }
 
@@ -52,10 +54,29 @@ export default {
 		},
 	},
 
-	winWave (playerIds) {
-		const waveNumber = this.state.game.wave
-		for (const id of playerIds) {
-			this.state.game.players[id].waves[waveNumber - 1] = true
+	winWave (waveNumber, playerIndicies) {
+		const players = this.state.game.players
+		for (const playerIndex of playerIndicies) {
+			const player = players[playerIndex]
+			player.waves[waveNumber - 1] = true
+			player.wavesWon += 1
+			this.updateScore(player)
+		}
+	},
+
+	updateScore (player) {
+		const score = player.lives > 0 ? -20 + player.lives + player.wavesWon * 20 : 0
+		player.score = score
+		if (score === 0) {
+			let highscore = 0
+			for (const p of this.state.game.players) {
+				if (p.score > highscore) {
+					highscore = p.score
+				}
+			}
+			this.state.game.highscore = highscore
+		} else if (score > this.state.game.highscore) {
+			this.state.game.highscore = score
 		}
 	},
 
@@ -64,11 +85,6 @@ export default {
 		if (newLives >= 0) {
 			this.state.game.local.lives = newLives
 			this.state.game.local.livesChange = newLives
-			if (newLives === 0) {
-				// bridge.emit('died') //TODO
-				this.state.game.finished = true
-				this.state.game.playing = false
-			}
 		}
 	},
 

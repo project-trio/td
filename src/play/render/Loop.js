@@ -57,7 +57,7 @@ export default class Loop {
 				this.tickPanel.begin()
 			}
 
-			game.performTicks(ticksToRender)
+			game.performTicks(ticksToRender, isPlaying)
 
 			if (processUpdate) {
 				this.tickPanel.end()

@@ -1,12 +1,14 @@
 <template>
 <div class="sidebar">
 	<div class="stats">
-		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span>{{ displayTime }}</div>
+		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
 		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
 	</div>
-	<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" />
+	<transition-group name="players" tag="div" class="players-container">
+		<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
+	</transition-group>
 </div>
 </template>
 
@@ -14,9 +16,12 @@
 import towers from '@/play/data/towers'
 import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
 
+import Time from '@/components/Time'
+
 export default {
 	components: {
 		PlayerBox,
+		Time,
 	},
 
 	towers: towers.names.map(name => {
@@ -38,28 +43,12 @@ export default {
 			return this.storeStateGame.local.gold
 		},
 
-		secondsElapsed () {
-			return Math.round(this.storeStateGame.renderTime / 1000)
+		finished () {
+			return this.storeStateGame.finished
 		},
-		displayTime () {
-			let seconds = this.secondsElapsed
-			if (seconds <= 0) {
-				return -seconds
-			}
-			let minutes
-			if (seconds >= 60) {
-				minutes = Math.floor(seconds / 60)
-				seconds %= 60
-				if (minutes < 10) {
-					minutes = `0${minutes}`
-				}
-			} else {
-				minutes = '00'
-			}
-			if (seconds < 10) {
-				seconds = `0${seconds}`
-			}
-			return `${minutes}:${seconds}`
+
+		renderTime () {
+			return this.storeStateGame.renderTime
 		},
 
 		build () {
@@ -72,6 +61,10 @@ export default {
 
 		players () {
 			return this.storeStateGame.players
+		},
+
+		highscore () {
+			return this.storeStateGame.highscore
 		},
 	},
 
@@ -137,4 +130,8 @@ export default {
 	transform scale(0.89)
 	border 1px solid #9
 	box-shadow 0px 0px 8px 2px #f
+
+.players-container
+	display flex
+	flex-direction column
 </style>

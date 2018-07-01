@@ -5,6 +5,7 @@
 		Loading... {{ loading }}
 	</div>
 	<div v-else class="canvas-container">
+		<GameOverlay />
 		<GameCanvas :gameData="gameData" />
 	</div>
 </div>
@@ -17,11 +18,13 @@ import store from '@/xjs/store'
 import local from '@/play/local'
 
 import GameCanvas from '@/components/Game/Canvas'
+import GameOverlay from '@/components/Game/Overlay'
 import Sidebar from '@/components/Game/Sidebar'
 
 export default {
 	components: {
 		GameCanvas,
+		GameOverlay,
 		Sidebar,
 	},
 
@@ -55,9 +58,9 @@ export default {
 				player.score = 0
 				player.lives = 20
 				player.waves = new Array(data.waves)
+				player.wavesWon = 0
 				player.creeps = 0
 				player.towers = []
-				// player.creepsTotal = 0 //TODO?
 				if (player.id === localId) {
 					local.playerIndex = idx
 				}
@@ -95,4 +98,7 @@ export default {
 <style lang="stylus" scoped>
 .game-container
 	display flex
+
+.canvas-container
+	position relative
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="player-box" :class="{ local }">
+<div class="player-box" :class="{ local, winner }" :style="{ order: -player.score }">
 	<div class="progress-bar" :style="{ width: wavePercent+'%' }" />
 	<div class="box-contents">
 		<div class="flex-ends"><div>{{ player.name }}</div><div>{{ player.lives }}</div></div>
@@ -16,6 +16,7 @@ export default {
 		player: Object,
 		waveCreeps: Number,
 		local: Boolean,
+		winner: Boolean,
 	},
 
 	computed: {
@@ -32,8 +33,11 @@ export default {
 	padding 6px 8px
 	background #0
 	position relative
+	transition all 1s
 	&.local
 		background #212
+	&.winner
+		background #f44
 
 .progress-bar
 	position absolute
@@ -41,6 +45,9 @@ export default {
 	left 0
 	bottom 0
 	background #226
+
+.player-box.winner .progress-bar
+	display none !important
 
 .box-contents
 	position relative

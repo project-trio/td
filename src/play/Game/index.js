@@ -24,6 +24,7 @@ export default class Game {
 
 		this.updateCount = 0
 		this.updateQueue = {}
+		this.lastUpdate = false
 
 		this.renderedSinceUpdate = false
 		this.ticksRendered = 0
@@ -37,7 +38,6 @@ export default class Game {
 		this.serverUpdate = -1
 		this.updatesUntilStart = data.updatesUntilStart
 
-		this.started = true
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
 		this.lastTickTime = performance.now()
 
@@ -55,28 +55,29 @@ export default class Game {
 		return Math.floor((currentTime - this.lastTickTime - tickOffsetTime) / this.tickDuration)
 	}
 
-	performTicks (ticksToRender) {
+	performTicks (ticksToRender, playing) {
+		const gameState = store.state.game
 		let renderTime
 		let ticksRenderedForFrame = 0
 		const maxTicksToRender = ticksToRender > 9 ? Math.min(1000, Math.pow(ticksToRender, 0.75)) : 1
 		while (ticksToRender > 0) {
 			renderTime = this.ticksRendered * this.tickDuration
-			store.state.game.renderTime = renderTime
+			gameState.renderTime = renderTime
 
 			const ticksFromUpdate = this.ticksRendered % this.ticksPerUpdate
 			if (ticksFromUpdate === 0) {
 				if (this.dequeueUpdate(renderTime)) {
-					store.state.game.missingUpdate = false
+					gameState.missingUpdate = false
 				} else {
 					this.tickOffsets += 1
 					if (renderTime > 0 && ticksToRender > this.ticksPerUpdate) {
-						store.state.game.missingUpdate = true
+						gameState.missingUpdate = true
 					}
 					// console.log('Missing update', ticksToRender, tickOffsets)
 					break
 				}
 			}
-			if (renderTime > 0) {
+			if (playing && renderTime > 0) {
 				Bullet.update(renderTime, this.tickDuration, false)
 				Creep.update(renderTime, this.tickDuration, false)
 				Tower.update(renderTime, this.tickDuration, false)
@@ -84,10 +85,13 @@ export default class Game {
 
 				if (ticksFromUpdate === Math.floor(this.ticksPerUpdate / 2)) {
 					const data = { creeps: this.waves.creepCount }
-					const livesChange = store.state.game.local.livesChange
+					const livesChange = gameState.local.livesChange
 					if (livesChange !== null) {
 						data.lives = livesChange
-						store.state.game.local.livesChange = null
+						gameState.local.livesChange = null
+						if (livesChange <= 0) {
+							gameState.playing = false
+						}
 					}
 					if (local.syncTowers.length) {
 						data.towers = local.syncTowers
@@ -122,21 +126,32 @@ export default class Game {
 		this.updateQueue[this.updateCount] = null
 		this.updateCount += 1
 
-		if (nextUpdate.length) {
-			store.winWave(nextUpdate)
-			this.waves.spawn(renderTime)
+		const nextWave = nextUpdate[0]
+		if (nextWave) {
+			const winners = nextUpdate[1]
+			if (winners) {
+				store.winWave(nextWave, winners)
+			} else {
+				this.waves.spawn(renderTime)
+			}
+		}
+		if (this.lastUpdate) {
+			this.finish()
 		}
 		return true
 	}
 
 	// Play
 
-	enqueueUpdate (update, actions) {
+	enqueueUpdate (update, actions, finished) {
 		if (update >= 9 && this.updatePanel) {
 			if (update > 9) {
 				this.updatePanel.end()
 			}
 			this.updatePanel.begin()
+		}
+		if (finished) {
+			this.lastUpdate = true
 		}
 		this.serverUpdate = update
 		this.updateQueue[update] = actions
@@ -158,6 +173,11 @@ export default class Game {
 		store.state.game.playing = true
 
 		this.waves.spawn(0) //TODO renderTime?
+	}
+
+	finish () {
+		store.state.game.finished = true
+		store.state.game.playing = false
 	}
 
 	// Setup

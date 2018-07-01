@@ -28,7 +28,7 @@ export default {
 		bridge.on('server update', (data) => {
 			const game = local.game
 			const gameState = store.state.game
-			if (game && !gameState.finished) {
+			if (game) {
 				const update = data.update
 				if (game.serverUpdate !== update - 1) {
 					console.error('Invalid update', game.serverUpdate, update)
@@ -39,13 +39,18 @@ export default {
 					const state = data.states[pidx]
 					if (state.lives !== undefined) {
 						player.lives = state.lives
+						store.updateScore(player)
 					}
 					player.creeps = state.creeps
 					if (state.towers) {
 						player.towers = state.towers
 					}
 				}
-				game.enqueueUpdate(update, data.actions)
+				const finished = data.finished
+				if (finished) {
+					gameState.finalTime = finished
+				}
+				game.enqueueUpdate(update, data.actions, finished)
 				bridge.emit('updated', { update })
 			}
 		})
@@ -76,4 +81,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+canvas
+	display block
 </style>
