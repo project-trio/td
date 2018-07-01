@@ -7,6 +7,7 @@ const defaultGameState = () => {
 		wave: 0,
 		waveCreepCount: 0,
 		playing: false,
+		finished: false,
 		missingUpdate: false,
 		renderTime: 0,
 		build: 'pellet',
@@ -55,6 +56,19 @@ export default {
 		const waveNumber = this.state.game.wave
 		for (const id of playerIds) {
 			this.state.game.players[id].waves[waveNumber - 1] = true
+		}
+	},
+
+	loseLife () {
+		const newLives = this.state.game.local.lives - 1
+		if (newLives >= 0) {
+			this.state.game.local.lives = newLives
+			this.state.game.local.livesChange = newLives
+			if (newLives === 0) {
+				// bridge.emit('died') //TODO
+				this.state.game.finished = true
+				this.state.game.playing = false
+			}
 		}
 	},
 

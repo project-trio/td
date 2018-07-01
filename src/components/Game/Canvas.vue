@@ -26,12 +26,13 @@ export default {
 	beforeCreate () {
 		bridge.on('server update', (data) => {
 			const game = local.game
-			if (game && !game.finished) {
+			const gameState = store.state.game
+			if (game && !gameState.finished) {
 				const update = data.update
 				if (game.serverUpdate !== update - 1) {
 					console.error('Invalid update', game.serverUpdate, update)
 				}
-				const players = store.state.game.players
+				const players = gameState.players
 				for (let pidx = players.length - 1; pidx >= 0; pidx -= 1) {
 					const player = players[pidx]
 					const state = data.states[pidx]

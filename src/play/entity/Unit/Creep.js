@@ -1,5 +1,6 @@
 import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
 
+import local from '@/xjs/local'
 import random from '@/xjs/random'
 import store from '@/xjs/store'
 
@@ -214,8 +215,7 @@ export default class Creep extends Unit {
 					: positionX > gameMap.killX
 			if (escaped) {
 				this.die(renderTime, false)
-				store.state.game.local.lives -= 1
-				store.state.game.local.livesChange = store.state.game.local.lives
+				store.loseLife()
 			}
 		}
 
@@ -246,7 +246,7 @@ export default class Creep extends Unit {
 
 	destroy (renderTime) {
 		const childrenKilled = this.killed ? 0 : this.stats.children
-		gameMap.waves.killCreep(renderTime, childrenKilled)
+		local.game.waves.killCreep(renderTime, childrenKilled)
 
 		super.destroy()
 	}

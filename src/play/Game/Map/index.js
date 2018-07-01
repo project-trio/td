@@ -10,7 +10,6 @@ import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
 
 import Paths from '@/play/Game/Map/Paths'
-import Waves from '@/play/Game/Map/Waves'
 
 const TILE_SIZE = 28
 const TILES_WIDE = 22
@@ -43,7 +42,6 @@ export default class GameMap {
 		this.container.interactive = true
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
-		this.waves = new Waves(this.paths.entrances)
 
 		Tower.init(TILE_SIZE)
 		Creep.init(this, TILE_SIZE)
@@ -204,10 +202,6 @@ export default class GameMap {
 			return null
 		}
 		return this.tileBlocked(result) ? null : result
-	}
-
-	spawn (renderTime) {
-		this.waves.spawn(renderTime, store.state.game.wave)
 	}
 
 }

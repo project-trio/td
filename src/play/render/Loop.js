@@ -39,12 +39,13 @@ export default class Loop {
 
 	animate (timestamp) {
 		const game = this.game
-		if (!game || game.finished) {
+		const gameState = store.state.game
+		if (!game || gameState.finished) {
 			return
 		}
 		this.animationId = window.requestAnimationFrame(this.animateThis)
 
-		const isPlaying = store.state.game.playing
+		const isPlaying = gameState.playing
 		if (isPlaying && this.framePanel) {
 			this.framePanel.begin()
 		}
@@ -62,13 +63,13 @@ export default class Loop {
 				this.tickPanel.end()
 			}
 			this.lastTickTime = timestamp
-			renderTime = store.state.game.renderTime
+			renderTime = gameState.renderTime
 		} else if (isPlaying) { // Tween
 			if (storeSettings.fpsCap) {
 				return
 			}
 			const tweenTimeDelta = timestamp - this.previousTimestamp
-			renderTime = store.state.game.renderTime + (timestamp - this.lastTickTime)
+			renderTime = gameState.renderTime + (timestamp - this.lastTickTime)
 			Bullet.update(renderTime, tweenTimeDelta, true)
 			Creep.update(renderTime, tweenTimeDelta, true)
 			Tower.update(renderTime, tweenTimeDelta, true)

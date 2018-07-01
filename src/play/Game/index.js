@@ -10,6 +10,7 @@ import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
 
 import GameMap from '@/play/Game/Map'
+import Waves from '@/play/Game/Map/Waves'
 
 export default class Game {
 
@@ -32,7 +33,6 @@ export default class Game {
 		this.updateDuration = data.updateDuration
 		this.ticksPerUpdate = this.updateDuration / this.tickDuration
 
-		this.finished = false
 		this.serverUpdate = -1
 		this.updatesUntilStart = data.updatesUntilStart
 
@@ -41,7 +41,10 @@ export default class Game {
 		this.lastTickTime = performance.now()
 
 		this.map = new GameMap(this.container)
+		this.waves = new Waves(this.map.paths.entrances, data.waves, data.creepMode)
 		this.loop = new Loop(this)
+
+		Creep.init(this.map)
 	}
 
 	// Update
@@ -76,10 +79,10 @@ export default class Game {
 				Bullet.update(renderTime, this.tickDuration, false)
 				Creep.update(renderTime, this.tickDuration, false)
 				Tower.update(renderTime, this.tickDuration, false)
-				this.map.waves.update(renderTime)
+				this.waves.update(renderTime)
 
 				if (ticksFromUpdate === Math.floor(this.ticksPerUpdate / 2)) {
-					const data = { creeps: this.map.waves.creepCount }
+					const data = { creeps: this.waves.creepCount }
 					const livesChange = store.state.game.local.livesChange
 					if (livesChange !== null) {
 						data.lives = livesChange
@@ -120,7 +123,7 @@ export default class Game {
 
 		if (nextUpdate.length) {
 			store.winWave(nextUpdate)
-			this.map.waves.spawn(renderTime)
+			this.waves.spawn(renderTime)
 		}
 		return true
 	}
@@ -153,7 +156,7 @@ export default class Game {
 		}
 		store.state.game.playing = true
 
-		this.map.spawn(0) //TODO renderTime?
+		this.waves.spawn(0) //TODO renderTime?
 	}
 
 	// Setup
@@ -164,11 +167,6 @@ export default class Game {
 		store.resetGameState()
 		Creep.destroy()
 		Tower.destroy()
-	}
-
-	end () {
-		this.finished = true
-		store.state.game.playing = false
 	}
 
 	updatePlayer (gameData) {

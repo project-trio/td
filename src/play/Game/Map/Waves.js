@@ -10,17 +10,20 @@ const CREEP_TYPE_COUNT = creeps.length
 
 export default class Waves {
 
-	constructor (spawnPoints) {
-		Creep.init()
+	constructor (spawnPoints, totalWaveCount, creepMode) {
 		this.spawning = []
 		this.count = 0
 		this.spawnPoints = spawnPoints
 		this.waveStart = 0
 		this.creepCount = 0
+		this.max = totalWaveCount
 	}
 
 	spawn (renderTime) {
 		const waveNumber = this.count + 1
+		if (waveNumber > this.max) {
+			return console.log('Waves finished')
+		}
 		store.state.game.wave = waveNumber
 		this.count = waveNumber
 		const waveIndex = waveNumber - 1
@@ -84,7 +87,6 @@ export default class Waves {
 				}
 			}
 		}
-
 	}
 
 	killCreep (renderTime, children) {
