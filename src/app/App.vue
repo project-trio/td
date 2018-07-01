@@ -1,11 +1,20 @@
 <template>
 <div id="app">
+	<div v-if="reconnectAttempts !== null" class="overlay">
+		<h1>{{ reconnectAttempts }} attempts to reconnect</h1>
+	</div>
 	<router-view/>
 </div>
 </template>
 
 <script>
 export default {
+	computed: {
+		reconnectAttempts () {
+			return this.$store.state.signin.reconnect
+		},
+	},
+
 	created () {
 		window.addEventListener('contextmenu', this.onRightClick, true)
 	},
@@ -31,6 +40,19 @@ body
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	color #2
+
+.overlay
+	position fixed
+	top 0
+	left 0
+	right 0
+	bottom 0
+	z-index 9001
+	background rgba(#f, 0.5)
+	color #e33
+	display flex
+	justify-content center
+	align-items center
 
 //INPUT
 
@@ -71,4 +93,7 @@ button
 
 .text-faint
 	color #9
+
+.text-center
+	text-align center
 </style>

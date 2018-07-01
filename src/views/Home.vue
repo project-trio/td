@@ -17,10 +17,9 @@ export default {
 		Queue,
 	},
 
-	beforeCreate () {
-		bridge.emit('lobby', true, (names) => {
-			this.$store.state.queue.names = names
-		})
+	created () {
+		this.connect()
+		bridge.on('reconnect', this.connect)
 
 		bridge.on('queue join', (name) => {
 			this.$store.state.queue.names.push(name)
@@ -44,8 +43,18 @@ export default {
 	},
 
 	beforeDestroy () {
+		bridge.off('reconnect', this.connect)
 		bridge.off('queue join')
 		bridge.off('queue leave')
+		bridge.off('joined game')
+	},
+
+	methods: {
+		connect () {
+			bridge.emit('lobby', true, (names) => {
+				this.$store.state.queue.names = names
+			})
+		},
 	},
 }
 </script>

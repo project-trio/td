@@ -82,7 +82,6 @@ export default {
 			this.setReadyTimer(enough)
 			if (!enough && this.readyRequested) {
 				this.readyRequested = false
-				window.alert('Another player did not respond, and has been removed from the queue.')
 			}
 		},
 
@@ -101,13 +100,23 @@ export default {
 				// return this.onPlaySingleplayer() //SAMPLE autostart
 			}
 		})
+
+		bridge.on('disconnect', this.disconnect)
 	},
 
 	beforeDestroy () {
+		bridge.off('disconnect', this.disconnect)
 		this.setReadyTimer(false)
 	},
 
 	methods: {
+		disconnect () {
+			this.cancelTimer()
+			if (this.multiplayer) {
+				this.onMultiplayer(false)
+			}
+		},
+
 		onMultiplayer (multiplayer) {
 			this.readyRequested = false
 			this.multiplayer = multiplayer
