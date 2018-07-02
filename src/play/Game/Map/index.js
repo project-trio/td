@@ -3,6 +3,7 @@ import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBas
 import store from '@/xjs/store'
 
 import render from '@/play/render'
+import animate from '@/play/render/animate'
 
 import towers from '@/play/data/towers'
 
@@ -83,15 +84,48 @@ export default class GameMap {
 			ground.add(mesh)
 		}
 
-		const lineGeometry = new Geometry()
-		lineGeometry.vertices.push(new Vector3(-TILE_SIZE, 0, 0))
-		lineGeometry.vertices.push(new Vector3(TILE_SIZE, 0, 0))
-		lineGeometry.vertices.push(new Vector3(0, -TILE_SIZE + 0, 0))
-		lineGeometry.vertices.push(new Vector3(0, TILE_SIZE + 0, 0))
-		lineGeometry.translate(EX * TILE_SIZE + 0.5, -EY * TILE_SIZE, 0)
 		const lineMaterial = new LineBasicMaterial({ color: 0xeeeeee })
-		const lines = new LineSegments(lineGeometry, lineMaterial)
-		ground.add(lines)
+		const crossGeometry = new Geometry()
+		crossGeometry.vertices.push(new Vector3(-TILE_SIZE * 2, 0, 0))
+		crossGeometry.vertices.push(new Vector3(TILE_SIZE * 2, 0, 0))
+		crossGeometry.vertices.push(new Vector3(0, -TILE_SIZE + 0, 0))
+		crossGeometry.vertices.push(new Vector3(0, TILE_SIZE + 0, 0))
+		crossGeometry.translate(EX * TILE_SIZE + 0.5, -EY * TILE_SIZE, 0)
+
+		const pathsGeometry = new Geometry()
+		for (const [ mX, mY ] of [ [1, 1], [1, -1], [-1, 1], [-1, -1] ]) {
+			const enterX = mX * ENTRANCE_SIZE / 2 + EX
+			const enterY = mY * ENTRANCE_SIZE / 2 - EY
+			const offX = mX < 0 ? 0.5 : 0
+			const offY = mY < 0 ? -0.5 : 0
+			pathsGeometry.vertices.push(new Vector3(enterX * TILE_SIZE + offX, enterY * TILE_SIZE + offY, 0))
+			pathsGeometry.vertices.push(new Vector3((enterX + mX * 2) * TILE_SIZE + offX, enterY * TILE_SIZE + offY, 0))
+
+			pathsGeometry.vertices.push(new Vector3(enterX * TILE_SIZE + offX, enterY * TILE_SIZE + offY, 0))
+			pathsGeometry.vertices.push(new Vector3(enterX * TILE_SIZE + offX, (enterY + mY * 1) * TILE_SIZE + offY, 0))
+		}
+
+		const crossLines = new LineSegments(crossGeometry, lineMaterial.clone())
+		const pathLines = new LineSegments(pathsGeometry, lineMaterial.clone())
+		ground.add(crossLines)
+		ground.add(pathLines)
+
+		animate.add(pathLines, 'opacity', {
+			start: -2000,
+			duration: 2000,
+			to: 0,
+			pow: 0.5,
+			removes: true,
+			onComplete () {
+				ground.remove(pathLines)
+			},
+		})
+		animate.add(crossLines, 'opacity', {
+			start: -2000,
+			duration: 2000,
+			from: 0,
+			to: 1,
+		})
 
 		let cx = null, cy = null
 		ground.onHover = () => {}
@@ -152,7 +186,7 @@ export default class GameMap {
 			if (placement.blocked || !placement.visible || !this.paths.update(Creep.all())) {
 				return
 			}
-			const towerName = store.state.game.build
+			const towerName = store.state.game.build || 'pellet'
 			const towerData = towers[towerName]
 			const cost = towerData.cost[0]
 			if (cost > store.state.game.local.gold) {
@@ -176,9 +210,11 @@ export default class GameMap {
 			this.placement.current.visible = false
 		}
 		const tower = this.placement.towers[name]
-		tower.visible = true
-		tower.rotation.z = Math.random() * Math.PI * 2
-		this.placement.current = tower
+		if (tower) {
+			tower.visible = true
+			tower.rotation.z = Math.random() * Math.PI * 2
+			this.placement.current = tower
+		}
 	}
 
 	removeTower (tower) {

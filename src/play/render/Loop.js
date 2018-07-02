@@ -50,7 +50,7 @@ export default class Loop {
 			this.framePanel.begin()
 		}
 		const ticksToRender = game.calculateTicksToRender(timestamp)
-		let renderTime
+		let renderTime = null
 		if (ticksToRender > 0) {
 			const processUpdate = isPlaying && this.tickPanel
 			if (processUpdate) {
@@ -77,7 +77,9 @@ export default class Loop {
 			Tower.update(null)
 		}
 
-		animate.update(renderTime)
+		if (renderTime !== null) {
+			animate.update(renderTime)
+		}
 		game.renderer.update()
 
 		if (this.framePanel && isPlaying) {
