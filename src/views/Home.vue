@@ -21,14 +21,16 @@ export default {
 		this.connect()
 		bridge.on('reconnect', this.connect)
 
-		bridge.on('queue join', (name) => {
-			this.$store.state.queue.names.push(name)
-		})
-		bridge.on('queue leave', (name) => {
+		bridge.on('queued', ([ name, queuing ]) => {
 			const names = this.$store.state.queue.names
 			const index = names.indexOf(name)
-			if (index !== -1) {
-				names.splice(index, 1)
+			const alreadyQueued = index !== -1
+			if (alreadyQueued !== queuing) {
+				if (queuing) {
+					names.push(name)
+				} else {
+					names.splice(index, 1)
+				}
 			}
 		})
 
@@ -44,8 +46,7 @@ export default {
 
 	beforeDestroy () {
 		bridge.off('reconnect', this.connect)
-		bridge.off('queue join')
-		bridge.off('queue leave')
+		bridge.off('queued')
 		bridge.off('joined game')
 	},
 
