@@ -13,7 +13,7 @@ const defaultGameState = () => {
 		finalTime: 0,
 		missingUpdate: false,
 		renderTime: 0,
-		build: 'pellet',
+		build: null,
 		local: {
 			lives: 20,
 			livesChange: null,

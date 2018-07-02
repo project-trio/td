@@ -64,7 +64,7 @@ export default class Tower extends Unit {
 			this.target = null
 			this.firedAt = 0
 			this.targets = stats.targets
-			this.crackle = false
+			this.crackle = name === 'snap' ? false : null
 			this.multi = stats.multi
 
 			this.level = 0
@@ -114,6 +114,16 @@ export default class Tower extends Unit {
 		}
 	}
 
+	detonate () {
+		console.log(this.crackle, this.dead)
+		if (this.crackle !== false) {
+			return false
+		}
+		this.crackle = true
+		this.dead = true
+		return true
+	}
+
 	deselect (manual) {
 		const currentSelection = local.game.selection
 		if (currentSelection) {
@@ -122,10 +132,7 @@ export default class Tower extends Unit {
 				parent.remove(currentSelection.mesh)
 			}
 			if (currentSelection.id === this.id) {
-				if (this.name === 'snap') {
-					this.crackle = true
-					this.dead = true
-				} else {
+				if (!manual || !this.detonate()) {
 					local.game.selection = null
 				}
 				return manual
@@ -145,6 +152,7 @@ export default class Tower extends Unit {
 		this.container.add(selectionMesh)
 		local.game.selection = {
 			id: this.id,
+			tower: this,
 			mesh: selectionMesh,
 		}
 	}
@@ -155,13 +163,17 @@ export default class Tower extends Unit {
 			this.select(true)
 			break
 		case 1:
-			this.dead = true
+			this.sell()
 			break
 		case 2:
 			this.upgrade()
 			break
 		}
 		return true
+	}
+
+	sell () {
+		this.dead = true
 	}
 
 	upgrade () {
@@ -407,14 +419,14 @@ Tower.update = (renderTime, timeDelta, tweening) => {
 	for (let idx = allTowers.length - 1; idx >= 0; idx -= 1) {
 		const tower = allTowers[idx]
 		if (tower.dead) {
-			const selection = local.game.selection
-			if (selection && selection.id === tower.id) {
-				local.game.selection = null
-			}
 			if (tower.crackle && !tower.pop()) {
 				tower.crackle = false
 				tower.dead = false
 				continue
+			}
+			const selection = local.game.selection
+			if (selection && selection.id === tower.id) {
+				local.game.selection = null
 			}
 			tower.destroy(renderTime)
 			allTowers.splice(idx, 1)

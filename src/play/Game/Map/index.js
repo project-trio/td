@@ -59,7 +59,7 @@ export default class GameMap {
 		Tower.init(TILE_SIZE, placement)
 		Creep.init(this, TILE_SIZE)
 
-		this.setTowerName('pellet')
+		this.setTowerName(store.state.game.build)
 
 		const walls = [
 			[ 0,              0,              1,             TTH - EH - EY ],

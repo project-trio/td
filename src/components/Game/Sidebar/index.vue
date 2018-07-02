@@ -4,7 +4,7 @@
 		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-		<button @click="onTower(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
+		<button @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
 	</div>
 	<transition-group name="players" tag="div" class="players-container">
 		<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
@@ -13,7 +13,9 @@
 </template>
 
 <script>
+import local from '@/play/local'
 import towers from '@/play/data/towers'
+
 import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
 
 import Time from '@/components/Time'
@@ -69,9 +71,51 @@ export default {
 		},
 	},
 
+	created () {
+		this.storeStateGame.build = this.$options.towers[0].name
+	},
+
+	mounted () {
+		window.addEventListener('keydown', this.keydown)
+	},
+
+	beforeDestroy () {
+		window.removeEventListener('keydown', this.keydown)
+	},
+
 	methods: {
-		onTower (name) {
+		keydown (event) {
+			if (event.repeat) {
+				return false
+			}
+			const keyCode = event.which || event.keyCode
+			if (keyCode >= 49 && keyCode <= 56) {
+				const tower = this.$options.towers[keyCode - 49]
+				this.setTowerName(tower.name)
+			} else {
+				const selection = local.game.selection
+				if (selection) {
+					if (keyCode === 83) {
+						selection.tower.sell()
+					} else if (keyCode === 85) {
+						selection.tower.upgrade()
+					} else if (keyCode === 70) {
+						selection.tower.detonate()
+					}
+				}
+			}
+		},
+
+		setTowerName (name) {
 			this.storeStateGame.build = name
+			const game = local.game
+			if (game) {
+				game.map.setTowerName(name)
+			}
+		},
+
+		onTower (name) {
+			this.setTowerName(name)
 		},
 
 		color (tower) {
