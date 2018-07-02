@@ -67,7 +67,7 @@ export default {
 	},
 
 	updateScore (player) {
-		const score = player.lives > 0 ? -20 + player.lives + player.wavesWon * 20 : 0
+		const score = player.lives > 0 ? -20 + player.lives + player.wavesWon * 10 : 0
 		player.score = score
 		if (score === 0) {
 			let highscore = 0
