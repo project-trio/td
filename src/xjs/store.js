@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 import storage from '@/xjs/storage'
 
 const defaultGameState = () => {
@@ -58,7 +60,7 @@ export default {
 		const players = this.state.game.players
 		for (const playerIndex of playerIndicies) {
 			const player = players[playerIndex]
-			player.waves[waveNumber - 1] = true
+			Vue.set(player.waves, waveNumber - 1, true)
 			player.wavesWon += 1
 			this.updateScore(player)
 		}
