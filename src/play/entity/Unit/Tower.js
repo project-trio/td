@@ -24,7 +24,7 @@ let upgradeGeometry, upgradeSize
 
 const rangesCache = {}
 const turretMaterialsCache = {}
-const rangeMaterial = new MeshBasicMaterial({ color: 0xffffff })
+const rangeMaterial = new MeshBasicMaterial({ color: 0xeeeeee })
 for (const name in towers) {
 	if (name === 'names') {
 		continue
@@ -81,15 +81,16 @@ export default class Tower extends Unit {
 			if (slowStats) {
 				this.slow = stats.slow[0]
 			}
+
+			this.backing = new Mesh(backingGeometry, backingMaterial)
+			this.backing.position.z = 2
+			this.backing.receiveShadow = true
+			this.backing.owner = this
+			this.container.add(this.backing)
 		}
 
-		this.backing = new Mesh(backingGeometry, backingMaterial)
-		this.backing.position.z = 1
-		this.backing.receiveShadow = true
-		this.backing.owner = this
 		const outline = new Mesh(baseGeometry, baseMaterial)
 		outline.castShadow = true
-		this.container.add(this.backing)
 		this.container.add(outline)
 
 		this.top = render.group(this.container)
@@ -105,6 +106,7 @@ export default class Tower extends Unit {
 
 		this.top.rotation.z = Math.random() * Math.PI * 2
 		this.top.position.z = 24
+
 		if (live) {
 			this.select(true)
 			allTowers.push(this)
@@ -139,7 +141,7 @@ export default class Tower extends Unit {
 
 		const cacheGeometry = rangesCache[this.range]
 		const selectionMesh = new Mesh(cacheGeometry, rangeMaterial)
-		selectionMesh.position.z = 10
+		selectionMesh.position.z = 1
 		this.container.add(selectionMesh)
 		local.game.selection = {
 			id: this.id,
@@ -332,7 +334,7 @@ const roundedRect = (width, r) => {
 	return o
 }
 
-Tower.init = (_tileSize) => {
+Tower.init = (_tileSize, placeholder) => {
 	TILE_SIZE = _tileSize
 	allTowers = []
 
@@ -356,6 +358,45 @@ Tower.init = (_tileSize) => {
 	turretGeometry = new ConeBufferGeometry(TILE_SIZE / 3, turretLength,  TILE_SIZE / 4)
 	turretGeometry.translate(0, turretLength / 2 - 4, 0)
 	globeGeometry = new SphereBufferGeometry(TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE / 2)
+
+	const towerPlaceholders = {}
+	const outlineMaterial = baseMaterial.clone()
+	outlineMaterial.transparent = true
+	outlineMaterial.opacity = 0.5
+	const outline = new Mesh(baseGeometry, outlineMaterial)
+	placeholder.add(outline)
+
+	for (const name in towers) {
+		if (name !== 'names') {
+			const towerData = towers[name]
+			const turretGroup = render.group(placeholder)
+			let turret
+			const material = turretMaterialsCache[name].clone()
+			material.transparent = true
+			material.opacity = 0.5
+			if (towerData.targets) {
+				turret = new Mesh(turretGeometry, material)
+				turret.rotation.z = -Math.PI / 2
+			} else {
+				turret = new Mesh(globeGeometry, material)
+			}
+			turret.position.z = 24
+
+			const rangeGeometry = rangesCache[towerData.range[0]]
+			const rangeMaterialClone = rangeMaterial.clone()
+			rangeMaterialClone.transparent = true
+			rangeMaterialClone.opacity = 0.5
+			const rangeMesh = new Mesh(rangeGeometry, rangeMaterialClone)
+			rangeMesh.position.z = 1
+			turretGroup.add(rangeMesh)
+
+			turretGroup.add(turret)
+			placeholder.add(turretGroup)
+			turretGroup.visible = false
+			towerPlaceholders[name] = turretGroup
+		}
+	}
+	placeholder.towers = towerPlaceholders
 }
 
 Tower.destroy = () => {

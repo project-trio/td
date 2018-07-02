@@ -39,12 +39,8 @@ export default class GameMap {
 		const TTH = TILES_TALL / 2
 
 		this.container = render.group(parent)
-		this.container.interactive = true
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
-
-		Tower.init(TILE_SIZE)
-		Creep.init(this, TILE_SIZE)
 
 		const groundGeometry = new PlaneBufferGeometry(MAP_WIDTH, MAP_HEIGHT)
 		const groundMaterial = new MeshLambertMaterial({ color: 0x77aa80 }) //0xccbb99
@@ -52,6 +48,18 @@ export default class GameMap {
 		this.container.add(ground)
 		ground.receiveShadow = true
 		ground.owner = ground
+
+		const placementGeometry = new PlaneBufferGeometry(TILE_SIZE * 2, TILE_SIZE * 2)
+		const placementMaterial = new MeshBasicMaterial({ color: 0xffffff })
+		const placement = new Mesh(placementGeometry, placementMaterial)
+		ground.add(placement)
+		placement.visible = false
+		this.placement = placement
+
+		Tower.init(TILE_SIZE, placement)
+		Creep.init(this, TILE_SIZE)
+
+		this.setTowerName('pellet')
 
 		const walls = [
 			[ 0,              0,              1,             TTH - EH - EY ],
@@ -72,14 +80,8 @@ export default class GameMap {
 			mesh.position.set(wall[0] * TILE_SIZE - MAP_WIDTH / 2 + ww / 2, wall[1] * TILE_SIZE - MAP_HEIGHT / 2 + wh / 2, WALL_HEIGHT)
 			mesh.castShadow = true
 			// mesh.receiveShadow = true
-			this.container.add(mesh)
+			ground.add(mesh)
 		}
-
-		const placementGeometry = new PlaneBufferGeometry(TILE_SIZE * 2, TILE_SIZE * 2)
-		const placementMaterial = new MeshBasicMaterial({ color: 0xffffff })
-		const placement = new Mesh(placementGeometry, placementMaterial)
-		ground.add(placement)
-		placement.visible = false
 
 		const lineGeometry = new Geometry()
 		lineGeometry.vertices.push(new Vector3(-TILE_SIZE, 0, 0))
@@ -130,7 +132,7 @@ export default class GameMap {
 				const blocked = !this.paths.update()
 				if (blocked !== placement.blocked) {
 					placement.blocked = blocked
-					placement.material.color.setHex(blocked ? 0xdd8855 : 0x99dd66)
+					placement.material.color.setHex(blocked ? 0xdd8855 : 0x99dd88)
 				}
 			}
 		}
@@ -167,6 +169,16 @@ export default class GameMap {
 			cx = null
 			return true
 		}
+	}
+
+	setTowerName (name) {
+		if (this.placement.current) {
+			this.placement.current.visible = false
+		}
+		const tower = this.placement.towers[name]
+		tower.visible = true
+		tower.rotation.z = Math.random() * Math.PI * 2
+		this.placement.current = tower
 	}
 
 	removeTower (tower) {
