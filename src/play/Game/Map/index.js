@@ -180,19 +180,24 @@ export default class GameMap {
 		}
 
 		ground.onClick = (point, button) => {
-			if (button === 2) {
+			if (button !== 0) {
+				return
+			}
+			const gameState = store.state.game
+			if (gameState.overlay) {
+				gameState.overlay = null
 				return
 			}
 			if (placement.blocked || !placement.visible || !this.paths.update(Creep.all())) {
 				return
 			}
-			const towerName = store.state.game.build || 'pellet'
+			const towerName = gameState.build || 'pellet'
 			const towerData = towers[towerName]
 			const cost = towerData.cost[0]
-			if (cost > store.state.game.local.gold) {
+			if (cost > gameState.local.gold) {
 				return
 			}
-			store.state.game.local.gold -= cost
+			gameState.local.gold -= cost
 			placement.visible = false
 			new Tower(towerName, towerData, this.container, cx, cy, placement.position.x, placement.position.y)
 			this.paths.toggleTower(cx, cy, true)

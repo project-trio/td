@@ -20,6 +20,7 @@ const defaultGameState = () => {
 			gold: 80,
 		},
 		highscore: 0,
+		overlay: null,
 	}
 }
 
