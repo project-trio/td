@@ -43,6 +43,9 @@ export default {
 
 		winners () {
 			const highscore = this.highscore
+			if (highscore <= 0) {
+				return []
+			}
 			return this.$store.state.game.players.filter(p => p.score === highscore).map(p => p.name)
 		},
 
