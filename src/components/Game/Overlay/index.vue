@@ -5,7 +5,7 @@
 			<span v-if="winners.length">{{ localWinner ? 'You' : winners.join(', ') }} won in <Time :duration="finalTime" />!</span>
 			<span v-else>Game over</span>
 		</h1>
-		<h1 v-else>Waiting for others to finish...</h1>
+		<h1 v-else>Waiting{{ players.length > 1 ? ' for others to finish' : '' }}...</h1>
 		<p v-if="!lives">You let too many creeps escape. Keep an eye on your lives next time!</p>
 		<button @click="onLeave" class="big">Leave</button>
 	</div>
@@ -41,12 +41,16 @@ export default {
 			return this.winners.length === 1 && this.winners[0] === this.$store.state.signin.user.name
 		},
 
+		players () {
+			return this.$store.state.game.players
+		},
+
 		winners () {
 			const highscore = this.highscore
 			if (highscore <= 0) {
 				return []
 			}
-			return this.$store.state.game.players.filter(p => p.score === highscore).map(p => p.name)
+			return this.players.filter(p => p.score === highscore).map(p => p.name)
 		},
 
 		highscore () {
