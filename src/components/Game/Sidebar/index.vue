@@ -60,7 +60,8 @@ export default {
 		},
 
 		players () {
-			return this.storeStateGame.players
+			const result = Array.apply(null, this.storeStateGame.players)
+			return result.sort((a, b) => b.score - a.score)
 		},
 
 		highscore () {
@@ -131,7 +132,6 @@ export default {
 	border 1px solid #9
 	box-shadow 0px 0px 8px 2px #f
 
-.players-container
-	display flex
-	flex-direction column
+.players-move
+	transition transform 500ms ease-out
 </style>

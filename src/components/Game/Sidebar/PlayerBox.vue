@@ -1,5 +1,5 @@
 <template>
-<div class="player-box" :class="{ local, winner }" :style="{ order: -player.score }">
+<div class="player-box" :class="{ local, winner }">
 	<div class="progress-bar" :style="{ width: wavePercent+'%' }" />
 	<div class="box-contents">
 		<div class="flex-ends"><div>{{ player.name }}</div><div>{{ player.lives }}</div></div>
@@ -33,7 +33,6 @@ export default {
 	padding 6px 8px
 	background #0
 	position relative
-	transition all 1s
 	&.local
 		background #212
 	&.winner
