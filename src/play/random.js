@@ -2,14 +2,20 @@ const seedrandom = require('seedrandom')
 
 let rng
 
+const index = (count) => {
+	return Math.floor(rng() * count)
+}
+
 export default {
 
 	init (seed) {
 		rng = seedrandom(seed)
 	},
 
+	index,
+
 	choose (items) {
-		return items[Math.floor(rng() * items.length)]
+		return items[index(items.length)]
 	},
 
 	shuffle (array) {
