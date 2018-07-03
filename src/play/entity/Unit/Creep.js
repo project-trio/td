@@ -269,6 +269,8 @@ export default class Creep extends Unit {
 				return
 			}
 			this.body.castShadow = false
+			this.healthBacking.material.transparent = true
+			this.healthBacking.material.opacity = 0.67
 		}
 		this.applyAnimations(renderTime, killed ? 'kill' : 'leak', deathDuration)
 	}

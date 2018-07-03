@@ -33,7 +33,6 @@ const kill = [
 		traverse: [ 'healthBacking' ],
 		property: 'opacity',
 		data: {
-			from: 1,
 			to: 0,
 			removes: true,
 		},
