@@ -29,8 +29,8 @@ export default class Renderer {
 		gameLight.shadow.camera.top = projectionSize
 		gameLight.shadow.camera.bottom = -projectionSize
 
-		gameLight.shadow.mapSize.width = 1028
-		gameLight.shadow.mapSize.height = 1028
+		gameLight.shadow.mapSize.width = 1024
+		gameLight.shadow.mapSize.height = 1024
 		gameLight.shadow.bias = 0.1
 
 		// audioListener = RenderSound.create(audioListener)

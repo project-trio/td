@@ -13,7 +13,7 @@
 				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
 			</div>
 			<div v-else class="text-faint">
-				No one else is in queue for game yet. Why not send the link to a friend?
+				No one else is in queue for a game yet. Why not send the link to a friend?
 			</div>
 		</div>
 		<div v-if="multiplayer && notificationPermission !== 'granted'" class="notification-aside">
