@@ -109,7 +109,10 @@ export default class Creep extends Unit {
 
 			this.vertical = vertical
 			this.currentIndex = null
-			if (entranceIndex !== null) {
+
+			const atEntrance = entranceIndex !== null
+			const isSpawn = name === 'spawn'
+			if (atEntrance) {
 				this.setDestination(entranceIndex, flying)
 				const startX = this.destinationX - (vertical ? 0 : START_DISTANCE)
 				const startY = this.destinationY + (vertical ? START_DISTANCE : 0)
@@ -118,11 +121,12 @@ export default class Creep extends Unit {
 				this.cX = startX
 				this.cY = startY
 
-				if (name === 'spawn') {
-					this.splitSpawn(renderTime, spawnDuration)
-				} else {
+				if (!isSpawn) {
 					this.applyAnimations(renderTime, 'spawn', spawnDuration)
 				}
+			}
+			if (isSpawn) {
+				this.splitSpawn(renderTime, spawnDuration, atEntrance)
 			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
@@ -338,8 +342,8 @@ export default class Creep extends Unit {
 
 	// Spawns
 
-	splitSpawn (renderTime, spawnDuration) {
-		let sign = Math.round(Math.random()) * 2 - 1
+	splitSpawn (renderTime, spawnDuration, atEntrance) {
+		let sign = atEntrance && Math.round(Math.random()) * 2 - 1
 		for (let split = 0; split < 2; split += 1) {
 			const spawnlet = creepModelBuilders['base'].createMesh()
 			spawnlet.material = spawnlet.material.clone()
@@ -354,28 +358,32 @@ export default class Creep extends Unit {
 			const splitSign = split * 2 - 1
 			spawnlet.position.x = 9 * splitSign
 			spawnlet.castShadow = true
-			animate.add(spawnlet.position, 'y', {
+			if (atEntrance) {
+				animate.add(spawnlet.position, 'y', {
+					start: renderTime,
+					from: 48 * sign,
+					to: 0,
+					duration: spawnDuration,
+					pow: 0.5,
+				})
+				animate.add(spawnlet, 'opacity', {
+					start: renderTime,
+					from: 0,
+					to: 1,
+					duration: spawnDuration,
+					pow: 2,
+				})
+				sign *= -1
+			}
+		}
+		if (atEntrance) {
+			animate.add(this.body.rotation, 'z', {
 				start: renderTime,
-				from: 48 * sign,
-				to: 0,
+				from: Math.PI * sign,
 				duration: spawnDuration,
 				pow: 0.5,
 			})
-			animate.add(spawnlet, 'opacity', {
-				start: renderTime,
-				from: 0,
-				to: 1,
-				duration: spawnDuration,
-				pow: 2,
-			})
-			sign *= -1
 		}
-		animate.add(this.body.rotation, 'z', {
-			start: renderTime,
-			from: Math.PI * sign,
-			duration: spawnDuration,
-			pow: 0.5,
-		})
 	}
 
 	split (renderTime) {
