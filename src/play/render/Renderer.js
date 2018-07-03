@@ -7,6 +7,7 @@ import Pointer from '@/play/render/Pointer'
 const CAMERA_FOV = 20
 
 const PERSPECTIVE_CAMERA = true
+const CAMERA_HEIGHT = 192 / (CAMERA_FOV / 180)
 
 export default class Renderer {
 
@@ -81,10 +82,17 @@ export default class Renderer {
 
 		if (this.usePerspectiveCamera) {
 			this.gameCamera.aspect = width / height
-			// const visibleFOV = this.gameCamera.fov * Math.PI / 180
-			// const visibleHeight = 2 * Math.tan(visibleFOV / 2) * 192 / (CAMERA_FOV / 180)
-			// const visibleWidth = visibleHeight * this.gameCamera.aspect
-			// console.log(visibleWidth, visibleHeight)
+			const visibleFOV = this.gameCamera.fov * Math.PI / 180
+			const visibleHeight = 2 * Math.tan(visibleFOV / 2) * CAMERA_HEIGHT
+			const visibleWidth = visibleHeight * this.gameCamera.aspect
+			let widthAspect
+			if (width > 640) {
+				widthAspect = visibleWidth / width * Math.min(width / 640, 1.25)
+			} else {
+				widthAspect = visibleWidth / 640
+			}
+			const heightAspect = visibleHeight / 524
+			this.gameCamera.zoom = Math.min(widthAspect, heightAspect)
 		} else {
 			const zoom = 2
 			this.gameCamera.left = -width / zoom
@@ -104,7 +112,7 @@ export default class Renderer {
 		})
 
 		this.perspectiveCamera = new PerspectiveCamera(CAMERA_FOV)
-		this.perspectiveCamera.position.z = 192 / (CAMERA_FOV / 180)
+		this.perspectiveCamera.position.z = CAMERA_HEIGHT
 		this.perspectiveCamera.zoom = 0.75
 		this.orthoCamera = new OrthographicCamera()
 		this.orthoCamera.position.z = 100
