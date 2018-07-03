@@ -1,8 +1,8 @@
 import bridge from '@/xjs/bridge'
 import store from '@/xjs/store'
-import random from '@/xjs/random'
 
 import local from '@/play/local'
+import random from '@/play/random'
 
 import Loop from '@/play/render/Loop'
 

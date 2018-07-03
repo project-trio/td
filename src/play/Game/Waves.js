@@ -1,6 +1,7 @@
 import bridge from '@/xjs/bridge'
-import random from '@/xjs/random'
 import store from '@/xjs/store'
+
+import random from '@/play/random'
 
 import creeps from '@/play/data/creeps'
 
