@@ -19,14 +19,29 @@ export default class Waves {
 		this.creepCount = 0
 		this.max = totalWaveCount
 		const creepIndicies = []
-		const randomCreeps = creepMode !== 'random'
-		for (let wave = 0; wave < totalWaveCount; wave += 1) {
-			let creepIndex = randomCreeps ? random.index(CREEP_TYPE_COUNT) : wave % CREEP_TYPE_COUNT
-			if (wave < 20 && creepIndex === 4) {
-				creepIndex = 0
+		for (let waveIndex = 0; waveIndex < totalWaveCount; waveIndex += 1) {
+			let creepIndex
+			if (creepMode === 'random') {
+				creepIndex = random.index(CREEP_TYPE_COUNT)
+			} else if (creepMode === 'spawn') {
+				creepIndex = 5
+			} else {
+				creepIndex = waveIndex % CREEP_TYPE_COUNT
+				if (waveIndex < 14 && creepIndex === 4) {
+					creepIndex = 0
+				}
 			}
 			// creepIndex = 5 //SAMPLE
-			creepIndicies[wave] = creepIndex
+			const wave = waveIndex + 1
+			let boss
+			if (wave === 49) {
+				boss = true
+			} else {
+				boss = wave % (CREEP_TYPE_COUNT + 1) === 0
+			}
+			// boss = true //SAMPLE
+			creepIndicies[waveIndex] = [ creepIndex, boss ]
+			// console.log(wave, creeps[creepIndex].name, boss)
 		}
 		this.creepIndicies = creepIndicies
 	}
@@ -39,9 +54,8 @@ export default class Waves {
 		store.state.game.wave = waveNumber
 		this.count = waveNumber
 		const waveIndex = waveNumber - 1
-		const boss = waveIndex && waveIndex % (CREEP_TYPE_COUNT + 1) === 0
-		// const boss = true //SAMPLE
-		const data = creeps[this.creepIndicies[waveIndex]]
+		const [ creepIndex, boss ] = this.creepIndicies[waveIndex]
+		const data = creeps[creepIndex]
 		const grouped = data.grouped
 		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
 		const waveSize = boss ? (grouped ? 3 : 1) : data.count
