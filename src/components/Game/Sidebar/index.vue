@@ -4,7 +4,7 @@
 		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-		<button @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
+		<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
 	</div>
 	<transition-group name="players" tag="div" class="players-container">
 		<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
@@ -33,6 +33,10 @@ export default {
 	}),
 
 	computed: {
+		availableTowers () {
+			return this.$store.state.game.towers
+		},
+
 		storeStateGame () {
 			return this.$store.state.game
 		},
@@ -71,8 +75,11 @@ export default {
 		},
 	},
 
-	created () {
-		this.storeStateGame.build = this.$options.towers[0].name
+	watch: {
+		availableTowers () {
+			const towerIndex = this.availableTower(0) ? 0 : 1
+			this.setTowerName(this.$options.towers[towerIndex].name)
+		},
 	},
 
 	mounted () {
@@ -84,6 +91,10 @@ export default {
 	},
 
 	methods: {
+		availableTower (index) {
+			return !this.availableTowers || this.availableTowers.includes(index + 1)
+		},
+
 		keydown (event) {
 			if (event.repeat) {
 				return false

@@ -21,6 +21,7 @@ const defaultGameState = () => {
 		},
 		highscore: 0,
 		overlay: null,
+		towers: null,
 	}
 }
 

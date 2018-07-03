@@ -44,6 +44,14 @@ export default class Game {
 		} else if (data.mode === 'spawns') {
 			this.creepMode = 'spawns'
 		}
+		if (this.towerMode === 'random') {
+			const towers = []
+			towers.push(random.truthy() ? 1 : 2)
+			towers.push(random.truthy() ? 3 : 6)
+			towers.push(random.truthy() ? 4 : 7)
+			towers.push(random.truthy() ? 5 : 8)
+			store.state.game.towers = towers
+		}
 
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
 		this.lastTickTime = performance.now()

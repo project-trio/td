@@ -12,6 +12,10 @@ export default {
 		rng = seedrandom(seed)
 	},
 
+	truthy () {
+		return Math.round(rng())
+	},
+
 	index,
 
 	choose (items) {
