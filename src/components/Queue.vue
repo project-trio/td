@@ -12,9 +12,10 @@
 			<div v-if="enoughPlayersForGame">
 				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
 			</div>
-			<div v-else class="text-faint">
+			<p v-else class="text-faint margin-tall">
 				No one else is in queue for a game yet. Why not send the link to a friend?
-			</div>
+			</p>
+			<p>Vote for a mode to play:</p>
 		</div>
 		<div v-if="multiplayer && notificationPermission !== 'granted'" class="notification-aside">
 			<div v-if="notificationPermission === 'unavailable'">
@@ -30,8 +31,28 @@
 		</div>
 	</div>
 	<div v-else class="singleplayer">
-		<p class="mode-description">Take on the creeps in solo training.</p>
-		<button @click="onPlaySingleplayer" class="big">Play now</button>
+		<p class="mode-description">Take on the creeps in solo training. Select a mode:</p>
+	</div>
+	<div>
+		<button v-for="mode in $options.arcadeModes" @click="onMode(mode)" class="selection capitalize" :class="{ selected: gameMode === mode }" :key="mode[0]">{{ mode[0] }}</button>
+		<p v-if="gameMode">{{ gameMode[1] }}</p>
+		<table v-if="rules">
+			<tr>
+				<td class="text-faint">Creeps</td><td>{{ rules.creeps === 'random' ? 'Random order' : rules.creeps === 'spawns' ? 'Spawns only' : 'Normal order' }}</td>
+			</tr>
+			<tr>
+				<td class="text-faint">Towers</td><td>{{ rules.towers === 'random' ? 'Random set' : rules.towers === 'one' ? 'One of each' : 'All' }}</td>
+			</tr>
+			<tr v-if="!rules.sell">
+				<td class="text-faint">Selling</td><td>Disabled</td>
+			</tr>
+			<tr v-if="rules.gold">
+				<td class="text-faint">Gold</td><td>{{ rules.gold }}</td>
+			</tr>
+		</table>
+	</div>
+	<div v-if="!multiplayer" class="singleplayer">
+		<button v-if="gameMode" @click="onPlaySingleplayer" class="big">Play now</button>
 	</div>
 </div>
 </template>
@@ -42,6 +63,7 @@ import bridge from '@/xjs/bridge'
 export default {
 	data () {
 		return {
+			gameMode: null,
 			queueWait: 20,
 			multiplayer: false,
 			readyRequested: false,
@@ -51,11 +73,28 @@ export default {
 		}
 	},
 
+	arcadeModes: [
+		[ 'normal', 'The classic.', {
+			creeps: null,
+			towers: null,
+			sell: true,
+		} ],
+		[ 'random', 'Random random.', {
+			creeps: 'random',
+			towers: 'random',
+			sell: true,
+		} ],
+	],
+
 	baseUrl: process.env.BASE_URL,
 	notification: null,
 	readyTimer: null,
 
 	computed: {
+		rules () {
+			return this.gameMode && this.gameMode[2]
+		},
+
 		readyRemaining () {
 			return this.queueWait - this.readyAt
 		},
@@ -86,7 +125,7 @@ export default {
 		},
 
 		readyRequested (requested) {
-			bridge.emit('queue ready', requested)
+			bridge.emit('queue ready', { ready: requested, mode: this.gameMode && this.gameMode[0] })
 		},
 	},
 
@@ -110,6 +149,10 @@ export default {
 	},
 
 	methods: {
+		onMode (mode) {
+			this.gameMode = mode
+		},
+
 		disconnect () {
 			this.cancelTimer()
 			if (this.multiplayer) {
@@ -120,13 +163,14 @@ export default {
 		onMultiplayer (multiplayer) {
 			this.readyRequested = false
 			this.multiplayer = multiplayer
+			this.gameMode = null
 			bridge.emit('queue', multiplayer, (wait) => {
 				this.queueWait = wait
 			})
 		},
 
 		onPlaySingleplayer () {
-			bridge.emit('singleplayer')
+			bridge.emit('singleplayer', this.gameMode[0])
 		},
 
 		cancelTimer () {
@@ -193,6 +237,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+h2
+	margin-bottom 2px
+
+p.margin-tall
+	margin 32px 0
+
 .queue
 	text-align center
 
@@ -210,11 +260,16 @@ export default {
 .mode-buttons
 	margin-bottom 16px
 
-.mode-description
-	margin-bottom 32px
-
 .notification-aside
 	margin-top 32px
 	& button
 		width 256px
+
+.singleplayer button
+	margin-top 32px
+
+table
+	margin auto
+	text-align left
+	border-spacing 8px 0
 </style>

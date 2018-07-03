@@ -37,12 +37,19 @@ export default class Game {
 
 		this.serverUpdate = -1
 		this.updatesUntilStart = data.updatesUntilStart
+		this.mode = data.mode
+		if (data.mode === 'random') {
+			this.creepMode = 'random'
+			this.towerMode = 'random'
+		} else if (data.mode === 'spawns') {
+			this.creepMode = 'spawns'
+		}
 
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
 		this.lastTickTime = performance.now()
 
 		this.map = new GameMap(this.container)
-		this.waves = new Waves(this.map.paths.entrances, data.waves, data.creepMode)
+		this.waves = new Waves(this.map.paths.entrances, data.waves, this.creepMode)
 		this.loop = new Loop(this)
 
 		Creep.init(this.map)
