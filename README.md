@@ -2,6 +2,8 @@
 
 https://td.suzu.online
 
+![TD Example Maze](https://i.imgur.com/AI1nS2G.gif)
+
 An unnamed, top-down 3D, multiplayer tower defense game that plays in your browser.
 
 Based on the extinct 2007 flash game MPDTD.
