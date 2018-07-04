@@ -187,7 +187,14 @@ export default class Game {
 		}
 		store.state.game.playing = true
 
-		this.waves.spawn(0) //TODO renderTime?
+		this.waves.spawn(0)
+		//SAMPLE
+		// for (let i = 0; i < 7; i += 1) {
+		// 	const delay = i * 800
+		// 	window.setTimeout(() => {
+		// 		this.waves.spawn(delay)
+		// 	}, delay)
+		// }
 	}
 
 	finish () {

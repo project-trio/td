@@ -71,7 +71,7 @@ export default class GameMap {
 			[ TILES_WIDE - 1, TTH + EH - EY,  1,             TTH - EH + EY ],
 		]
 		const WALL_HEIGHT = 36
-		const wallMaterial = new MeshLambertMaterial({ color: 0xddddcc })
+		const wallMaterial = new MeshLambertMaterial({ color: 0xddddcc }) //SAMPLE 0xbbbbaa
 		for (const wall of walls) {
 			const ww = wall[2] * TILE_SIZE, wh = wall[3] * TILE_SIZE
 			const geometry = new BoxBufferGeometry(ww, wh, WALL_HEIGHT)

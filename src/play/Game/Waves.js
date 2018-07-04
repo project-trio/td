@@ -27,7 +27,7 @@ export default class Waves {
 				creepIndex = 5
 			} else {
 				creepIndex = waveIndex % CREEP_TYPE_COUNT
-				if (waveIndex < 14 && creepIndex === 4) {
+				if (waveIndex < 14 && creepIndex === 4) { //SAMPLE
 					creepIndex = 0
 				}
 			}

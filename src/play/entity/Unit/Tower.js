@@ -115,7 +115,6 @@ export default class Tower extends Unit {
 	}
 
 	detonate () {
-		console.log(this.crackle, this.dead)
 		if (this.crackle !== false) {
 			return false
 		}
