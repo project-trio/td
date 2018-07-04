@@ -26,15 +26,15 @@ As a result, you'll need to run Trio, or modify TD for your own infrastructure.
 Install:
 ```console
 cd td
-yarn
+npm install
 ```
 
 Hot reload (see dependencies above):
 ```console
-yarn serve
+npm run serve
 ```
 
 Production build:
 ```console
-yarn build
+npm run build
 ```
