@@ -190,6 +190,13 @@ export default class Tower extends Unit {
 		}
 	}
 
+	onHover () {
+		document.body.style.cursor = 'pointer'
+	}
+	onBlur () {
+		document.body.style.cursor = null
+	}
+
 	onClick (point, button) {
 		switch (button) {
 		case 0:
