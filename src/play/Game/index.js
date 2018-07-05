@@ -161,12 +161,6 @@ export default class Game {
 	// Play
 
 	enqueueUpdate (update, actions, finished) {
-		if (update >= 9 && this.updatePanel) {
-			if (update > 9) {
-				this.updatePanel.end()
-			}
-			this.updatePanel.begin()
-		}
 		if (finished) {
 			this.lastUpdate = true
 		}

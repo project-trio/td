@@ -22,19 +22,6 @@ export default class Loop {
 		this.framePanel = new Stats()
 		this.framePanel.showPanel(0)
 		document.body.appendChild(this.framePanel.dom)
-
-		if (store.state.signin.user.id === 1) {
-			this.tickPanel = new Stats()
-			this.tickPanel.showPanel(1)
-			document.body.appendChild(this.tickPanel.dom)
-			this.tickPanel.dom.style.top = '48px'
-
-			this.updatePanel = new Stats()
-			this.updatePanel.showPanel(1)
-			document.body.appendChild(this.updatePanel.dom)
-			game.updatePanel = this.updatePanel
-			this.framePanel.dom.style.top = '96px'
-		}
 	}
 
 	animate (timestamp) {
@@ -52,16 +39,7 @@ export default class Loop {
 		const ticksToRender = game.calculateTicksToRender(timestamp)
 		let renderTime = null
 		if (ticksToRender > 0) {
-			const processUpdate = isPlaying && this.tickPanel
-			if (processUpdate) {
-				this.tickPanel.begin()
-			}
-
 			game.performTicks(ticksToRender, isPlaying)
-
-			if (processUpdate) {
-				this.tickPanel.end()
-			}
 			this.lastTickTime = timestamp
 			renderTime = gameState.renderTime
 		} else if (isPlaying) { // Tween
@@ -93,10 +71,6 @@ export default class Loop {
 
 		if (this.framePanel) {
 			this.framePanel.dom.remove()
-			if (this.updatePanel) {
-				this.updatePanel.dom.remove()
-				this.tickPanel.dom.remove()
-			}
 		}
 	}
 
