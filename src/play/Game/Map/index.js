@@ -215,7 +215,9 @@ export default class GameMap {
 		const tower = this.placement.towers[name]
 		if (tower) {
 			tower.visible = true
-			tower.rotation.z = Math.random() * Math.PI * 2
+			if (tower.targets) {
+				tower.rotation.z = Math.random() * Math.PI * 2
+			}
 			this.placement.current = tower
 		}
 	}

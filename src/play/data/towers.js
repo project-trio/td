@@ -3,6 +3,7 @@ export default {
 	names: [ 'pellet', 'squirt', 'dart', 'swarm', 'frost', 'bash', 'snap', 'boost' ],
 
 	pellet: {
+		wire: 0x777777,
 		targets: true,
 		color: 0x333333,
 		cost:   [ 5,   10, 10, 10, 10, 160 ],
@@ -14,8 +15,9 @@ export default {
 	},
 
 	squirt: {
+		wire: 0x222222,
 		targets: true,
-		color: 0x4444cc,
+		color: 0x3355cc,
 		cost:   [ 15, 12, 23, 35, 75, 190 ],
 		damage: [ 5,  5,  8,  16, 31, 55 ],
 		range:  [ 70, 0,  0,  0,  0,  20 ],
@@ -25,8 +27,9 @@ export default {
 	},
 
 	dart: {
+		wire: 0x222222,
 		targets: true,
-		color: 0xdd4444,
+		color: 0xbb4444,
 		cost:   [ 20, 15, 35, 60, 90, 120 ],
 		damage: [ 8,  8,  16, 32, 64, 172 ],
 		range:  [ 90, 10, 10, 10, 10, 10 ],
@@ -39,6 +42,7 @@ export default {
 	},
 
 	swarm: {
+		wire: 0x444444,
 		targets: false,
 		multi: 4,
 		color: 0x66aa44,
@@ -52,8 +56,9 @@ export default {
 	},
 
 	frost: {
+		wire: 0x222222,
 		targets: true,
-		color: 0x00aaee,
+		color: 0x2299cc,
 		cost:   [ 50,  25, 25, 25, 25, 50 ],
 		damage: [ 10,  5,  5,  5,  5,  10 ],
 		range:  [ 50,  0,  0,  0,  0,  25 ],
@@ -66,9 +71,10 @@ export default {
 	},
 
 	bash: {
+		wire: 0x000000,
 		targets: false,
 		multi: 9001,
-		color: 0xbb44ee,
+		color: 0xaa44dd,
 		cost:   [ 80,  120, 145, 175,  260, 450 ],
 		damage: [ 60,  60,  120, 240,  480, 1040 ],
 		range:  [ 40,  0,   0,   0,    0,   5 ],
@@ -80,6 +86,7 @@ export default {
 	},
 
 	snap: {
+		wire: 0x777777,
 		targets: false,
 		color: 0x000000,
 		cost:   [ 15,  15,  15,  30,  45,  60 ],
@@ -93,6 +100,7 @@ export default {
 	},
 
 	boost: {
+		wire: 0x000000,
 		targets: false,
 		color: 0xccbb33,
 		cost:   [ 100, 100, 100, 100, 100 ],

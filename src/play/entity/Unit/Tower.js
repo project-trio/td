@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, ConeBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, SphereBufferGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
+import { BoxBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, WireframeGeometry, LineSegments, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
 import store from '@/xjs/store'
 
@@ -13,34 +13,69 @@ import Splash from '@/play/entity/Splash'
 import Unit from '@/play/entity/Unit'
 import Creep from '@/play/entity/Unit/Creep'
 
+import Vox from '@/play/external/vox'
+
 let TILE_SIZE
 
 let allTowers = null
 
 let backingGeometry, backingMaterial
 let baseGeometry, baseMaterial
-let turretGeometry, globeGeometry
 let upgradeGeometry, upgradeSize
 
 const rangesCache = {}
 const turretMaterialsCache = {}
+const turretModelBuilders = {}
 const rangeMaterial = new MeshBasicMaterial({ color: 0xeeeeee })
-for (const name in towers) {
-	if (name === 'names') {
-		continue
-	}
-	const towerData = towers[name]
-	const ranges = towerData.range
-	turretMaterialsCache[name] = new MeshLambertMaterial({ color: towerData.color })
-	let range = 0
-	for (const diff of ranges) {
-		if (diff) {
-			range += diff
-			if (!rangesCache[range]) {
-				rangesCache[range] = new RingBufferGeometry(range * 2, range * 2 + 1, range)
+const wireMaterials = {}
+{
+	const voxParser = new Vox.Parser()
+	for (const name in towers) {
+		if (name === 'names') {
+			continue
+		}
+		const towerData = towers[name]
+		const ranges = towerData.range
+		turretMaterialsCache[name] = new MeshLambertMaterial({ color: towerData.color })
+		let range = 0
+		for (const diff of ranges) {
+			if (diff) {
+				range += diff
+				if (!rangesCache[range]) {
+					rangesCache[range] = new RingBufferGeometry(range * 2, range * 2 + 1, range)
+				}
 			}
 		}
+		if (turretModelBuilders[name] !== undefined) {
+			continue
+		}
+		wireMaterials[towerData.wire] = new MeshBasicMaterial({ color: towerData.wire })
+		store.state.loading += 1
+		turretModelBuilders[name] = null
+		voxParser.parse(require(`@/assets/towers/${name}.vox`)).then((voxelData) => {
+			store.state.loading -= 1
+			turretModelBuilders[name] = new Vox.MeshBuilder(voxelData, { voxelSize: 2 })
+		})
 	}
+}
+
+const createTurret = (stats, outlined) => {
+	const turret = turretModelBuilders[stats.name].createMesh()
+	const wireframe = new WireframeGeometry(turret.geometry)
+	const line = new LineSegments(wireframe, wireMaterials[stats.wire])
+	if (!outlined) {
+		line.material = line.material.clone()
+		line.material.color.setHex(stats.color)
+		line.rotation.x = Math.PI / 2
+		return line
+	}
+
+	turret.material = turret.material.clone() //TODO
+	turret.material.color.setHex(stats.color)
+
+	turret.add(line)
+	turret.rotation.x = Math.PI / 2
+	return turret
 }
 
 export default class Tower extends Unit {
@@ -94,18 +129,12 @@ export default class Tower extends Unit {
 		this.container.add(outline)
 
 		this.top = render.group(this.container)
-		let turret
-		if (stats.targets) {
-			turret = new Mesh(turretGeometry, turretMaterialsCache[name])
-			turret.rotation.z = -Math.PI / 2
-		} else {
-			turret = new Mesh(globeGeometry, turretMaterialsCache[name])
-		}
+		const turret = createTurret(stats, true)
 		turret.castShadow = true
 		this.top.add(turret)
-
-		this.top.rotation.z = Math.random() * Math.PI * 2
-		this.top.position.z = 24
+		if (stats.targets) {
+			this.top.rotation.z = Math.random() * Math.PI * 2
+		}
 
 		if (live) {
 			this.select(true)
@@ -363,47 +392,36 @@ Tower.init = (_tileSize, placeholder) => {
 	const baseShape = roundedRect(outlineSize, outlineRadius / 2)
 	baseShape.holes.push(holeShape)
 	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 16, bevelEnabled: false })
-	baseMaterial = new MeshLambertMaterial({ color: 0x333333 })
-
-	const turretLength = TILE_SIZE * 1.5
-	turretGeometry = new ConeBufferGeometry(TILE_SIZE / 3, turretLength,  TILE_SIZE / 4)
-	turretGeometry.translate(0, turretLength / 2 - 4, 0)
-	globeGeometry = new SphereBufferGeometry(TILE_SIZE / 2, TILE_SIZE / 2, TILE_SIZE / 2)
+	baseMaterial = new MeshLambertMaterial({ color: 0x444444 })
 
 	const towerPlaceholders = {}
 	const outlineMaterial = baseMaterial.clone()
 	outlineMaterial.transparent = true
-	outlineMaterial.opacity = 0.5
+	outlineMaterial.opacity = 0.67
 	const outline = new Mesh(baseGeometry, outlineMaterial)
 	placeholder.add(outline)
+
+	const rangeMaterialTransparent = rangeMaterial.clone()
+	rangeMaterialTransparent.transparent = true
+	rangeMaterialTransparent.opacity = 0.5
 
 	for (const name in towers) {
 		if (name !== 'names') {
 			const towerData = towers[name]
 			const turretGroup = render.group(placeholder)
-			let turret
-			const material = turretMaterialsCache[name].clone()
-			material.transparent = true
-			material.opacity = 0.5
-			if (towerData.targets) {
-				turret = new Mesh(turretGeometry, material)
-				turret.rotation.z = -Math.PI / 2
-			} else {
-				turret = new Mesh(globeGeometry, material)
-			}
-			turret.position.z = 24
+			const turret = createTurret(towerData, false)
+			turret.material.transparent = true
+			turret.material.opacity = name === 'swarm' ? 0.5 : 0.33
 
 			const rangeGeometry = rangesCache[towerData.range[0]]
-			const rangeMaterialClone = rangeMaterial.clone()
-			rangeMaterialClone.transparent = true
-			rangeMaterialClone.opacity = 0.5
-			const rangeMesh = new Mesh(rangeGeometry, rangeMaterialClone)
+			const rangeMesh = new Mesh(rangeGeometry, rangeMaterialTransparent)
 			rangeMesh.position.z = 1
 			turretGroup.add(rangeMesh)
 
 			turretGroup.add(turret)
 			placeholder.add(turretGroup)
 			turretGroup.visible = false
+			turretGroup.targets = towerData.targets
 			towerPlaceholders[name] = turretGroup
 		}
 	}
