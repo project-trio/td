@@ -3,9 +3,9 @@ export default {
 	names: [ 'pellet', 'squirt', 'dart', 'swarm', 'frost', 'bash', 'snap', 'boost' ],
 
 	pellet: {
-		wire: 0x777777,
+		wire: 0x000000,
 		targets: true,
-		color: 0x333333,
+		color: 0x555555,
 		cost:   [ 5,   10, 10, 10, 10, 160 ],
 		damage: [ 10,  10, 20, 20, 20, 320 ],
 		range:  [ 60,  0,  0,  0,  0,  120 ],
@@ -86,7 +86,7 @@ export default {
 	},
 
 	snap: {
-		wire: 0x777777,
+		wire: 0x666666,
 		targets: false,
 		color: 0x000000,
 		cost:   [ 15,  15,  15,  30,  45,  60 ],

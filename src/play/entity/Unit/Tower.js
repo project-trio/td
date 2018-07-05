@@ -15,6 +15,8 @@ import Creep from '@/play/entity/Unit/Creep'
 
 import Vox from '@/play/external/vox'
 
+const BASE_HEIGHT = 16
+
 let TILE_SIZE
 
 let allTowers = null
@@ -126,6 +128,7 @@ export default class Tower extends Unit {
 
 		const outline = new Mesh(baseGeometry, baseMaterial)
 		outline.castShadow = true
+		// outline.receiveShadow = true
 		this.container.add(outline)
 
 		this.top = render.group(this.container)
@@ -134,7 +137,9 @@ export default class Tower extends Unit {
 		this.top.add(turret)
 		if (stats.targets) {
 			this.top.rotation.z = Math.random() * Math.PI * 2
+			// this.top.rotation.z = Math.PI * 7 / 4 //SAMPLE
 		}
+		// this.top.position.z = BASE_HEIGHT + 1
 
 		if (live) {
 			this.select(true)
@@ -381,25 +386,27 @@ Tower.init = (_tileSize, placeholder) => {
 	upgradeSize = TILE_SIZE / 5
 	const ugpradeOffset = -TILE_SIZE / 2 - upgradeSize / 2
 	upgradeGeometry = new BoxBufferGeometry(upgradeSize, upgradeSize * 2 / 3, 15)
-	upgradeGeometry.translate(ugpradeOffset, ugpradeOffset * 4 / 3 + 4, 5)
-
-	backingGeometry = new PlaneBufferGeometry(TILE_SIZE * 2 - 8, TILE_SIZE * 2 - 8)
-	backingMaterial = new MeshLambertMaterial({ color: 0xafbbaf })
+	upgradeGeometry.translate(ugpradeOffset, ugpradeOffset * 4 / 3 + 3, 5)
 
 	const outlineSize = TILE_SIZE * 2 - 4
-	const outlineRadius = Math.floor(TILE_SIZE / 4)
-	const holeShape = roundedRect(outlineSize - TILE_SIZE / 4, outlineRadius / 2 - 2)
+	const backingSize = outlineSize - 1
+	backingGeometry = new PlaneBufferGeometry(backingSize, backingSize)
+	backingMaterial = new MeshLambertMaterial({ color: 0xaaaaaa })
+	backingMaterial.transparent = true
+	backingMaterial.opacity = 0.5
+
+	const outlineRadius = Math.floor(TILE_SIZE / 3)
 	const baseShape = roundedRect(outlineSize, outlineRadius / 2)
+	const holeShape = roundedRect(outlineSize - 4, outlineRadius / 2 - 2)
 	baseShape.holes.push(holeShape)
-	baseGeometry = new ExtrudeGeometry(baseShape, { depth: 16, bevelEnabled: false })
-	baseMaterial = new MeshLambertMaterial({ color: 0x444444 })
+	baseGeometry = new ExtrudeGeometry(baseShape, { depth: BASE_HEIGHT, bevelEnabled: false })
+	baseMaterial = new MeshLambertMaterial({ color: 0xbbbbbb })
 
 	const towerPlaceholders = {}
-	const outlineMaterial = baseMaterial.clone()
-	outlineMaterial.transparent = true
-	outlineMaterial.opacity = 0.67
-	const outline = new Mesh(baseGeometry, outlineMaterial)
-	placeholder.add(outline)
+	const outlineMaterial = new MeshBasicMaterial({ color: 0xdddddd })
+	const outlineWireframe = new WireframeGeometry(baseGeometry)
+	const outlineLine = new LineSegments(outlineWireframe, outlineMaterial)
+	placeholder.add(outlineLine)
 
 	const rangeMaterialTransparent = rangeMaterial.clone()
 	rangeMaterialTransparent.transparent = true
