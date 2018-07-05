@@ -19,6 +19,7 @@ const PId2 = Math.PI / 2
 const DIAGONAL_DISTANCE = Math.cos(PId2 / 2)
 const START_DISTANCE = 96
 const MOVEMENT_PADDING = 2
+const BOSS_SCALE = 1.2
 
 let allCreeps = []
 let gameMap
@@ -86,6 +87,9 @@ export default class Creep extends Unit {
 			body.material.color.setHex(data.color)
 			body.rotation.x = Math.PI / 2
 			body.castShadow = true
+			if (data.boss) {
+				body.scale.set(BOSS_SCALE, BOSS_SCALE, BOSS_SCALE)
+			}
 			this.body = body
 			this.unitContainer.add(body)
 		}
@@ -126,7 +130,7 @@ export default class Creep extends Unit {
 				}
 			}
 			if (isSpawn) {
-				this.splitSpawn(renderTime, spawnDuration, atEntrance)
+				this.splitSpawn(renderTime, data.boss, spawnDuration, atEntrance)
 			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
@@ -342,10 +346,13 @@ export default class Creep extends Unit {
 
 	// Spawns
 
-	splitSpawn (renderTime, spawnDuration, atEntrance) {
+	splitSpawn (renderTime, boss, spawnDuration, atEntrance) {
 		let sign = atEntrance && Math.round(Math.random()) * 2 - 1
 		for (let split = 0; split < 2; split += 1) {
 			const spawnlet = creepModelBuilders['base'].createMesh()
+			if (boss) {
+				spawnlet.scale.set(BOSS_SCALE, BOSS_SCALE, BOSS_SCALE)
+			}
 			spawnlet.material = spawnlet.material.clone()
 			spawnlet.material.color.setHex(this.stats.color)
 			if (split) {
