@@ -51,6 +51,8 @@ export default class Game {
 			towers.push(random.truthy() ? 4 : 7)
 			towers.push(random.truthy() ? 5 : 8)
 			store.state.game.towers = towers
+		} else {
+			store.state.game.towers = null
 		}
 
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
