@@ -4,7 +4,9 @@
 		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 	</div>
 	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-		<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ background: color(tower) }">{{ idx + 1 }}</button>
+		<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
+			<span class="button-hotkey">{{ idx + 1 }}</span>
+		</button>
 	</div>
 	<transition-group name="players" tag="div" class="players-container">
 		<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
@@ -143,6 +145,10 @@ export default {
 			}
 			return `#${color}`
 		},
+
+		url (tower) {
+			return require(`@/assets/icons/${tower.name}.png`)
+		},
 	},
 }
 </script>
@@ -181,14 +187,24 @@ export default {
 	width 100%
 	color #0
 	font-weight bold
+	background-size contain
+	background-position center
+	position relative
+
+.button-hotkey
+	position absolute
+	left 3px
+	top 0
+	font-size 14px
+	color #6
 
 .selection
 	border-radius 4px
 
 .selection.selected
-	transform scale(0.89)
-	border 1px solid #9
-	box-shadow 0px 0px 8px 2px #f
+	transform scale(0.9)
+	opacity 0.5
+	box-shadow 0px 0px 8px 2px #0
 
 .players-move
 	transition transform 500ms ease-out
