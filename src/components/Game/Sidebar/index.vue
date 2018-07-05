@@ -101,8 +101,11 @@ export default {
 			}
 			const keyCode = event.which || event.keyCode
 			if (keyCode >= 49 && keyCode <= 56) {
-				const tower = this.$options.towers[keyCode - 49]
-				this.setTowerName(tower.name)
+				const towerIndex = keyCode - 49
+				if (this.availableTower(towerIndex)) {
+					const tower = this.$options.towers[towerIndex]
+					this.setTowerName(tower.name)
+				}
 			} else {
 				const selection = local.game.selection
 				if (selection) {
