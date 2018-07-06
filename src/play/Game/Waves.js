@@ -8,6 +8,7 @@ import creeps from '@/play/data/creeps'
 import Creep from '@/play/entity/Unit/Creep'
 
 const CREEP_TYPE_COUNT = creeps.length
+const WAVES_PER_GOLD = 8
 
 export default class Waves {
 
@@ -22,12 +23,12 @@ export default class Waves {
 		for (let waveIndex = 0; waveIndex < totalWaveCount; waveIndex += 1) {
 			let creepIndex
 			if (creepMode === 'random') {
-				creepIndex = random.index(CREEP_TYPE_COUNT)
+				creepIndex = random.index(waveIndex < WAVES_PER_GOLD ? 4 : CREEP_TYPE_COUNT)
 			} else if (creepMode === 'spawn') {
 				creepIndex = 5
 			} else {
 				creepIndex = waveIndex % CREEP_TYPE_COUNT
-				if (waveIndex < 14 && creepIndex === 4) { //SAMPLE
+				if (waveIndex < WAVES_PER_GOLD && creepIndex === 4) { //SAMPLE
 					creepIndex = 0
 				}
 			}
@@ -37,7 +38,7 @@ export default class Waves {
 			if (wave === 49) {
 				boss = true
 			} else {
-				boss = wave % (CREEP_TYPE_COUNT + 1) === 0
+				boss = wave % WAVES_PER_GOLD === 0
 			}
 			// boss = true //SAMPLE
 			creepIndicies[waveIndex] = [ creepIndex, boss ]
@@ -57,10 +58,18 @@ export default class Waves {
 		const [ creepIndex, boss ] = this.creepIndicies[waveIndex]
 		const data = creeps[creepIndex]
 		const grouped = data.grouped
-		const health = Math.round(data.health + 1.3 * waveIndex + Math.pow(0.55 * waveIndex, 2))
-		const waveSize = boss ? (grouped ? 3 : 1) : data.count
+
+		const speed = (data.speed || 1) * (boss ? 0.8 : 1)
+		const healthMultiplier = data.health ? data.health[boss ? 1 : 0] : (boss ? 12 : 1)
+		const health = Math.round(Math.pow(1.11, waveIndex) * 20 * healthMultiplier)
+		const waveSize = boss ? (grouped ? 3 : 1) : (data.count || 10)
 		// const waveSize = 1 //SAMPLE
-		const gold = Math.ceil(waveNumber / CREEP_TYPE_COUNT * 10 / waveSize)
+		let gold = Math.ceil(waveNumber / 8)
+		if (boss) {
+			gold *= grouped ? 6 : 20
+		} else if (data.gold) {
+			gold *= data.gold
+		}
 		const children = data.name === 'spawn' ? (boss ? 6 : 2) : 0
 		let waveCount = waveSize * (children + 1) * 2
 		store.state.game.waveCreepCount = waveCount
@@ -70,12 +79,12 @@ export default class Waves {
 		this.spawning.push({
 			index: 0,
 			startAt: renderTime,
-			health: health * (boss ? (grouped ? 2 : 4) : 1),
 			model: data.model,
 			color: data.color,
-			speed: data.speed * (boss ? 0.8 : 1),
 			name: data.name,
 			count: waveSize,
+			speed,
+			health,
 			gold,
 			boss,
 			children,
