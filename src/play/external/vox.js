@@ -397,7 +397,7 @@ export default vox;
 				this.originToBottom = (param.originToBottom === undefined) ? vox.MeshBuilder.DEFAULT_PARAM.originToBottom : param.originToBottom;
 
 				this.geometry = null;
-				this.material = null;
+				this.material = param.material || null;
 
 				this.build();
 		};
@@ -414,8 +414,6 @@ export default vox;
 		 */
 		vox.MeshBuilder.prototype.build = function() {
 				this.geometry = new Geometry();
-				this.material = new MeshLambertMaterial();
-				// this.material = new MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
 
 				// 隣接ボクセル検索用ハッシュテーブル
 				this.hashTable = createHashTable(this.voxelData.voxels);
@@ -437,10 +435,14 @@ export default vox;
 				}
 				this.geometry.computeFaceNormals();
 
-				if (this.vertexColor) {
-						this.material.vertexColors = FaceColors;
-				} else {
-						this.material.map = vox.MeshBuilder.textureFactory.getTexture(this.voxelData);
+				if (!this.material) {
+					this.material = new MeshLambertMaterial();
+					// this.material = new MeshPhongMaterial({ specular: 0x333333, shininess: 5 });
+					if (this.vertexColor) {
+							this.material.vertexColors = FaceColors;
+					} else {
+							this.material.map = vox.MeshBuilder.textureFactory.getTexture(this.voxelData);
+					}
 				}
 		};
 

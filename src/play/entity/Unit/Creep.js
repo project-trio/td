@@ -1,4 +1,4 @@
-import { PlaneBufferGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { PlaneBufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial } from 'three'
 
 import store from '@/xjs/store'
 
@@ -37,6 +37,8 @@ const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x88ee77 })
 hpRemainingMaterial.depthTest = false
 
 const creepModelBuilders = {}
+const numberModelBuilders = {}
+let lifeLostBuilder = null
 {
 	const voxParser = new Vox.Parser()
 	for (const creep of creeps) {
@@ -51,6 +53,21 @@ const creepModelBuilders = {}
 			creepModelBuilders[modelName] = new Vox.MeshBuilder(voxelData, { voxelSize: 2 })
 		})
 	}
+	const coinMaterial = new MeshPhongMaterial({ color: 0x998800, shininess: 50 })
+	for (let digit = 0; digit < 11; digit += 1) {
+		const character = digit < 10 ? `${digit}` : '+'
+		store.state.loading += 1
+		voxParser.parse(require(`@/assets/text/${character}.vox`)).then((voxelData) => {
+			store.state.loading -= 1
+			numberModelBuilders[character] = new Vox.MeshBuilder(voxelData, { voxelSize: 2, material: coinMaterial })
+		})
+	}
+	store.state.loading += 1
+	voxParser.parse(require(`@/assets/text/-1.vox`)).then((voxelData) => {
+		store.state.loading -= 1
+		lifeLostBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: 3 })
+		lifeLostBuilder.material.color.setHex(0xff0000)
+	})
 }
 
 const SPLIT_ARRAY = []
@@ -279,6 +296,19 @@ export default class Creep extends Unit {
 			this.body.castShadow = false
 			this.healthBacking.material.transparent = true
 			this.healthBacking.material.opacity = 0.67
+		} else {
+			const lifeLost = lifeLostBuilder.createMesh()
+			lifeLost.position.set(this.cX, this.cY, 192)
+			gameMap.container.add(lifeLost)
+			animate.add(lifeLost.position, 'z', {
+				start: renderTime,
+				to: -192,
+				duration: 400,
+				pow: 0.4,
+				onComplete () {
+					render.remove(lifeLost)
+				},
+			})
 		}
 		this.applyAnimations(renderTime, killed ? 'kill' : 'leak', deathDuration)
 	}
@@ -296,8 +326,31 @@ export default class Creep extends Unit {
 		} else {
 			this.healthBar.visible = false
 			this.die(renderTime, true)
-			store.state.game.local.gold += this.stats.gold
+			const gold = this.stats.gold
+			store.state.game.local.gold += gold
+			this.createNumber(renderTime, '+', Math.floor(gold))
 		}
+	}
+
+	createNumber (renderTime, prefix, amount) {
+		const numberContainer = render.group(this.container)
+		const prefixMesh = numberModelBuilders[prefix].createMesh()
+		numberContainer.add(prefixMesh)
+		let offset = 14
+		for (const digit of amount.toString().split('')) {
+			const number = numberModelBuilders[digit].createMesh()
+			number.position.x = offset
+			numberContainer.add(number)
+			offset += 14
+		}
+		numberContainer.position.x = -offset / 2
+		animate.add(numberContainer.position, 'z', {
+			start: renderTime,
+			to: 256,
+			duration: 200,
+			pow: 2,
+		})
+		return numberContainer
 	}
 
 	// Path
