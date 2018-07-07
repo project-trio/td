@@ -1,21 +1,32 @@
 <template>
 <div class="sidebar">
-	<div class="stats">
-		<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
+	<div>
+		<div class="stats">
+			<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
+		</div>
+		<div class="towers">
+			<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
+				<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
+					<span class="button-hotkey">{{ idx + 1 }}</span>
+				</button>
+			</div>
+		</div>
+		<transition-group name="players" tag="div" class="players-container">
+			<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
+		</transition-group>
 	</div>
-	<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-		<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
-			<span class="button-hotkey">{{ idx + 1 }}</span>
-		</button>
-	</div>
-	<transition-group name="players" tag="div" class="players-container">
-		<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
+	<transition-group name="waves" tag="div" class="waves-container text-faint">
+		<div v-for="wave in waves" class="wave-box" :style="{ 'background-image': `url(${require(`@/assets/icons/${wave[1]}.png`)})` }" :key="wave[0]">
+			{{ wave[0] }}
+		</div>
 	</transition-group>
 </div>
 </template>
 
 <script>
 import local from '@/play/local'
+
+import creeps from '@/play/data/creeps'
 import towers from '@/play/data/towers'
 
 import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
@@ -74,6 +85,20 @@ export default {
 
 		highscore () {
 			return this.storeStateGame.highscore
+		},
+
+		waves () {
+			const result = []
+			const startWave = this.storeStateGame.wave
+			for (let idx = 0; idx < 6; idx += 1) {
+				const waveIndex = startWave + idx
+				const wave = this.storeStateGame.waves[waveIndex]
+				if (!wave) {
+					break
+				}
+				result.push([ waveIndex + 1, creeps[wave[0]].name, wave[1] ])
+			}
+			return result
 		},
 	},
 
@@ -158,6 +183,10 @@ export default {
 	width 256px
 	background #2
 	color #f
+	overflow hidden
+	display flex
+	flex-direction column
+	justify-content space-between
 
 .stats
 	text-align right
@@ -208,4 +237,26 @@ export default {
 
 .players-move
 	transition transform 500ms ease-out
+
+.waves-container
+	display flex
+	width 320px
+
+.waves-leave-to
+	transform translateX(-51.2px)
+.waves-leave-active
+	position absolute
+
+.wave-box
+	width 51.2px
+	height 64px
+	background-size contain
+	background-position center
+	background-repeat no-repeat
+	transition all 800ms
+	display flex
+	align-items flex-end
+	padding-left 8px
+	padding-bottom 2px
+	box-sizing border-box
 </style>

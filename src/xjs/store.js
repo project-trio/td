@@ -7,6 +7,7 @@ const defaultGameState = () => {
 		id: null,
 		players: [],
 		wave: 0,
+		waves: [],
 		waveCreepCount: 0,
 		playing: false,
 		finished: false,

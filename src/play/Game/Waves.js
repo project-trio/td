@@ -44,6 +44,7 @@ export default class Waves {
 			creepIndicies[waveIndex] = [ creepIndex, boss ]
 			// console.log(wave, creeps[creepIndex].name, boss)
 		}
+		store.state.game.waves = creepIndicies
 		this.creepIndicies = creepIndicies
 	}
 
