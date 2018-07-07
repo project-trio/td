@@ -130,7 +130,7 @@ export default class Creep extends Unit {
 				}
 			}
 			if (isSpawn) {
-				this.splitSpawn(renderTime, data.boss, spawnDuration, atEntrance)
+				this.spawnSplit(renderTime, data.boss, spawnDuration, atEntrance)
 			}
 			this.setMovement(1 - vertical, vertical)
 			this.unitContainer.rotation.z = this.destinationAngle
@@ -267,7 +267,7 @@ export default class Creep extends Unit {
 		this.killed = killed
 		if (killed) {
 			if (this.stats.children) {
-				if (this.currentIndex === null) {
+				if (this.destinationIndex === null) {
 					this.killed = false
 				} else {
 					this.split(renderTime)
@@ -311,14 +311,16 @@ export default class Creep extends Unit {
 
 	nextTarget () {
 		this.currentIndex = this.destinationIndex
-		this.updatePath(false)
+		if (!this.updatePath(false)) {
+			return
+		}
 		const index = gameMap.moveIndex(this.currentIndex, this.dX, this.dY)
 		this.setDestination(index)
 	}
 
 	updatePath (newBlocking) {
 		if (!this.currentIndex) {
-			return
+			return false
 		}
 		if (newBlocking && gameMap.tileBlocked(this.destinationIndex)) {
 			this.setDestination(this.currentIndex)
@@ -331,8 +333,10 @@ export default class Creep extends Unit {
 			} else {
 				this.currentIndex = null
 				this.destinationIndex = null
+				return false
 			}
 		}
+		return true
 	}
 
 	setMovement (dX, dY) {
@@ -346,7 +350,7 @@ export default class Creep extends Unit {
 
 	// Spawns
 
-	splitSpawn (renderTime, boss, spawnDuration, atEntrance) {
+	spawnSplit (renderTime, boss, spawnDuration, atEntrance) {
 		let sign = atEntrance && Math.round(Math.random()) * 2 - 1
 		for (let split = 0; split < 2; split += 1) {
 			const spawnlet = creepModelBuilders['base'].createMesh()
@@ -414,12 +418,16 @@ export default class Creep extends Unit {
 
 		for (let split = 0; split < 2; split += 1) {
 			let spawnIndex = this.currentIndex
-			for (const [ dX, dY ] of random.shuffle(SPLIT_ARRAY)) { //TODO shuffle once
-				const checkIndex = gameMap.safeMoveIndex(this.currentIndex, dX, dY)
-				if (checkIndex) {
-					spawnIndex = checkIndex
-					break
+			if (spawnIndex) {
+				for (const [ dX, dY ] of random.shuffle(SPLIT_ARRAY)) { //TODO shuffle once
+					const checkIndex = gameMap.safeMoveIndex(this.currentIndex, dX, dY)
+					if (checkIndex) {
+						spawnIndex = checkIndex
+						break
+					}
 				}
+			} else {
+				spawnIndex = this.destinationIndex
 			}
 			const creep = new Creep(renderTime, data, null, this.vertical, this.wave)
 			const [ splitX, splitY ] = gameMap.tileCenter(spawnIndex)
@@ -432,7 +440,7 @@ export default class Creep extends Unit {
 			const position = creep.container.position
 			position.x = sourceX
 			position.y = sourceY
-			const splitDuration = 200
+			const splitDuration = Math.sqrt(distance.between(sourceX, sourceY, splitX, splitY)) * 4
 			creep.spawningAt = renderTime + splitDuration
 			animate.add(position, 'x', {
 				start: renderTime,
