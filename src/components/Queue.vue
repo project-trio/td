@@ -17,22 +17,11 @@
 			</p>
 			<p>Vote for a mode to play:</p>
 		</div>
-		<div v-if="multiplayer && notificationPermission !== 'granted'" class="notification-aside">
-			<div v-if="notificationPermission === 'unavailable'">
-				(Notifications are unavailable in your browser.)
-			</div>
-			<div v-else-if="notificationPermission === 'denied'">
-				To be notified when a game becomes available while this page is in the background, please enable notifications for this site in your browser settings.
-			</div>
-			<div v-else>
-				<button @click="onNotifications" class="big" :class="{ selected: readyRequested }">Enable notifications!</button>
-				<p class="text-small text-faint">Lets you know when a game is available while the page is in the background.</p>
-			</div>
-		</div>
 	</div>
 	<div v-else class="singleplayer">
-		<p class="mode-description">Take on the creeps in solo training. Select a mode:</p>
+		<p class="mode-description">Take on the creeps in solo training and improve your high score.</p>
 	</div>
+
 	<div>
 		<button v-for="mode in $options.arcadeModes" @click="onMode(mode)" class="selection capitalize" :class="{ selected: gameMode === mode }" :key="mode[0]">{{ mode[0] }}</button>
 		<p v-if="gameMode">{{ gameMode[1] }}</p>
@@ -51,7 +40,22 @@
 			</tr>
 		</table>
 	</div>
-	<div v-if="!multiplayer" class="singleplayer">
+
+	<div v-if="multiplayer">
+		<div v-if="notificationPermission !== 'granted'" class="notification-aside">
+			<div v-if="notificationPermission === 'unavailable'">
+				(Notifications are unavailable in your browser.)
+			</div>
+			<div v-else-if="notificationPermission === 'denied'">
+				To be notified when a game becomes available while this page is in the background, please enable notifications for this site in your browser settings.
+			</div>
+			<div v-else>
+				<p class="text-small text-faint">Get notified when a game becomes available while this page is in the background:</p>
+				<button @click="onNotifications" class="big" :class="{ selected: readyRequested }">Enable notifications</button>
+			</div>
+		</div>
+	</div>
+	<div v-else class="singleplayer">
 		<button v-if="gameMode" @click="onPlaySingleplayer" class="big">Play now</button>
 	</div>
 </div>
