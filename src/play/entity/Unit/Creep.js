@@ -328,7 +328,9 @@ export default class Creep extends Unit {
 			this.die(renderTime, true)
 			const gold = this.stats.gold
 			store.state.game.local.gold += gold
-			this.createNumber(renderTime, '+', Math.floor(gold))
+			if (gold > 0) {
+				this.createNumber(renderTime, '+', Math.floor(gold))
+			}
 		}
 	}
 
