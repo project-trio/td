@@ -48,7 +48,7 @@ export default {
 		},
 
 		gold () {
-			return this.storeStateGame.local.gold
+			return Math.floor(this.storeStateGame.local.gold)
 		},
 
 		finished () {
