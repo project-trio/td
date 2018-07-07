@@ -54,6 +54,11 @@ body
 	justify-content center
 	align-items center
 
+.hover-child
+	visibility hidden
+.hover-parent:hover .hover-child
+	visibility visible
+
 //INPUT
 
 input, button

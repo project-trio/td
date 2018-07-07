@@ -16,9 +16,7 @@
 		</transition-group>
 	</div>
 	<transition-group name="waves" tag="div" class="waves-container text-faint">
-		<div v-for="wave in waves" class="wave-box" :style="{ 'background-image': `url(${require(`@/assets/icons/${wave[1]}.png`)})` }" :key="wave[0]">
-			{{ wave[0] }}
-		</div>
+		<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
 	</transition-group>
 </div>
 </template>
@@ -30,6 +28,7 @@ import creeps from '@/play/data/creeps'
 import towers from '@/play/data/towers'
 
 import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
+import WaveBox from '@/components/Game/Sidebar/WaveBox'
 
 import Time from '@/components/Time'
 
@@ -37,6 +36,7 @@ export default {
 	components: {
 		PlayerBox,
 		Time,
+		WaveBox,
 	},
 
 	towers: towers.names.map(name => {
@@ -250,13 +250,5 @@ export default {
 .wave-box
 	width 51.2px
 	height 64px
-	background-size contain
-	background-position center
-	background-repeat no-repeat
 	transition all 800ms
-	display flex
-	align-items flex-end
-	padding-left 8px
-	padding-bottom 2px
-	box-sizing border-box
 </style>
