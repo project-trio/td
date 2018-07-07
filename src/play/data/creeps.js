@@ -23,14 +23,14 @@ export default [
 	{
 		name: 'fast',
 		model: 'sleek',
-		color: 0xaff8886,
+		color: 0xff8886,
 		speed: 1.5,
 		attackBit: 1,
 	},
 	{
 		name: 'dark',
 		model: 'arc',
-		color: 0x222222,
+		color: 0x333333,
 		count: 5,
 		health: [ 4, 10 ],
 		speed: 2 / 3,
