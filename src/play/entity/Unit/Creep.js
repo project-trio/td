@@ -1,4 +1,4 @@
-import { PlaneBufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial } from 'three'
+import { PlaneBufferGeometry, WireframeGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshPhongMaterial } from 'three'
 
 import store from '@/xjs/store'
 
@@ -10,6 +10,7 @@ import animate from '@/play/render/animate'
 
 import creeps from '@/play/data/creeps'
 import creepAnimations from '@/play/data/creep_animations'
+import towers from '@/play/data/towers'
 
 import Unit from '@/play/entity/Unit'
 
@@ -35,6 +36,8 @@ const hpRemainingGeometry = new PlaneBufferGeometry(HP_WIDTH, HP_HEIGHT)
 hpRemainingGeometry.translate(HP_WIDTH / 2, 0, 0)
 const hpRemainingMaterial = new MeshBasicMaterial({ color: 0x88ee77 })
 hpRemainingMaterial.depthTest = false
+
+const slowMaterial = new LineBasicMaterial({ color: towers['frost'].color, linewidth: 2 })
 
 const creepModelBuilders = {}
 const numberModelBuilders = {}
@@ -205,6 +208,17 @@ export default class Creep extends Unit {
 		if (!slowPercent || slowPercent > this.slow) {
 			this.moveSpeedCheck = this.stats.speed * (1 - slowPercent / 100) / 12.5
 			this.slow = slowPercent
+			if (until) {
+				if (!this.slowOutline) {
+					const wireframe = new WireframeGeometry(this.body.geometry)
+					this.slowOutline = new LineSegments(wireframe, slowMaterial)
+					this.slowOutline.rotation.x = Math.PI / 2
+					this.unitContainer.add(this.slowOutline)
+				}
+			} else if (this.slowOutline) {
+				render.remove(this.slowOutline)
+				this.slowOutline = null
+			}
 		}
 		this.slowUntil = until
 	}
