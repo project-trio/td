@@ -7,7 +7,7 @@
 			<div>
 				<span>Level {{ level + 1 }}</span>
 				<span class="text-faint"> ・ </span>
-				<span v-if="boost" class="text-faint">
+				<span v-if="isBoost" class="text-faint">
 					Damageless
 				</span>
 				<span v-else>
@@ -25,8 +25,9 @@
 		</div>
 		<div class="stat-row">
 			<div class="label">💥</div>
-			<div>{{ total('damage') }}{{ boost ? '%' : null }}</div>
-			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}{{ boost ? '%' : null }}</div>
+			<div>{{ total('damage') }}{{ isBoost ? '%' : null }}</div>
+			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}{{ isBoost ? '%' : null }}</div>
+			<div v-if="boost" class="boost">+{{ boost }}%</div>
 		</div>
 		<div class="stat-row">
 			<div class="label">🎯</div>
@@ -66,6 +67,7 @@ export default {
 	props: {
 		name: String,
 		level: Number,
+		boost: Number,
 	},
 
 	computed: {
@@ -84,7 +86,7 @@ export default {
 			return towers[this.name]
 		},
 
-		boost () {
+		isBoost () {
 			return !this.data.attackBit
 		},
 		air () {
@@ -186,6 +188,8 @@ export default {
 		&:disabled
 			opacity 0.5
 
+.boost
+	color #ff3
 .air
 	color #9af
 .ground

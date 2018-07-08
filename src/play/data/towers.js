@@ -114,7 +114,7 @@ export default {
 		range:  [ 42,  0,   0,   0,   0 ],
 		speed:  [ 0,   0,   0,   0,   0 ],
 		attackBit: 0,
-		description: 'Does not attack, but increases the power of adjacent towers.',
+		description: 'Does not attack, but increases the damage of adjacent towers.',
 	},
 
 }

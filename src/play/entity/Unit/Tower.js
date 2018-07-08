@@ -111,6 +111,10 @@ const updateBoost = () => {
 		if (targetTower.boosted !== boosting) {
 			targetTower.boosted = boosting
 			targetTower.updateDamage()
+			const storeSelection = store.state.game.selection
+			if (storeSelection && storeSelection.id === targetTower.id) {
+				storeSelection.boost = boosting
+			}
 		}
 	}
 }
@@ -238,6 +242,7 @@ export default class Tower extends Unit {
 			id: this.id,
 			name: this.name,
 			level: this.level,
+			boost: this.boosted,
 		}
 	}
 

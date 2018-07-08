@@ -17,7 +17,7 @@
 	</div>
 	<div>
 		<div v-if="selection">
-			<SelectionTower :name="selection.name" :level="selection.level" />
+			<SelectionTower :name="selection.name" :level="selection.level" :boost="selection.boost" />
 		</div>
 		<transition-group name="waves" tag="div" class="waves-container text-faint">
 			<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
