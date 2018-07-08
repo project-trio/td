@@ -241,7 +241,7 @@ export default class Tower extends Unit {
 		this.level = levelIndex
 		this.gold += upgradeCost
 		this.damage += this.stats.damage[levelIndex]
-		this.speed += this.stats.range[levelIndex]
+		this.speed += this.stats.speed[levelIndex]
 		const rangeDiff = this.stats.range[levelIndex]
 		if (rangeDiff !== 0) {
 			this.range += rangeDiff
@@ -298,15 +298,15 @@ export default class Tower extends Unit {
 			this.updateTarget(renderTime, timeDelta, tweening)
 		} else if (this.multi) {
 			if (this.readyToFire(renderTime)) {
-				const radiusCheck = this.rangeCheck
-				const { cX, cY } = this
+				const { cX, cY, rangeCheck } = this
 				let attackedCreep = false
 				let creepsRemaining = this.multi
 				let explodes = this.name === 'bash'
 				const data = !explodes && this.bulletData()
 				const attackBit = this.stats.attackBit
 				for (const creep of Creep.all()) {
-					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
+					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= rangeCheck) {
+						attackedCreep = true
 						if (explodes) {
 							creep.takeDamage(renderTime, this.damage, true)
 							//TODO stun
@@ -317,13 +317,12 @@ export default class Tower extends Unit {
 							}
 							creepsRemaining -= 1
 						}
-						attackedCreep = true
 					}
 				}
 				if (attackedCreep) {
 					this.firedAt = renderTime
 					if (explodes) {
-						new Splash(renderTime, this, null, this.explosionRadius, this.container)
+						new Splash(renderTime, this, null, this.range, this.container)
 					}
 				}
 			}

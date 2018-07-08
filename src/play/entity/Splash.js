@@ -12,13 +12,13 @@ for (const name in towers) {
 		continue
 	}
 	const towerData = towers[name]
-	const splashMaterial = new MeshBasicMaterial({ color: towerData.color })
-	splashMaterial.transparent = true
-	splashMaterial.opacity = 0.3
-	splashesCache[name] = splashMaterial
-
-	const ranges = towerData.radius
+	const ranges = name === 'bash' ? towerData.range : towerData.radius
 	if (ranges) {
+		const splashMaterial = new MeshBasicMaterial({ color: towerData.color })
+		splashMaterial.transparent = true
+		splashMaterial.opacity = 0.3
+		splashesCache[name] = splashMaterial
+
 		let range = 0
 		for (const diff of ranges) {
 			if (diff) {
@@ -34,7 +34,11 @@ for (const name in towers) {
 export default class Splash {
 
 	constructor (renderTime, source, at, radius, parent) {
-		const splash = new Mesh(rangesCache[radius], splashesCache[source.name].clone())
+		const rangeGeometry = rangesCache[radius]
+		if (!rangeGeometry) {
+			return console.error('Invalid Splash radius', source.name, radius)
+		}
+		const splash = new Mesh(rangeGeometry, splashesCache[source.name].clone())
 		if (at) {
 			const { cX, cY } = at
 			splash.position.x = cX
