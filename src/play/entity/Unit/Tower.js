@@ -80,6 +80,11 @@ const createTurret = (stats, outlined) => {
 	return turret
 }
 
+const removeSelection = () => {
+	local.game.selection = null
+	store.state.game.selection = null
+}
+
 export default class Tower extends Unit {
 
 	constructor (name, stats, parent, tX, tY, x, y) {
@@ -166,7 +171,7 @@ export default class Tower extends Unit {
 			}
 			if (currentSelection.id === this.id) {
 				if (!manual || !this.detonate()) {
-					local.game.selection = null
+					removeSelection()
 				}
 				return manual
 			}
@@ -187,6 +192,11 @@ export default class Tower extends Unit {
 			id: this.id,
 			tower: this,
 			mesh: selectionMesh,
+		}
+		store.state.game.selection = {
+			id: this.id,
+			name: this.name,
+			level: this.level,
 		}
 	}
 
@@ -223,6 +233,10 @@ export default class Tower extends Unit {
 			return
 		}
 		store.state.game.local.gold -= upgradeCost
+		const storeSelection = store.state.game.selection
+		if (storeSelection && storeSelection.id === this.id) {
+			storeSelection.level = levelIndex
+		}
 
 		this.level = levelIndex
 		this.gold += upgradeCost
@@ -457,7 +471,7 @@ Tower.update = (renderTime, timeDelta, tweening) => {
 			}
 			const selection = local.game.selection
 			if (selection && selection.id === tower.id) {
-				local.game.selection = null
+				removeSelection()
 			}
 			tower.destroy(renderTime)
 			allTowers.splice(idx, 1)

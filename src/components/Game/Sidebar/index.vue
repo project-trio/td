@@ -1,6 +1,6 @@
 <template>
-<div class="sidebar">
-	<div>
+<div class="sidebar flex-column">
+	<div class="flex-column">
 		<div class="stats">
 			<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 		</div>
@@ -15,9 +15,14 @@
 			<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
 		</transition-group>
 	</div>
-	<transition-group name="waves" tag="div" class="waves-container text-faint">
-		<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
-	</transition-group>
+	<div>
+		<div v-if="selection">
+			<SelectionTower :name="selection.name" :level="selection.level" />
+		</div>
+		<transition-group name="waves" tag="div" class="waves-container text-faint">
+			<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
+		</transition-group>
+	</div>
 </div>
 </template>
 
@@ -29,12 +34,14 @@ import towers from '@/play/data/towers'
 
 import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
 import WaveBox from '@/components/Game/Sidebar/WaveBox'
+import SelectionTower from '@/components/Game/Sidebar/SelectionTower'
 
 import Time from '@/components/Time'
 
 export default {
 	components: {
 		PlayerBox,
+		SelectionTower,
 		Time,
 		WaveBox,
 	},
@@ -85,6 +92,10 @@ export default {
 
 		highscore () {
 			return this.storeStateGame.highscore
+		},
+
+		selection () {
+			return this.storeStateGame.selection
 		},
 
 		waves () {
@@ -181,11 +192,14 @@ export default {
 <style lang="stylus" scoped>
 .sidebar
 	width 256px
+	height inherit
 	background #2
 	color #f
+	justify-content space-between
+
+.flex-column
 	display flex
 	flex-direction column
-	justify-content space-between
 
 .stats
 	text-align right
@@ -225,6 +239,11 @@ export default {
 	top 0
 	font-size 14px
 	color #6
+
+.players-container
+	flex-shrink 10
+	min-height 32px
+	overflow-y scroll
 
 .selection
 	border-radius 4px

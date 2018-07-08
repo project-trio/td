@@ -32,14 +32,18 @@ export default {
 </script>
 
 <style lang="stylus">
+html
+	height 100%
 body
 	margin 0
+	height 100%
 
 #app
 	font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	color #2
+	height inherit
 
 .overlay
 	position fixed
@@ -68,9 +72,11 @@ input, button
 button
 	transition-property background, transform, opacity, border, box-shadow
 	transition-duration 300ms
+	cursor pointer
+	&:disabled
+		cursor not-allowed
 
 .big, .selection
-	cursor pointer
 	height 56px
 	width 224px
 	font-size 24px

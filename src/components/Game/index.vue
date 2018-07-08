@@ -98,6 +98,7 @@ export default {
 <style lang="stylus" scoped>
 .game-container
 	display flex
+	height inherit
 
 .canvas-container
 	position relative
