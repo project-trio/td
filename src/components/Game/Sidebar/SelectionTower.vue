@@ -4,7 +4,17 @@
 		<div class="icon" :style="{ 'background-image': `url(${url})` }" />
 		<div>
 			<div class="capitalize text-large">{{ name }} Tower</div>
-			<div>Level {{ level + 1 }}</div>
+			<div>
+				<span>Level {{ level + 1 }}</span>
+				<span class="text-faint"> ・ </span>
+				<span v-if="boost" class="text-faint">
+					Damageless
+				</span>
+				<span v-else>
+					<span v-if="air"><span class="air">Air </span><span v-if="!ground">only</span><span v-else>+ </span></span>
+					<span v-if="ground"><span class="ground">Ground</span><span v-if="!air"> only</span></span>
+				</span>
+			</div>
 		</div>
 	</div>
 	<div class="description">{{ data.description }}</div>
@@ -15,8 +25,8 @@
 		</div>
 		<div class="stat-row">
 			<div class="label">💥</div>
-			<div>{{ total('damage') }}</div>
-			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}</div>
+			<div>{{ total('damage') }}{{ boost ? '%' : null }}</div>
+			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}{{ boost ? '%' : null }}</div>
 		</div>
 		<div class="stat-row">
 			<div class="label">🎯</div>
@@ -57,6 +67,16 @@ export default {
 
 		data () {
 			return towers[this.name]
+		},
+
+		boost () {
+			return !this.data.attackBit
+		},
+		air () {
+			return this.data.attackBit & 2
+		},
+		ground () {
+			return this.data.attackBit & 1
 		},
 
 		nextCost () {
@@ -141,4 +161,9 @@ export default {
 			margin-right 4px
 		&:disabled
 			opacity 0.5
-	</style>
+
+.air
+	color #9af
+.ground
+	color #ca7
+</style>
