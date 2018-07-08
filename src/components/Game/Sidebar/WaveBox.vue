@@ -31,4 +31,5 @@ export default {
 	position absolute
 	width 128px
 	top -16px
+	z-index 9001
 </style>

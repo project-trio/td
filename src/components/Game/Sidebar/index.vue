@@ -183,7 +183,6 @@ export default {
 	width 256px
 	background #2
 	color #f
-	overflow hidden
 	display flex
 	flex-direction column
 	justify-content space-between
