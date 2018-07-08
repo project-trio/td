@@ -1,3 +1,5 @@
+const DIAGONAL_DISTANCE = Math.sqrt(2)
+
 let TILES_WIDE, TILES_TALL, TILES_TOTAL
 let ENTRANCE_SIZE, EX, EY
 
@@ -70,6 +72,12 @@ export default class Paths {
 				blockCol = 1
 			}
 		}
+		for (let vertical = 0; vertical < 2; vertical += 1) {
+			for (const index of this.exits[vertical]) {
+				this.tests[vertical][index] = 0
+			}
+		}
+
 		this.update()
 		this.apply()
 	}
@@ -127,9 +135,11 @@ export default class Paths {
 			const resultPath = this.moves[vertical]
 			const testPath = this.tests[vertical]
 			for (let idx = testPath.length - 1; idx >= 0; idx -= 1) {
-				const testMove = testPath[idx]
-				resultPath[idx] = testMove ? [ testMove[0], testMove[1] ] : null
+				resultPath[idx] = testPath[idx] || null
 			}
+			// if (!vertical) { //SAMPLE
+			// 	this.debugPath(resultPath, true)
+			// }
 		}
 	}
 
@@ -142,17 +152,11 @@ export default class Paths {
 				requiredIndecies.add(additionalIndex)
 			}
 		}
-		const searchedIndexes = new Set()
+		let positions = [ ...this.exits[vertical] ]
 		for (let idx = 0; idx < TILES_TOTAL; idx += 1) {
-			if (testPath[idx] === 0) {
-				searchedIndexes.add(idx)
-			} else {
+			if (testPath[idx] !== 0) {
 				testPath[idx] = null
 			}
-		}
-		let positions = [ ...this.exits[vertical] ]
-		for (const position of positions) {
-			searchedIndexes.add(position)
 		}
 
 		let cardinalsOnly = true
@@ -164,31 +168,40 @@ export default class Paths {
 				for (const position of positions) {
 					const column = position % TILES_WIDE
 					const edgeCheck = column === 0 ? -1 : (column === TILES_WIDE - 1 ? 1 : false)
+					const fromPosition = testPath[position]
+					const distance = fromPosition ? fromPosition[2] : 0
+					const newDistance = distance + (diagonal ? DIAGONAL_DISTANCE : 1)
 					for (const diffs of indexDiffs) {
 						const diffX = diffs[0], diffY = diffs[1]
 						if (edgeCheck && diffX === edgeCheck) {
 							continue
 						}
 						const newIndex = position + diffX + diffY
-						if (newIndex <= 0 || newIndex >= TILES_TOTAL || searchedIndexes.has(newIndex)) {
+						if (newIndex <= 0 || newIndex >= TILES_TOTAL) {
+							continue
+						}
+						const checkPosition = testPath[newIndex]
+						if (checkPosition === 0) {
+							continue
+						}
+						if (checkPosition !== null && checkPosition[2] - newDistance < 0.01) {
 							continue
 						}
 						if (diagonal && (testPath[position + diffX] === 0 || testPath[position + diffY] === 0)) {
 							continue
 						}
-						if (requiredIndecies.delete(newIndex) && !requiredIndecies.size) {
+						if (!reachedAllRequiredIndicies && requiredIndecies.delete(newIndex) && !requiredIndecies.size) {
 							reachedAllRequiredIndicies = true
 						}
-						testPath[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY) ]
+						testPath[newIndex] = [ Math.sign(-diffX), Math.sign(-diffY), newDistance ]
 						nextSearch.push(newIndex)
-						searchedIndexes.add(newIndex)
 					}
 				}
 				if (cardinalsOnly) {
 					cardinalsOnly = false
 					break
 				}
-				diagonal = !diagonal
+				diagonal = true
 			}
 			if (!nextSearch.length) {
 				break
@@ -196,7 +209,6 @@ export default class Paths {
 			positions = nextSearch
 		}
 		// console.timeEnd('path ' + vertical)
-		// this.debugPath(testPath, true) //SAMPLE
 		return !reachedAllRequiredIndicies && testPath
 	}
 
