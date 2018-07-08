@@ -85,6 +85,36 @@ const removeSelection = () => {
 	store.state.game.selection = null
 }
 
+const updateBoost = () => {
+	const towerCount = allTowers.length
+	for (let tidx = 0; tidx < towerCount; tidx += 1) {
+		const targetTower = allTowers[tidx]
+		if (targetTower.isBoost) {
+			continue
+		}
+		let boosting = 0
+		for (let bidx = 0; bidx !== tidx && bidx < towerCount; bidx += 1) {
+			const boostTower = allTowers[bidx]
+			if (!boostTower.isBoost) {
+				continue
+			}
+			const dtX = boostTower.tX - targetTower.tX
+			if (dtX < -2 || dtX > 2) {
+				continue
+			}
+			const dtY = boostTower.tY - targetTower.tY
+			if (dtY < -2 || dtY > 2) {
+				continue
+			}
+			boosting += boostTower.damage
+		}
+		if (targetTower.boosted !== boosting) {
+			targetTower.boosted = boosting
+			targetTower.updateDamage()
+		}
+	}
+}
+
 export default class Tower extends Unit {
 
 	constructor (name, stats, parent, tX, tY, x, y) {
@@ -107,7 +137,11 @@ export default class Tower extends Unit {
 			this.firedAt = 0
 			this.targets = stats.targets
 			this.crackle = name === 'snap' ? false : null
+			this.isBoost = name === 'boost'
 			this.multi = stats.multi
+			if (this.isBoost) {
+				this.damageCheck = 0
+			}
 
 			this.level = 0
 			this.gold = stats.cost[0]
@@ -152,7 +186,12 @@ export default class Tower extends Unit {
 			this.select(true)
 			allTowers.push(this)
 			local.syncTowers.push([ tX, tY, true ])
+			updateBoost()
 		}
+	}
+
+	updateDamage () {
+		this.damageCheck = this.damage * this.boosted / 100 + this.damage
 	}
 
 	detonate () {
@@ -243,6 +282,11 @@ export default class Tower extends Unit {
 		this.level = levelIndex
 		this.gold += upgradeCost
 		this.damage += this.stats.damage[levelIndex]
+		if (this.isBoost) {
+			updateBoost()
+		} else {
+			this.updateDamage()
+		}
 		this.speed += this.stats.speed[levelIndex]
 		const rangeDiff = this.stats.range[levelIndex]
 		if (rangeDiff !== 0) {
@@ -286,7 +330,7 @@ export default class Tower extends Unit {
 	bulletData () {
 		return {
 			attackBit: this.stats.attackBit,
-			attackDamage: this.damage,
+			attackDamage: this.damageCheck,
 			bulletSpeed: this.stats.bulletSpeed,
 			bulletAcceleration: this.stats.bulletAcceleration,
 			explosionRadius: this.explosionRadius,
@@ -315,7 +359,7 @@ export default class Tower extends Unit {
 					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= rangeCheck) {
 						attackedCreep = true
 						if (explodes) {
-							creep.takeDamage(renderTime, this.damage, true, stunDuration)
+							creep.takeDamage(renderTime, this.damageCheck, true, stunDuration)
 						} else {
 							this.fireAt(creep, data)
 							if (creepsRemaining <= 1) {
@@ -480,6 +524,9 @@ Tower.update = (renderTime, timeDelta, tweening) => {
 			}
 			tower.destroy(renderTime)
 			allTowers.splice(idx, 1)
+			if (tower.isBoost) {
+				updateBoost()
+			}
 		} else if (renderTime !== null) {
 			tower.update(renderTime, timeDelta, tweening)
 		}
