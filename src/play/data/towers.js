@@ -87,7 +87,7 @@ export default {
 		chance: [ 5,   2.5, 2.5, 2.5,  2.5, 5 ],
 		stun:   [ 1.5, 0.5, 0.5, 0.5,  0.5, 0.5 ],
 		attackBit: 1,
-		description: 'Fires a pulse that damages all enemies nearby, with a chance to stun.',
+		description: 'AoE pulse with a chance to stun.',
 	},
 
 	snap: {

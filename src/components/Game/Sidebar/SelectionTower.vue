@@ -33,10 +33,25 @@
 			<div>{{ total('range') }}</div>
 			<div v-if="nextRange" :class="{ 'text-faint': !upgradeable }">{{ nextRange > 0 ? '+' : null }}{{ nextRange }}</div>
 		</div>
+		<div v-if="data.radius" class="stat-row">
+			<div class="label">💦</div>
+			<div>{{ total('radius') }}</div>
+			<div v-if="nextRadius" :class="{ 'text-faint': !upgradeable }">+{{ nextRadius }}</div>
+		</div>
 		<div class="stat-row">
 			<div class="label">⏩</div>
 			<div>{{ total('speed') }}</div>
 			<div v-if="nextSpeed" :class="{ 'text-faint': !upgradeable }">{{ nextSpeed > 0 ? '+' : null }}{{ nextSpeed }}</div>
+		</div>
+		<div v-if="data.slow" class="stat-row">
+			<div class="label">❄️</div>
+			<div>{{ total('slow') }}%</div>
+			<div v-if="nextSlow" :class="{ 'text-faint': !upgradeable }">+{{ nextSlow }}%</div>
+		</div>
+		<div v-if="data.stun" class="stat-row">
+			<div class="label">⚡️</div><!-- 🌀⛓ -->
+			<div>{{ total('stun') }}s</div>
+			<div v-if="nextStun" :class="{ 'text-faint': !upgradeable }">+{{ nextStun }}s</div>
 		</div>
 	</div>
 </div>
@@ -88,8 +103,17 @@ export default {
 		nextRange () {
 			return this.next('range')
 		},
+		nextRadius () {
+			return this.next('radius')
+		},
 		nextSpeed () {
 			return this.next('speed')
+		},
+		nextSlow () {
+			return this.next('slow')
+		},
+		nextStun () {
+			return this.next('stun')
 		},
 	},
 
