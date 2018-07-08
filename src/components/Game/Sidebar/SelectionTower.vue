@@ -7,6 +7,7 @@
 			<div>Level {{ level + 1 }}</div>
 		</div>
 	</div>
+	<div class="description">{{ data.description }}</div>
 	<div class="stats">
 		<div class="stat-row">
 			<button @click="onTower(false)" class="selection">Sell (+{{ total('cost') }}g)</button>
@@ -107,8 +108,9 @@ export default {
 	display flex
 	align-items center
 
-.header
-	margin-bottom 4px
+.description
+	margin-top 4px
+	margin-bottom 6px
 
 .icon
 	width 48px

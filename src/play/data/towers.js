@@ -12,6 +12,7 @@ export default {
 		speed:  [ 1.5, 0,  0,  0,  0,  -0.4 ],
 		attackBit: 3,
 		bulletSpeed: 12,
+		description: 'Upgrades into a long-range sniper.',
 	},
 
 	squirt: {
@@ -24,6 +25,7 @@ export default {
 		speed:  [ 6,  0,  0,  0,  0,  3 ],
 		attackBit: 3,
 		bulletSpeed: 15,
+		description: 'Rapid-firing tower.',
 	},
 
 	dart: {
@@ -39,6 +41,7 @@ export default {
 		bulletSpeed: 5,
 		bulletAcceleration: 1,
 		bulletSize: 8,
+		description: 'Surface-to-surface missile launcher with splash damage.',
 	},
 
 	swarm: {
@@ -53,6 +56,7 @@ export default {
 		radius: [ 0,  0,  0,  0,  0,   25 ],
 		attackBit: 2,
 		bulletSpeed: 10,
+		description: 'Anti-air tower that fires 4 bullets at once.',
 	},
 
 	frost: {
@@ -68,6 +72,7 @@ export default {
 		attackBit: 3,
 		bulletSpeed: 10,
 		bulletSize: 10,
+		description: 'Low damage, but slows all enemies near its target.',
 	},
 
 	bash: {
@@ -83,6 +88,7 @@ export default {
 		chance: [ 5,   2.5, 2.5, 2.5,  2.5, 5 ],
 		stun:   [ 1.5, 0.5, 0.5, 0.5,  0.5, 0.5 ],
 		attackBit: 1,
+		description: 'Fires a pulse that damages all enemies nearby, with a chance to stun.',
 	},
 
 	snap: {
@@ -97,6 +103,7 @@ export default {
 		attackBit: 3,
 		bulletSpeed: 10,
 		bulletTriangle: true,
+		description: 'Press "F" or double click to self-destruct the tower, damaging all enemies in range.',
 	},
 
 	boost: {
@@ -108,6 +115,7 @@ export default {
 		range:  [ 42,  0,   0,   0,   0 ],
 		speed:  [ 0,   0,   0,   0,   0 ],
 		attackBit: 0,
+		description: 'Does not attack, but increases the power of adjacent towers.',
 	},
 
 }
