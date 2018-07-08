@@ -119,9 +119,11 @@ export default class Tower extends Unit {
 			if (stats.radius) {
 				this.explosionRadius = stats.radius[0]
 			}
-			const slowStats = stats.slow
-			if (slowStats) {
+			if (stats.slow) {
 				this.slow = stats.slow[0]
+			}
+			if (stats.stun) {
+				this.stun = stats.stun[0]
 			}
 
 			this.backing = new Mesh(backingGeometry, backingMaterial)
@@ -251,8 +253,11 @@ export default class Tower extends Unit {
 		if (this.explosionRadius) {
 			this.explosionRadius += this.stats.radius[levelIndex]
 		}
-		if (this.slow) {
+		if (this.stats.slow) {
 			this.slow += this.stats.slow[levelIndex]
+		}
+		if (this.stats.stun) {
+			this.stun += this.stats.stun[levelIndex]
 		}
 
 		const mesh = new Mesh(upgradeGeometry, turretMaterialsCache[this.name])
@@ -286,6 +291,7 @@ export default class Tower extends Unit {
 			bulletAcceleration: this.stats.bulletAcceleration,
 			explosionRadius: this.explosionRadius,
 			slow: this.slow,
+			stun: this.stun,
 		}
 	}
 
@@ -304,12 +310,12 @@ export default class Tower extends Unit {
 				let explodes = this.name === 'bash'
 				const data = !explodes && this.bulletData()
 				const attackBit = this.stats.attackBit
+				const stunDuration = this.stun && this.stun * 1000
 				for (const creep of Creep.all()) {
 					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= rangeCheck) {
 						attackedCreep = true
 						if (explodes) {
-							creep.takeDamage(renderTime, this.damage, true)
-							//TODO stun
+							creep.takeDamage(renderTime, this.damage, true, stunDuration)
 						} else {
 							this.fireAt(creep, data)
 							if (creepsRemaining <= 1) {

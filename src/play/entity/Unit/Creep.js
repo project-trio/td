@@ -126,6 +126,7 @@ export default class Creep extends Unit {
 			this.id = `${wave}${name}${vertical}`
 			this.stats = data
 			this.immune = name === 'immune'
+			this.stunUntil = 0
 			this.setSlow(0, 0)
 
 			this.vertical = vertical
@@ -209,6 +210,16 @@ export default class Creep extends Unit {
 	}
 
 	update (renderTime, timeDelta, tweening) {
+		const stunUntil = this.stunUntil
+		if (stunUntil) {
+			const stillStunned = tweening || renderTime < stunUntil
+			this.unitContainer.position.x = stillStunned ? (Math.random() - 0.5) * 3 : 0
+			this.unitContainer.position.y = stillStunned ? (Math.random() - 0.5) * 3 : 0
+			if (!stillStunned) {
+				this.stunUntil = 0
+			}
+			return
+		}
 		if (!tweening) {
 			if (this.slowUntil && this.slowUntil <= renderTime) {
 				this.setSlow(0, 0)
@@ -313,7 +324,7 @@ export default class Creep extends Unit {
 		this.applyAnimations(renderTime, killed ? 'kill' : 'leak', deathDuration)
 	}
 
-	takeDamage (renderTime, damage, splash) {
+	takeDamage (renderTime, damage, splash, stunDuration, slow, slowUntil) {
 		const newHealth = Math.max(0, this.healthRemaining - damage)
 		this.healthRemaining = newHealth
 
@@ -322,6 +333,12 @@ export default class Creep extends Unit {
 			this.healthBar.scale.x = healthScale
 			if (splash) {
 				this.healthScheduled -= damage
+			}
+			if (stunDuration && renderTime + stunDuration > this.stunUntil) {
+				this.stunUntil = renderTime + stunDuration
+			}
+			if (slow) {
+				this.setSlow(slow, slowUntil)
 			}
 		} else {
 			this.healthBar.visible = false

@@ -41,6 +41,7 @@ class Bullet {
 		this.attackBit = data.attackBit
 		this.explosionRadius = data.explosionRadius
 		this.slow = data.slow
+		this.stun = data.stun
 
 		this.container = render.group(parent)
 		const cached = bulletsCache[source.name]
@@ -101,26 +102,23 @@ class Bullet {
 	reachedDestination (renderTime) {
 		const damage = this.attackDamage
 		const targetable = !this.target.spawningAt
+		const stunDuration = this.stun && this.stun * 1000
 		if (this.explosionRadius) {
 			new Splash(renderTime, this, this.target, this.explosionRadius, this.container.parent)
+
+			const { cX, cY, slow, attackBit } = this
 			const radiusCheck = distance.checkRadius(this.explosionRadius)
-			const slow = this.slow
-			const attackBit = this.attackBit
 			const slowUntil = renderTime + 1000
-			const { cX, cY } = this
 			for (const creep of Creep.all()) {
 				if (slow && creep.immune) {
 					continue
 				}
 				if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= radiusCheck) {
-					creep.takeDamage(renderTime, damage, creep !== this.target)
-					if (slow && !creep.deadAt) {
-						creep.setSlow(slow, slowUntil)
-					}
+					creep.takeDamage(renderTime, damage, creep !== this.target, stunDuration, slow, slowUntil)
 				}
 			}
 		} else if (targetable) {
-			this.target.takeDamage(renderTime, damage, false)
+			this.target.takeDamage(renderTime, damage, false, stunDuration)
 		}
 
 		this.remove = true
