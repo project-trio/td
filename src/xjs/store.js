@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+import local from '@/play/local'
+
 import storage from '@/xjs/storage'
 
 const defaultGameState = () => {
@@ -93,6 +95,7 @@ export default {
 		if (newLives >= 0) {
 			this.state.game.local.lives = newLives
 			this.state.game.local.livesChange = newLives
+			local.game.map.applyLives()
 		}
 	},
 
@@ -108,5 +111,6 @@ export default {
 
 	changeGold (diff) {
 		this.state.game.local.gold += diff
+		local.game.map.applyGold()
 	},
 }

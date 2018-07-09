@@ -1,4 +1,4 @@
-import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, Vector3 } from 'three'
+import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, Vector3 } from 'three'
 
 import store from '@/xjs/store'
 
@@ -9,6 +9,8 @@ import towers from '@/play/data/towers'
 
 import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
+
+import Vox from '@/play/external/vox'
 
 import Paths from '@/play/Game/Map/Paths'
 
@@ -27,6 +29,32 @@ const MAX_Y = MAP_HEIGHT / 2 - TILE_SIZE * 2
 const ENTRANCE_SIZE = 6
 const EX = 1
 const EY = 1
+const NUMBER_SIZE = 3
+
+const numberModelGeometry = []
+const coinMaterial = new MeshPhongMaterial({ color: 0x997700, shininess: 50 })
+const heartMaterial = new MeshPhongMaterial({ color: 0xaa2222, shininess: 50 })
+let coinBuilder, heartBuilder
+{
+	const voxParser = new Vox.Parser()
+	for (let digit = 0; digit < 10; digit += 1) {
+		store.state.loading += 1
+		voxParser.parse(require(`@/assets/text/${digit}.vox`)).then((voxelData) => {
+			store.state.loading -= 1
+			numberModelGeometry[digit] = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: coinMaterial }).geometry
+		})
+	}
+	store.state.loading += 1
+	voxParser.parse(require('@/assets/text/coin.vox')).then((voxelData) => {
+		store.state.loading -= 1
+		coinBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: coinMaterial })
+	})
+	store.state.loading += 1
+	voxParser.parse(require('@/assets/text/heart.vox')).then((voxelData) => {
+		store.state.loading -= 1
+		heartBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: heartMaterial })
+	})
+}
 
 export default class GameMap {
 
@@ -40,6 +68,17 @@ export default class GameMap {
 		const TTH = TILES_TALL / 2
 
 		this.container = render.group(parent)
+		this.goldContainer = render.group(this.container)
+		const offsetY = MAP_HEIGHT / 2 + NUMBER_SIZE * 4
+		const offsetZ = 64
+		this.goldContainer.position.set(-MAP_WIDTH / 2 + 14, offsetY, offsetZ)
+		this.goldContainer.add(coinBuilder.createMesh())
+		this.livesContainer = render.group(this.container)
+		this.livesContainer.position.set(MAP_WIDTH / 2 - 18 - NUMBER_SIZE * 12, offsetY, offsetZ)
+		this.livesContainer.add(heartBuilder.createMesh())
+
+		this.applyGold()
+		this.applyLives()
 
 		this.paths = new Paths(TILES_WIDE, TILES_TALL, ENTRANCE_SIZE, EX, EY)
 
@@ -206,6 +245,33 @@ export default class GameMap {
 			cx = null
 			return true
 		}
+	}
+
+	applyGold () {
+		if (this.goldDigitsContainer) {
+			render.remove(this.goldDigitsContainer)
+		}
+		this.goldDigitsContainer = this.makeText(store.state.game.local.gold, coinMaterial, this.goldContainer)
+	}
+
+	applyLives () {
+		if (this.livesDigitsContainer) {
+			render.remove(this.livesDigitsContainer)
+		}
+		this.livesDigitsContainer = this.makeText(store.state.game.local.lives, heartMaterial, this.livesContainer)
+	}
+
+	makeText (amount, material, parent) {
+		const digits = amount.toString().split('')
+		let offset = 4
+		const container = render.group(parent)
+		for (const digit of digits) {
+			offset += NUMBER_SIZE * 6 + 1
+			const numberMesh = new Mesh(numberModelGeometry[digit], material)
+			numberMesh.position.x = offset
+			container.add(numberMesh)
+		}
+		return container
 	}
 
 	setTowerName (name) {
