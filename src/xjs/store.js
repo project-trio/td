@@ -105,4 +105,8 @@ export default {
 	resetGameState () {
 		this.state.game = defaultGameState()
 	},
+
+	changeGold (diff) {
+		this.state.game.local.gold += diff
+	},
 }

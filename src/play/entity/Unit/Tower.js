@@ -282,7 +282,7 @@ export default class Tower extends Unit {
 		if (upgradeCost === undefined || upgradeCost > store.state.game.local.gold) {
 			return
 		}
-		store.state.game.local.gold -= upgradeCost
+		store.changeGold(-upgradeCost)
 		const storeSelection = store.state.game.selection
 		if (storeSelection && storeSelection.id === this.id) {
 			storeSelection.level = levelIndex
@@ -327,7 +327,7 @@ export default class Tower extends Unit {
 
 	destroy () {
 		if (!this.crackle) {
-			store.state.game.local.gold += this.gold
+			store.changeGold(this.gold)
 		}
 		local.game.map.removeTower(this)
 		local.syncTowers.push([ this.tX, this.tY, false ])

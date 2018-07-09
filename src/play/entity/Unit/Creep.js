@@ -358,7 +358,7 @@ export default class Creep extends Unit {
 			this.healthBar.visible = false
 			this.die(renderTime, true)
 			const gold = this.stats.gold
-			store.state.game.local.gold += gold
+			store.changeGold(gold)
 			if (gold > 0) {
 				this.createNumber(renderTime, '+', Math.floor(gold))
 			}

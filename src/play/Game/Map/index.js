@@ -195,7 +195,7 @@ export default class GameMap {
 			if (cost > gameState.local.gold) {
 				return
 			}
-			gameState.local.gold -= cost
+			store.changeGold(-cost)
 			placement.visible = false
 			new Tower(towerName, towerData, this.container, cx, cy, placement.position.x, placement.position.y)
 			this.paths.toggleTower(cx, cy, true)
