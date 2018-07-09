@@ -163,6 +163,10 @@ export default class Tower extends Unit {
 			if (stats.stun) {
 				this.stun = stats.stun[0]
 			}
+			if (stats.chance) {
+				this.chance = stats.chance[0]
+				this.chanceCurrent = 0
+			}
 
 			this.backing = new Mesh(backingGeometry, backingMaterial)
 			this.backing.position.z = 2
@@ -308,6 +312,9 @@ export default class Tower extends Unit {
 		if (this.stats.stun) {
 			this.stun += this.stats.stun[levelIndex]
 		}
+		if (this.stats.chance) {
+			this.chance += this.stats.chance[levelIndex]
+		}
 
 		const mesh = new Mesh(upgradeGeometry, turretMaterialsCache[this.name])
 		mesh.position.x = (levelIndex - 1) * upgradeSize * 1.5
@@ -359,11 +366,20 @@ export default class Tower extends Unit {
 				let explodes = this.name === 'bash'
 				const data = !explodes && this.bulletData()
 				const attackBit = this.stats.attackBit
-				const stunDuration = this.stun && this.stun * 1000
+				let stunDuration = null
 				for (const creep of Creep.all()) {
 					if (!creep.spawningAt && (attackBit & creep.stats.attackBit) && creep.distanceTo(cX, cY) <= rangeCheck) {
 						attackedCreep = true
 						if (explodes) {
+							if (stunDuration === null) {
+								this.chanceCurrent += this.chance
+								if (Math.random() * 100 <= this.chanceCurrent) {
+									stunDuration = this.stun * 1000
+									this.chanceCurrent = 0
+								} else {
+									stunDuration = 0
+								}
+							}
 							creep.takeDamage(renderTime, this.damageCheck, true, stunDuration)
 						} else {
 							this.fireAt(creep, data)
