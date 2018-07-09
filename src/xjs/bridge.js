@@ -22,7 +22,7 @@ if (token) {
 	query.token = token
 }
 
-const socket = io(`${util.TESTING ? 'http://192.168.0.11:8031' : 'https://trio.suzu.online'}/td`, { query })
+const socket = io(`${util.HOST_URL}/td`, { query })
 
 //EVENTS
 

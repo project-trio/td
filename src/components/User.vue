@@ -1,11 +1,13 @@
 <template>
 <div class="user-box">
 	<div class="avatar" :style="{ 'background-image': `url(${avatarUrl})`, width: `${size}px`, height: `${size}px` }" />
-	<div class="name">{{ user.name }}</div>
+	<a :href="userUrl" class="name" target="_blank">{{ user.name }}</a>
 </div>
 </template>
 
 <script>
+import util from '@/xjs/util'
+
 export default {
 	props: {
 		id: Number,
@@ -15,6 +17,10 @@ export default {
 	computed: {
 		user () {
 			return this.$store.state.queue.users[this.id]
+		},
+
+		userUrl () {
+			return `${util.HOST_URL}/user/${this.user.name}`
 		},
 
 		avatarUrl () {
