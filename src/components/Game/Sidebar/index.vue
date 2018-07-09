@@ -2,7 +2,9 @@
 <div class="sidebar flex-column">
 	<div class="flex-column">
 		<div class="stats">
-			<div><span class="emoji">💰</span>{{ gold }}</div><div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
+			<div class="local-display"><span class="emoji">❤️</span>{{ lives }}</div>
+			<div class="local-display"><span class="emoji">💰</span>{{ gold }}</div>
+			<div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 		</div>
 		<div class="towers">
 			<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
@@ -65,6 +67,9 @@ export default {
 			return this.storeStateGame.waveCreepCount
 		},
 
+		lives () {
+			return this.storeStateGame.local.lives
+		},
 		gold () {
 			return Math.floor(this.storeStateGame.local.gold)
 		},
@@ -211,8 +216,12 @@ export default {
 	font-size 18px
 	font-variant-numeric tabular-nums
 
-.time
-	margin 0 14px
+@media (min-height 767px)
+	.local-display
+		display none
+
+.stats > div
+	margin-right 14px
 
 .emoji
 	height 0
@@ -258,10 +267,20 @@ export default {
 
 .waves-container
 	display flex
-	width 320px
 
+@media (min-height 896px)
+	.waves-container
+		position absolute
+		left 50%
+		bottom 0
+		z-index 1
+		margin-left -24px
+
+.waves-enter
+	opacity 0
 .waves-leave-to
 	transform translateX(-51.2px)
+	opacity 0
 .waves-leave-active
 	position absolute
 
