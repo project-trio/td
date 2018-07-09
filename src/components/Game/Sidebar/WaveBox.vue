@@ -1,12 +1,18 @@
 <template>
-<div class="wave-box hover-parent" :style="{ 'background-image': `url(${require(`@/assets/icons/${name}.png`)})` }">
+<Popover class="wave-box capitalize" :style="{ 'background-image': `url(${require(`@/assets/icons/${name}.png`)})` }">
 	{{ number }}
-	<span class="popover hover-child capitalize">{{ name }} {{ boss ? 'Boss' : null }}</span>
-</div>
+	<template slot="hover">{{ name }} {{ boss ? 'Boss' : null }}</template>
+</Popover>
 </template>
 
 <script>
+import Popover from '@/components/Game/Sidebar/Popover'
+
 export default {
+	components: {
+		Popover,
+	},
+
 	props: {
 		number: Number,
 		name: String,
@@ -26,10 +32,4 @@ export default {
 	padding-bottom 2px
 	box-sizing border-box
 	position relative
-
-.popover
-	position absolute
-	width 128px
-	top -16px
-	z-index 9001
 </style>
