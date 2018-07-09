@@ -24,33 +24,33 @@
 			<button @click="onTower(true)" class="selection" :disabled="!upgradeable">Up (-{{ nextCost }}g)</button>
 		</div>
 		<div class="stat-row">
-			<div class="label">💥</div>
+			<Popover help="Attack damage">💥</Popover>
 			<div>{{ total('damage') }}{{ isBoost ? '%' : null }}</div>
 			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}{{ isBoost ? '%' : null }}</div>
 			<div v-if="boost" class="boost">+{{ boost }}%</div>
 		</div>
 		<div class="stat-row">
-			<div class="label">🎯</div>
+			<Popover help="Attack range">🎯</Popover>
 			<div>{{ total('range') }}</div>
 			<div v-if="nextRange" :class="{ 'text-faint': !upgradeable }">{{ nextRange > 0 ? '+' : null }}{{ nextRange }}</div>
 		</div>
 		<div v-if="data.radius" class="stat-row">
-			<div class="label">💦</div>
+			<Popover help="Splash damage radius">💦</Popover>
 			<div>{{ total('radius') }}</div>
 			<div v-if="nextRadius" :class="{ 'text-faint': !upgradeable }">+{{ nextRadius }}</div>
 		</div>
 		<div class="stat-row">
-			<div class="label">⏩</div>
+			<Popover help="Attacks per second">⏩</Popover>
 			<div>{{ total('speed') }}</div>
 			<div v-if="nextSpeed" :class="{ 'text-faint': !upgradeable }">{{ nextSpeed > 0 ? '+' : null }}{{ nextSpeed }}</div>
 		</div>
 		<div v-if="data.slow" class="stat-row">
-			<div class="label">❄️</div>
+			<Popover help="Slows creep movement">❄️</Popover>
 			<div>{{ total('slow') }}%</div>
 			<div v-if="nextSlow" :class="{ 'text-faint': !upgradeable }">+{{ nextSlow }}%</div>
 		</div>
 		<div v-if="data.stun" class="stat-row">
-			<div class="label">⚡️</div><!-- 🌀⛓ -->
+			<Popover help="Stuns">⚡️</Popover>
 			<div>{{ total('stun') }}s</div>
 			<div v-if="nextStun" :class="{ 'text-faint': !upgradeable }">+{{ nextStun }}s</div>
 		</div>
@@ -63,7 +63,13 @@ import local from '@/play/local'
 
 import towers from '@/play/data/towers'
 
+import Popover from '@/components/Game/Sidebar/Popover'
+
 export default {
+	components: {
+		Popover,
+	},
+
 	props: {
 		name: String,
 		level: Number,
@@ -172,7 +178,7 @@ export default {
 	& > *
 		width 48px
 		box-sizing border-box
-	& .label
+	& .popover
 		text-align right
 		margin-left 8px
 		padding-right 8px
