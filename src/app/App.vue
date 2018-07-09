@@ -63,6 +63,15 @@ body
 .hover-parent:hover .hover-child
 	visibility visible
 
+a
+	color #f83
+	text-decoration none
+	transition color 300ms ease-out
+	&:hover
+		color #fa6
+		&:active
+			color #fc8
+
 //INPUT
 
 input, button

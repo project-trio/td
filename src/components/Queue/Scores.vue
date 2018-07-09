@@ -35,7 +35,7 @@ export default {
 <style lang="stylus" scoped>
 table
 	margin auto
-	border-spacing 8px 0
+	border-spacing 8px 2px
 
 th
 	min-width 80px
