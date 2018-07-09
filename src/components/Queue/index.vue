@@ -55,16 +55,23 @@
 			</div>
 		</div>
 	</div>
-	<div v-else class="singleplayer">
-		<button v-if="gameMode" @click="onPlaySingleplayer" class="big">Play now</button>
+	<div v-else-if="gameMode" class="singleplayer">
+		<button @click="onPlaySingleplayer" class="big">Play now</button>
+		<Scores :mode="gameMode[0]" />
 	</div>
 </div>
 </template>
 
 <script>
+import Scores from '@/components/Queue/Scores'
+
 import bridge from '@/xjs/bridge'
 
 export default {
+	components: {
+		Scores,
+	},
+
 	data () {
 		return {
 			gameMode: null,

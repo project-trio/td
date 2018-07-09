@@ -33,6 +33,8 @@ export default {
 
 		queue: {
 			names: [],
+			scores: {},
+			users: {},
 		},
 
 		signin: {

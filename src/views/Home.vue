@@ -52,8 +52,10 @@ export default {
 
 	methods: {
 		connect () {
-			bridge.emit('lobby', true, (names) => {
+			bridge.emit('lobby', true, ({ names, scores, users }) => {
 				this.$store.state.queue.names = names
+				this.$store.state.queue.scores = scores
+				this.$store.state.queue.users = users
 			})
 		},
 	},
