@@ -4,7 +4,7 @@ module.exports = {
 
 	devServer: {
 		open: true,
-		port: 8030,
+		port: 8032,
 	},
 
 	pages: {
