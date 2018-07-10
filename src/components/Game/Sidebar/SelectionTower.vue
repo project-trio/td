@@ -194,6 +194,14 @@ export default {
 		&:disabled
 			opacity 0.5
 
+@media (max-height 480px)
+	.stat-row:nth-child(n+2)
+		display none
+
+@media (max-height 544px)
+	.description
+		display none
+
 .boost
 	color #ff3
 .air
