@@ -251,7 +251,8 @@ export default class GameMap {
 		if (this.goldDigitsContainer) {
 			render.remove(this.goldDigitsContainer)
 		}
-		this.goldDigitsContainer = this.makeText(store.state.game.local.gold, coinMaterial, this.goldContainer)
+		const amount = Math.floor(store.state.game.local.gold)
+		this.goldDigitsContainer = this.makeText(amount, coinMaterial, this.goldContainer)
 	}
 
 	applyLives () {
