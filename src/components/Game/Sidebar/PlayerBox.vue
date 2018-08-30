@@ -39,48 +39,55 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.player-box
-	margin 8px
-	padding 6px 8px
-	background #0
-	position relative
-	&.local
-		background #212
-	&.winner
-		background #f44
+<style lang="postcss" scoped>
+.player-box {
+	margin: 8px;
+	padding: 6px 8px;
+	background: #000;
+	position: relative;
+	&.local {
+		background: #212;
+	}
+	&.winner {
+		background: #f44;
+	}
+}
 
-.progress-bar
-	position absolute
-	top 0
-	left 0
-	bottom 0
-	background #226
+.progress-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	background: #226;
+}
+.player-box.winner .progress-bar {
+	display: none !important;
+}
+.box-contents {
+	position: relative;
+	z-index: 1;
+}
 
-.player-box.winner .progress-bar
-	display none !important
+.waves {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 4px;
+	margin-right: -2px;
+	margin-bottom: -2px;
+}
+.wave-box {
+	margin-right: 2px;
+	margin-bottom: 2px;
+	width: 7px;
+	height: 4px;
+	background: #666;
+	&.won {
+		background: #ca4;
+	}
+}
 
-.box-contents
-	position relative
-	z-index 1
-
-.waves
-	display flex
-	flex-wrap wrap
-	margin-top 4px
-	margin-right -2px
-	margin-bottom -2px
-
-.wave-box
-	margin-right 2px
-	margin-bottom 2px
-	width 7px
-	height 4px
-	background #6
-	&.won
-		background #ca4
-
-.flex-ends
-	display flex
-	justify-content space-between
+.flex-ends {
+	display: flex;
+	justify-content: space-between;
+}
 </style>

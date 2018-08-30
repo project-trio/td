@@ -19,17 +19,19 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.popover
-	position relative
-	cursor help
+<style lang="postcss" scoped>
+.popover {
+	position: relative;
+	cursor: help;
+}
 
-.popover-content
-	position absolute
-	background #3
-	box-shadow 0 1px 4px #0
-	text-align left
-	padding 4px 8px
-	z-index 9001
-	bottom 100%
+.popover-content {
+	position: absolute;
+	background: #333;
+	box-shadow: 0 1px 4px #000;
+	text-align: left;
+	padding: 4px 8px;
+	z-index: 9001;
+	bottom: 100%;
+}
 </style>

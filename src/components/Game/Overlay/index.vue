@@ -96,32 +96,35 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.game-overlay
-	position absolute
-	width 100%
-	height 100%
-	display flex
-	justify-content center
-	align-items center
-	pointer-events none
+<style lang="postcss" scoped>
+.game-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: none;
+}
+.game-overlay > div {
+	padding: 0 24px;
+	background: rgba(34,34,34,0.9);
+	color: #eee;
+	box-sizing: border-box;
+	margin: 16px;
+	width: 100%;
+	max-width: 480px;
+}
+.game-overlay button {
+	pointer-events: all;
+	margin: 16px auto;
+}
 
-.game-overlay > div
-	padding 0 24px
-	background rgba(#2, 0.9)
-	color #e
-	box-sizing border-box
-	margin 16px
-	width 100%
-	max-width 480px
-
-.game-overlay button
-	pointer-events all
-	margin 16px auto
-
-table
-	border-spacing 0 4px
-	width 100%
-th
-	text-align left
+table {
+	border-spacing: 0 4px;
+	width: 100%;
+}
+th {
+	text-align: left;
+}
 </style>

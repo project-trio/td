@@ -31,89 +31,108 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-html
-	height 100%
-body
-	margin 0
-	height 100%
+<style lang="postcss">
+html {
+	height: 100%;
+}
+body {
+	margin: 0;
+	height: 100%;
+}
 
-#app
-	font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif
-	-webkit-font-smoothing antialiased
-	-moz-osx-font-smoothing grayscale
-	color #2
-	height inherit
+#app {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #222;
+	height: inherit;
+}
 
-.overlay
-	position fixed
-	top 0
-	left 0
-	right 0
-	bottom 0
-	z-index 9001
-	background rgba(#f, 0.5)
-	color #e33
-	display flex
-	justify-content center
-	align-items center
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 9001;
+	background: rgba(255,255,255,0.5);
+	color: #e33;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
-.hover-child
-	visibility hidden
-.hover-parent:hover .hover-child
-	visibility visible
+.hover-child {
+	visibility: hidden;
+}
+.hover-parent:hover .hover-child {
+	visibility: visible;
+}
 
-a
-	color #f83
-	text-decoration none
-	transition color 300ms ease-out
-	&:hover
-		color #fa6
-		&:active
-			color #fc8
+//BUTTONS
 
-//INPUT
+a {
+	color: #f83;
+	text-decoration: none;
+	transition: color 300ms ease-out;
+	&:hover {
+		color: #fa6;
+		&:active {
+			color: #fc8;
+		}
+	}
+}
 
-input, button
-	border none
-	outline none
+input, button {
+	border: none;
+	outline: none;
+}
+button {
+	transition-property: background, transform, opacity, border, box-shadow;
+	transition-duration: 300ms;
+	cursor: pointer;
+	&:disabled {
+		cursor: not-allowed;
+	}
+}
 
-button
-	transition-property background, transform, opacity, border, box-shadow
-	transition-duration 300ms
-	cursor pointer
-	&:disabled
-		cursor not-allowed
+.big, .selection {
+	height: 56px;
+	width: 224px;
+	font-size: 24px;
+	background: #e8e8e8;
+	&:not(.selected):hover {
+		opacity: 0.7;
+		&:active {
+			opacity: 0.4;
+		}
+	}
+}
 
-.big, .selection
-	height 56px
-	width 224px
-	font-size 24px
-	background #e8
-	&:not(.selected):hover
-		opacity 0.7
-		&:active
-			opacity 0.4
-
-.selection.selected
-	cursor default
-
-.big
-	display block
-	margin auto
-	border-radius 4px
+.selection.selected {
+	cursor: default;
+}
+.big {
+	display: block;
+	margin: auto;
+	border-radius: 4px;
+}
 
 //TEXT
 
-.capitalize
-	text-transform capitalize
+.capitalize {
+	text-transform: capitalize;
+}
 
-.text-small
-	font-size 0.9em
+.text-small {
+	font-size: 0.9em;
+}
 
-.text-faint
-	color #9
+.text-faint {
+	color: #999;
+}
 
-.text-center
-	text-align center
+.text-center {
+	text-align: center;
+}
 </style>

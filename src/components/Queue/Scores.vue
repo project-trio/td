@@ -39,16 +39,18 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-table
-	margin auto
-	border-collapse collapse
-	min-width 288px
+<style lang="postcss" scoped>
+table {
+	margin: auto;
+	border-collapse: collapse;
+	min-width: 288px;
+}
+th, td {
+	padding: 2px 8px;
+	box-sizing: border-box;
+}
 
-th, td
-	padding 2px 8px
-	box-sizing border-box
-
-.highlight
-	background-color #fee
+.highlight {
+	background-color: #fee;
+}
 </style>

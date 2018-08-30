@@ -98,11 +98,13 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.game-container
-	display flex
-	height inherit
+<style lang="postcss" scoped>
+.game-container {
+	display: flex;
+	height: inherit;
+}
 
-.canvas-container
-	position relative
+.canvas-container {
+	position: relative;
+}
 </style>

@@ -194,98 +194,114 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.sidebar
-	width 256px
-	height inherit
-	background #2
-	color #f
-	justify-content space-between
+<style lang="postcss" scoped>
+.sidebar {
+	width: 256px;
+	height: inherit;
+	background: #222;
+	color: #fff;
+	justify-content: space-between;
+}
 
-.flex-column
-	display flex
-	flex-direction column
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
 
-.stats
-	text-align right
-	height 36px
-	margin 8px 0
-	display flex
-	justify-content flex-end
-	align-items center
-	font-size 18px
-	font-variant-numeric tabular-nums
+.stats {
+	text-align: right;
+	height: 36px;
+	margin: 8px 0;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	font-size: 18px;
+	font-variant-numeric: tabular-nums;
+}
 
-@media (min-height 767px)
-	.local-display
-		display none
+@media (min-height: 767px) {
+	.local-display {
+		display: none;
+	}
+}
 
-.stats > div
-	margin-right 14px
+.stats > div {
+	margin-right: 14px;
+}
 
-.emoji
-	height 0
-	margin-right -2px
+.emoji {
+	height: 0;
+	margin-right: -2px;
+}
 
-.tower-box
-	width 25%
-	padding 2px
-	display inline-block
-	box-sizing border-box
+.tower-box {
+	width: 25%;
+	padding: 2px;
+	display: inline-block;
+	box-sizing: border-box;
+}
+.tower-button {
+	font-size: 20px;
+	width: 100%;
+	color: #000;
+	font-weight: bold;
+	background-size: contain;
+	background-position: center;
+	position: relative;
+}
+.button-hotkey {
+	position: absolute;
+	left: 3px;
+	top: 0;
+	font-size: 14px;
+	color: #666;
+}
 
-.tower-button
-	font-size 20px
-	width 100%
-	color #0
-	font-weight bold
-	background-size contain
-	background-position center
-	position relative
+.players-container {
+	flex-shrink: 10;
+	min-height: 32px;
+	overflow-y: scroll;
+}
 
-.button-hotkey
-	position absolute
-	left 3px
-	top 0
-	font-size 14px
-	color #6
+.selection {
+	border-radius: 4px;
+}
+.selection.selected {
+	transform: scale(0.9);
+	opacity: 0.5;
+	box-shadow: 0px 0px 8px 2px #000;
+}
 
-.players-container
-	flex-shrink 10
-	min-height 32px
-	overflow-y scroll
+.players-move {
+	transition: transform 500ms ease-out;
+}
 
-.selection
-	border-radius 4px
+.waves-container {
+	display: flex;
+}
+@media (min-height: 896px) {
+	.waves-container {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		z-index: 1;
+		margin-left: -24px;
+	}
+}
 
-.selection.selected
-	transform scale(0.9)
-	opacity 0.5
-	box-shadow 0px 0px 8px 2px #0
-
-.players-move
-	transition transform 500ms ease-out
-
-.waves-container
-	display flex
-
-@media (min-height 896px)
-	.waves-container
-		position absolute
-		left 50%
-		bottom 0
-		z-index 1
-		margin-left -24px
-
-.waves-enter
-	opacity 0
-.waves-leave-to
-	transform translateX(-51.2px)
-	opacity 0
-.waves-leave-active
-	position absolute
-
-.wave-box
-	width 51.2px
-	height 64px
-	transition all 800ms
+.waves-enter {
+	opacity: 0;
+}
+.waves-leave-to {
+	transform: translateX(-51.2px);
+	opacity: 0;
+}
+.waves-leave-active {
+	position: absolute;
+}
+.wave-box {
+	width: 51.2px;
+	height: 64px;
+	transition: all 800ms;
+}
 </style>

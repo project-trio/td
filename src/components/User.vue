@@ -45,16 +45,19 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.user-box
-	display flex
-	align-items center
+<style lang="postcss" scoped>
+.user-box {
+	display: flex;
+	align-items: center;
+}
 
-.avatar
-	background-size cover
-	background-repeat no-repeat
-	border-radius 2px
+.avatar {
+	background-size: cover;
+	background-repeat: no-repeat;
+	border-radius: 2px;
+}
 
-.name
-	margin-left 4px
+.name {
+	margin-left: 4px;
+}
 </style>

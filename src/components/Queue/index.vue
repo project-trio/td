@@ -247,40 +247,49 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-h2
-	margin-bottom 2px
+<style lang="postcss" scoped>
+h2 {
+	margin-bottom: 2px;
+}
 
-p.margin-tall
-	margin 32px 0
+p.margin-tall {
+	margin: 32px 0;
+}
 
-.queue
-	text-align center
+.queue {
+	text-align: center;
+}
 
-.selection
-	margin 4px
-	flex-grow 1
-	border-radius 28px
+.selection {
+	margin: 4px;
+	flex-grow: 1;
+	border-radius: 28px;
+	&.selected {
+		background: #d67;
+	}
+}
 
-.selection.selected
-	background #dd6677
+.ready-button.selected {
+	background-color: #1ea;
+}
 
-.ready-button.selected
-	background-color #1ea
+.mode-buttons {
+	margin-bottom: 16px;
+}
 
-.mode-buttons
-	margin-bottom 16px
+.notification-aside {
+	margin-top: 32px;
+}
+.notification-aside button {
+	width: 256px;
+}
+.singleplayer button {
+	margin-top: 32px;
+}
 
-.notification-aside
-	margin-top 32px
-	& button
-		width 256px
-
-.singleplayer button
-	margin-top 32px
-
-table
-	margin auto
-	text-align left
-	border-spacing 8px 0
+table {
+	margin: auto;
+	text-align: left;
+	border-spacing: 8px 0;
+}
 </style>

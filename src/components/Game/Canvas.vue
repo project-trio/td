@@ -83,7 +83,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-canvas
-	display block
+<style lang="postcss" scoped>
+canvas {
+	display: block;
+}
 </style>

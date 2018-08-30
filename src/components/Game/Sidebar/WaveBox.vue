@@ -30,15 +30,16 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.wave-box
-	background-size contain
-	background-position center
-	background-repeat no-repeat
-	display flex
-	align-items flex-end
-	padding-left 8px
-	padding-bottom 2px
-	box-sizing border-box
-	position relative
+<style lang="postcss" scoped>
+.wave-box {
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	display: flex;
+	align-items: flex-end;
+	padding-left: 8px;
+	padding-bottom: 2px;
+	box-sizing: border-box;
+	position: relative;
+}
 </style>

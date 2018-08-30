@@ -162,59 +162,72 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.tower-selection
-	margin 8px
-.header, .stat-row
-	display flex
-	align-items center
+<style lang="postcss" scoped>
+.tower-selection {
+	margin: 8px;
+}
 
-.description
-	margin-top 4px
-	margin-bottom 6px
+.header, .stat-row {
+	display: flex;
+	align-items: center;
+}
+.description {
+	margin-top: 4px;
+	margin-bottom: 6px;
+}
+.icon {
+	width: 48px;
+	height: 48px;
+	background-size: contain;
+	border-radius: 4px;
+	margin-right: 8px;
+}
 
-.icon
-	width 48px
-	height 48px
-	background-size contain
-	border-radius 4px
-	margin-right 8px
+.text-large, .stat-row {
+	font-size: 20px;
+}
 
-.text-large, .stat-row
-	font-size 20px
+.stat-row > * {
+	width: 48px;
+	box-sizing: border-box;
+}
+.stat-row .popover {
+	text-align: right;
+	margin-left: 8px;
+	padding-right: 8px;
+}
+.stat-row button {
+	background: #555;
+	border-radius: 6px;
+	color: #fff;
+	width: 50%;
+	height: 32px;
+	font-size: 14px;
+	&:first-child {
+		margin-right: 4px;
+	}
+	&:disabled {
+		opacity: 0.5;
+	}
+}
+@media (max-height: 480px) {
+	.stat-row:nth-child(n+2) {
+		display: none;
+	}
+}
+@media (max-height: 544px) {
+	.description {
+		display: none;
+	}
+}
 
-.stat-row
-	& > *
-		width 48px
-		box-sizing border-box
-	& .popover
-		text-align right
-		margin-left 8px
-		padding-right 8px
-	& button
-		background #5
-		border-radius 6px
-		color #f
-		width 50%
-		height 32px
-		font-size 14px
-		&:first-child
-			margin-right 4px
-		&:disabled
-			opacity 0.5
-
-@media (max-height 480px)
-	.stat-row:nth-child(n+2)
-		display none
-
-@media (max-height 544px)
-	.description
-		display none
-
-.boost
-	color #ff3
-.air
-	color #9af
-.ground
-	color #ca7
+.boost {
+	color: #ff3;
+}
+.air {
+	color: #9af;
+}
+.ground {
+	color: #ca7;
+}
 </style>
