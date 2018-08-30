@@ -11,7 +11,10 @@
 <script>
 export default {
 	props: {
-		help: String,
+		help: {
+			type: String,
+			default: undefined,
+		},
 	},
 }
 </script>

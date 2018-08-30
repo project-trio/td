@@ -13,7 +13,10 @@ import Renderer from '@/play/render/Renderer'
 
 export default {
 	props: {
-		gameData: Object,
+		gameData: {
+			type: Object,
+			default: undefined,
+		},
 	},
 
 	renderer: null,

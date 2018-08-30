@@ -14,9 +14,18 @@ export default {
 	},
 
 	props: {
-		number: Number,
-		name: String,
-		boss: Boolean,
+		number: {
+			type: Number,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+		boss: {
+			type: Boolean,
+			required: true,
+		},
 	},
 }
 </script>

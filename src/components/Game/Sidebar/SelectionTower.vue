@@ -71,9 +71,18 @@ export default {
 	},
 
 	props: {
-		name: String,
-		level: Number,
-		boost: Number,
+		name: {
+			type: String,
+			required: true,
+		},
+		level: {
+			type: Number,
+			required: true,
+		},
+		boost: {
+			type: Number,
+			required: true,
+		},
 	},
 
 	computed: {

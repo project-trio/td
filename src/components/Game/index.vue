@@ -29,12 +29,15 @@ export default {
 	},
 
 	props: {
-		gid: String,
+		gid: {
+			type: String,
+			required: true,
+		},
 	},
 
 	data () {
 		return {
-			gameData: null,
+			gameData: undefined,
 		}
 	},
 

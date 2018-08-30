@@ -11,7 +11,10 @@ export default {
 	},
 
 	props: {
-		gid: String,
+		gid: {
+			type: String,
+			required: true,
+		},
 	},
 }
 </script>

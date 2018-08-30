@@ -10,8 +10,14 @@ import util from '@/xjs/util'
 
 export default {
 	props: {
-		id: Number,
-		size: Number,
+		id: {
+			type: Number,
+			required: true,
+		},
+		size: {
+			type: Number,
+			required: true,
+		},
 	},
 
 	computed: {

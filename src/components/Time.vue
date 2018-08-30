@@ -7,7 +7,10 @@
 <script>
 export default {
 	props: {
-		duration: Number,
+		duration: {
+			type: Number,
+			required: true,
+		},
 	},
 
 	computed: {

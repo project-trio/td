@@ -260,7 +260,8 @@ export default class Creep extends Unit {
 		const positionY = startY + diffY
 
 		if (!this.currentIndex) {
-			const escaped = this.vertical
+			const escaped =
+				this.vertical
 					? positionY < gameMap.killY
 					: positionX > gameMap.killX
 			if (escaped) {

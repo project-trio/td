@@ -13,10 +13,22 @@
 <script>
 export default {
 	props: {
-		player: Object,
-		waveCreeps: Number,
-		local: Boolean,
-		winner: Boolean,
+		player: {
+			type: Object,
+			required: true,
+		},
+		waveCreeps: {
+			type: Number,
+			required: true,
+		},
+		local: {
+			type: Boolean,
+			required: true,
+		},
+		winner: {
+			type: Boolean,
+			required: true,
+		},
 	},
 
 	computed: {
