@@ -32,11 +32,9 @@ export default {
 </script>
 
 <style lang="postcss">
-html {
-	height: 100%;
-}
-body {
-	margin: 0;
+@import '../assets/styles/tailwind.postcss';
+
+html, body {
 	height: 100%;
 }
 
