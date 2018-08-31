@@ -1,7 +1,7 @@
 <template>
-<div class="popover hover-parent">
+<div class="popover  relative cursor-help group">
 	<slot />
-	<div class="popover-content hover-child text-small">
+	<div class="popover-content  bg-black rounded-sm absolute text-left px-2 py-1 invisible group-hover:visible text-sm z-50">
 		<span v-if="help" v-html="help" />
 		<slot v-else name="hover" />
 	</div>
@@ -20,18 +20,8 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.popover {
-	position: relative;
-	cursor: help;
-}
-
 .popover-content {
-	position: absolute;
-	background: #333;
 	box-shadow: 0 1px 4px #000;
-	text-align: left;
-	padding: 4px 8px;
-	z-index: 9001;
 	bottom: 100%;
 }
 </style>

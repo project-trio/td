@@ -1,7 +1,7 @@
 <template>
-<div class="user-box">
-	<div class="avatar" :style="{ 'background-image': `url(${avatarUrl})`, width: `${size}px`, height: `${size}px` }" />
-	<a :href="userUrl" class="name" target="_blank">{{ user.name }}</a>
+<div class="flex items-center">
+	<div class="bg-cover bg-no-repeat rounded-sm" :style="{ 'background-image': `url(${avatarUrl})`, width: `${size}px`, height: `${size}px` }" />
+	<a :href="userUrl" class="ml-1" target="_blank">{{ user.name }}</a>
 </div>
 </template>
 
@@ -44,20 +44,3 @@ export default {
 	},
 }
 </script>
-
-<style lang="postcss" scoped>
-.user-box {
-	display: flex;
-	align-items: center;
-}
-
-.avatar {
-	background-size: cover;
-	background-repeat: no-repeat;
-	border-radius: 2px;
-}
-
-.name {
-	margin-left: 4px;
-}
-</style>

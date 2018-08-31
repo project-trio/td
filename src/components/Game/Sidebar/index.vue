@@ -1,19 +1,19 @@
 <template>
-<div class="sidebar flex-column">
-	<div class="flex-column">
-		<div class="stats">
-			<div class="local-display"><span class="emoji">❤️</span>{{ lives }}</div>
-			<div class="local-display"><span class="emoji">💰</span>{{ gold }}</div>
+<div class="sidebar  w-64 h-full text-white  flex flex-col justify-between">
+	<div class="flex flex-col">
+		<div class="stats  my-2 h-8 text-right text-lg  flex justify-end items-center">
+			<div class="local-display"><span>❤️</span>{{ lives }}</div>
+			<div class="local-display"><span>💰</span>{{ gold }}</div>
 			<div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 		</div>
 		<div class="towers">
-			<div v-for="(tower, idx) in $options.towers" class="tower-box" :key="tower.name">
-				<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="selection tower-button capitalize" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
-					<span class="button-hotkey">{{ idx + 1 }}</span>
+			<div v-for="(tower, idx) in $options.towers" class="tower-box  inline-block w-1/4" :key="tower.name">
+				<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="tower-button selection  relative w-full font-bold capitalize bg-contain bg-center" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
+					<span class="absolute pin-t pin-l text-sm ml-1 text-grey-darker">{{ idx + 1 }}</span>
 				</button>
 			</div>
 		</div>
-		<transition-group name="players" tag="div" class="players-container">
+		<transition-group name="players" tag="div" class="players-container  overflow-y-scroll">
 			<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
 		</transition-group>
 	</div>
@@ -21,7 +21,7 @@
 		<div v-if="selection">
 			<SelectionTower :name="selection.name" :level="selection.level" :boost="selection.boost" />
 		</div>
-		<transition-group name="waves" tag="div" class="waves-container text-faint">
+		<transition-group name="waves" tag="div" class="waves-container  text-faint  flex">
 			<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
 		</transition-group>
 	</div>
@@ -196,27 +196,14 @@ export default {
 
 <style lang="postcss" scoped>
 .sidebar {
-	width: 256px;
-	height: inherit;
 	background: #222;
-	color: #fff;
-	justify-content: space-between;
-}
-
-.flex-column {
-	display: flex;
-	flex-direction: column;
 }
 
 .stats {
-	text-align: right;
-	height: 36px;
-	margin: 8px 0;
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	font-size: 18px;
 	font-variant-numeric: tabular-nums;
+	& > div {
+		margin-right: 14px;
+	}
 }
 
 @media (min-height: 767px) {
@@ -225,83 +212,52 @@ export default {
 	}
 }
 
-.stats > div {
-	margin-right: 14px;
-}
-
 .emoji {
-	height: 0;
-	margin-right: -2px;
+	margin-right: -4px;
 }
 
 .tower-box {
-	width: 25%;
 	padding: 2px;
-	display: inline-block;
-	box-sizing: border-box;
 }
 .tower-button {
-	font-size: 20px;
-	width: 100%;
-	color: #000;
-	font-weight: bold;
-	background-size: contain;
-	background-position: center;
-	position: relative;
-}
-.button-hotkey {
-	position: absolute;
-	left: 3px;
-	top: 0;
-	font-size: 14px;
-	color: #666;
+	@apply w-full rounded;
+	&.selected {
+		@apply opacity-50;
+		transform: scale(0.9);
+		box-shadow: 0px 0px 8px 2px #000;
+	}
 }
 
 .players-container {
 	flex-shrink: 10;
 	min-height: 32px;
-	overflow-y: scroll;
-}
-
-.selection {
-	border-radius: 4px;
-}
-.selection.selected {
-	transform: scale(0.9);
-	opacity: 0.5;
-	box-shadow: 0px 0px 8px 2px #000;
 }
 
 .players-move {
 	transition: transform 500ms ease-out;
 }
 
-.waves-container {
-	display: flex;
-}
 @media (min-height: 896px) {
 	.waves-container {
-		position: absolute;
+		@apply absolute pin-b z-10;
 		left: 50%;
-		bottom: 0;
-		z-index: 1;
 		margin-left: -24px;
 	}
 }
 
 .waves-enter {
-	opacity: 0;
+	@apply opacity-0;
 }
 .waves-leave-to {
+	@apply opacity-0;
 	transform: translateX(-51.2px);
-	opacity: 0;
 }
 .waves-leave-active {
-	position: absolute;
+	@apply absolute;
 }
 .wave-box {
+	@apply h-16;
 	width: 51.2px;
-	height: 64px;
 	transition: all 800ms;
 }
 </style>

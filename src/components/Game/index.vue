@@ -1,10 +1,10 @@
 <template>
-<div class="game-container">
+<div class="h-full  flex">
 	<Sidebar />
 	<div v-if="loading">
 		Loading... {{ loading }}
 	</div>
-	<div v-else class="canvas-container">
+	<div v-else class="relative">
 		<GameOverlay />
 		<GameCanvas :gameData="gameData" />
 	</div>
@@ -97,14 +97,3 @@ export default {
 	},
 }
 </script>
-
-<style lang="postcss" scoped>
-.game-container {
-	display: flex;
-	height: inherit;
-}
-
-.canvas-container {
-	position: relative;
-}
-</style>

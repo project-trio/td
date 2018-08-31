@@ -1,7 +1,7 @@
 <template>
-<div class="queue">
-	<h1>{{ queueCount }} in queue</h1>
-	<div class="mode-buttons">
+<div class="text-center">
+	<h1 class="my-8">{{ queueCount }} in queue</h1>
+	<div class="mb-4">
 		<button @click="onMultiplayer(false)" class="selection" :class="{ selected: !multiplayer }">Single player</button>
 		<button @click="onMultiplayer(true)" class="selection" :class="{ selected: multiplayer }">Multiplayer</button>
 	</div>
@@ -12,13 +12,13 @@
 			<div v-if="enoughPlayersForGame">
 				<button @click="onReady" class="ready-button big" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
 			</div>
-			<p v-else class="text-faint margin-tall">
+			<p v-else class="text-faint m-12">
 				No one else is in queue for a game yet. Why not send the link to a friend?
 			</p>
 			<p>Vote for a mode to play:</p>
 		</div>
 	</div>
-	<div v-else class="singleplayer">
+	<div v-else>
 		<p class="mode-description">Take on the creeps in solo training and improve your high score.</p>
 	</div>
 
@@ -42,7 +42,7 @@
 	</div>
 
 	<div v-if="multiplayer">
-		<div v-if="notificationPermission !== 'granted'" class="notification-aside">
+		<div v-if="notificationPermission !== 'granted'" class="mt-8">
 			<div v-if="notificationPermission === 'unavailable'">
 				(Notifications are unavailable in your browser.)
 			</div>
@@ -50,13 +50,13 @@
 				To be notified when a game becomes available while this page is in the background, please enable notifications for this site in your browser settings.
 			</div>
 			<div v-else>
-				<p class="text-small text-faint">Get notified when a game becomes available while this page is in the background:</p>
-				<button @click="onNotifications" class="big" :class="{ selected: readyRequested }">Enable notifications</button>
+				<p class="text-sm text-faint">Get notified when a game becomes available while this page is in the background:</p>
+				<button @click="onNotifications" class="big w-64 mt-1" :class="{ selected: readyRequested }">Enable notifications</button>
 			</div>
 		</div>
 	</div>
-	<div v-else-if="gameMode" class="singleplayer">
-		<button @click="onPlaySingleplayer" class="big">Play now</button>
+	<div v-else-if="gameMode">
+		<button @click="onPlaySingleplayer" class="big my-4">Play now</button>
 		<Scores :mode="gameMode[0]" />
 	</div>
 </div>
@@ -248,48 +248,19 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-h2 {
-	margin-bottom: 2px;
-}
-
-p.margin-tall {
-	margin: 32px 0;
-}
-
-.queue {
-	text-align: center;
-}
-
 .selection {
-	margin: 4px;
-	flex-grow: 1;
-	border-radius: 28px;
+	@apply m-1 flex-grow rounded-full;
 	&.selected {
-		background: #d67;
+		@apply bg-info;
 	}
 }
 
 .ready-button.selected {
-	background-color: #1ea;
-}
-
-.mode-buttons {
-	margin-bottom: 16px;
-}
-
-.notification-aside {
-	margin-top: 32px;
-}
-.notification-aside button {
-	width: 256px;
-}
-.singleplayer button {
-	margin-top: 32px;
+	@apply bg-success-light;
 }
 
 table {
-	margin: auto;
-	text-align: left;
+	@apply m-auto text-left;
 	border-spacing: 8px 0;
 }
 </style>

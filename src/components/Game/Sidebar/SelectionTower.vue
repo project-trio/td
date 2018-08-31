@@ -1,9 +1,9 @@
 <template>
-<div class="tower-selection">
+<div class="m-2">
 	<div class="header">
-		<div class="icon" :style="{ 'background-image': `url(${url})` }" />
+		<div class="wh-12 bg-contain rounded mr-2" :style="{ 'background-image': `url(${url})` }" />
 		<div>
-			<div class="capitalize text-large">{{ name }} Tower</div>
+			<div class="capitalize text-xl">{{ name }} Tower</div>
 			<div>
 				<span>Level {{ level + 1 }}</span>
 				<span class="text-faint"> ・ </span>
@@ -17,39 +17,39 @@
 			</div>
 		</div>
 	</div>
-	<div class="description">{{ data.description }}</div>
+	<div class="description  mt-1 mb-2">{{ data.description }}</div>
 	<div class="stats">
-		<div class="stat-row">
-			<button @click="onTower(false)" class="selection">Sell (+{{ total('cost') }}g)</button>
+		<div>
+			<button @click="onTower(false)" class="selection mr-1">Sell (+{{ total('cost') }}g)</button>
 			<button @click="onTower(true)" class="selection" :disabled="!upgradeable">Up (-{{ nextCost }}g)</button>
 		</div>
-		<div class="stat-row">
+		<div>
 			<Popover help="Attack damage">💥</Popover>
 			<div>{{ total('damage') }}{{ isBoost ? '%' : null }}</div>
 			<div v-if="nextDamage" :class="{ 'text-faint': !upgradeable }">{{ nextDamage > 0 ? '+' : null }}{{ nextDamage }}{{ isBoost ? '%' : null }}</div>
 			<div v-if="boost" class="boost">+{{ boost }}%</div>
 		</div>
-		<div class="stat-row">
+		<div>
 			<Popover help="Attack range">🎯</Popover>
 			<div>{{ total('range') }}</div>
 			<div v-if="nextRange" :class="{ 'text-faint': !upgradeable }">{{ nextRange > 0 ? '+' : null }}{{ nextRange }}</div>
 		</div>
-		<div v-if="data.radius" class="stat-row">
+		<div v-if="data.radius">
 			<Popover help="Splash damage radius">💦</Popover>
 			<div>{{ total('radius') }}</div>
 			<div v-if="nextRadius" :class="{ 'text-faint': !upgradeable }">+{{ nextRadius }}</div>
 		</div>
-		<div class="stat-row">
+		<div>
 			<Popover help="Attacks per second">⏩</Popover>
 			<div>{{ total('speed') }}</div>
 			<div v-if="nextSpeed" :class="{ 'text-faint': !upgradeable }">{{ nextSpeed > 0 ? '+' : null }}{{ nextSpeed }}</div>
 		</div>
-		<div v-if="data.slow" class="stat-row">
+		<div v-if="data.slow">
 			<Popover help="Slows creep movement">❄️</Popover>
 			<div>{{ total('slow') }}%</div>
 			<div v-if="nextSlow" :class="{ 'text-faint': !upgradeable }">+{{ nextSlow }}%</div>
 		</div>
-		<div v-if="data.stun" class="stat-row">
+		<div v-if="data.stun">
 			<Popover help="Stuns">⚡️</Popover>
 			<div>{{ total('stun') }}s</div>
 			<div v-if="nextStun" :class="{ 'text-faint': !upgradeable }">+{{ nextStun }}s</div>
@@ -163,61 +163,31 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.tower-selection {
-	margin: 8px;
+.header, .stats > * {
+	@apply flex items-center;
 }
 
-.header, .stat-row {
-	display: flex;
-	align-items: center;
-}
-.description {
-	margin-top: 4px;
-	margin-bottom: 6px;
-}
-.icon {
-	width: 48px;
-	height: 48px;
-	background-size: contain;
-	border-radius: 4px;
-	margin-right: 8px;
-}
-
-.text-large, .stat-row {
-	font-size: 20px;
-}
-
-.stat-row > * {
-	width: 48px;
-	box-sizing: border-box;
-}
-.stat-row .popover {
-	text-align: right;
-	margin-left: 8px;
-	padding-right: 8px;
-}
-.stat-row button {
-	background: #555;
-	border-radius: 6px;
-	color: #fff;
-	width: 50%;
-	height: 32px;
-	font-size: 14px;
-	&:first-child {
-		margin-right: 4px;
+.stats > * {
+	@apply text-xl;
+	& button {
+		@apply w-1/2 rounded-lg text-sm h-8 text-white bg-grey-darker;
 	}
-	&:disabled {
-		opacity: 0.5;
+	& > * {
+		@apply w-12;
+	}
+	& .popover {
+		@apply text-right ml-2 pr-2;
 	}
 }
+
 @media (max-height: 480px) {
-	.stat-row:nth-child(n+2) {
-		display: none;
+	.stats > *:nth-child(n+2) {
+		@apply hidden;
 	}
 }
 @media (max-height: 544px) {
 	.description {
-		display: none;
+		@apply hidden;
 	}
 }
 

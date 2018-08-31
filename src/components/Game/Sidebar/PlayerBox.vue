@@ -1,10 +1,10 @@
 <template>
-<div class="player-box" :class="{ local, winner }">
-	<div class="progress-bar" :style="{ width: wavePercent+'%' }" />
-	<div class="box-contents">
-		<div class="flex-ends"><div>{{ player.name }}</div><div>{{ player.lives }}</div></div>
-		<div class="waves">
-			<div v-for="(won, idx) in player.waves" class="wave-box" :class="{ won }" :key="idx" />
+<div class="player-box  relative m-2" :class="{ local, winner }">
+	<div class="progress-bar  bg-brand-darkest absolute pin-t pin-l pin-b" :style="{ width: wavePercent+'%' }" />
+	<div class="relative z-10">
+		<div class="flex justify-between"><div>{{ player.name }}</div><div>{{ player.lives }}</div></div>
+		<div class="waves  mt-1  flex flex-wrap">
+			<div v-for="(won, idx) in player.waves" :class="{ won }" :key="idx" />
 		</div>
 	</div>
 </div>
@@ -41,53 +41,32 @@ export default {
 
 <style lang="postcss" scoped>
 .player-box {
-	margin: 8px;
 	padding: 6px 8px;
 	background: #000;
-	position: relative;
 	&.local {
 		background: #212;
 	}
 	&.winner {
-		background: #f44;
+		@apply bg-brand;
 	}
 }
 
-.progress-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	background: #226;
-}
 .player-box.winner .progress-bar {
 	display: none !important;
 }
-.box-contents {
-	position: relative;
-	z-index: 1;
-}
 
 .waves {
-	display: flex;
-	flex-wrap: wrap;
-	margin-top: 4px;
 	margin-right: -2px;
 	margin-bottom: -2px;
-}
-.wave-box {
-	margin-right: 2px;
-	margin-bottom: 2px;
-	width: 7px;
-	height: 4px;
-	background: #666;
-	&.won {
-		background: #ca4;
+	& > * {
+		@apply bg-grey-darker;
+		margin-right: 2px;
+		margin-bottom: 2px;
+		width: 7px;
+		height: 4px;
+		&.won {
+			@apply bg-warning;
+		}
 	}
-}
-
-.flex-ends {
-	display: flex;
-	justify-content: space-between;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-	<div v-if="reconnectAttempts !== null" class="overlay">
+	<div v-if="reconnectAttempts !== null" class="overlay reconnect">
 		<h1>{{ reconnectAttempts }} attempts to reconnect</h1>
 	</div>
 	<router-view/>
@@ -34,71 +34,53 @@ export default {
 <style lang="postcss">
 @import '../assets/styles/tailwind.postcss';
 
-html, body {
-	height: 100%;
+html, body, #app {
+	@apply h-full;
 }
 
 #app {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #222;
-	height: inherit;
+	@apply font-sans text-black antialiased;
 }
 
 .overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 9001;
-	background: rgba(255,255,255,0.5);
-	color: #e33;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	@apply text-grey-light absolute pin z-40  flex justify-center items-center;
 }
-
-.hover-child {
-	visibility: hidden;
+.reconnect {
+	background: rgba(131, 75, 75, 0.5);
 }
-.hover-parent:hover .hover-child {
-	visibility: visible;
-}
-
-//BUTTONS
 
 a {
-	color: #f83;
-	text-decoration: none;
+	@apply no-underline text-brand;
 	transition: color 300ms ease-out;
 	&:hover {
-		color: #fa6;
+		@apply text-brand-lighter;
 		&:active {
-			color: #fc8;
+			@apply text-brand-dark;
 		}
 	}
 }
 
+.text-faint {
+	@apply text-grey-dark;
+}
+
+/* BUTTONS */
+
 input, button {
-	border: none;
-	outline: none;
+	outline: 0 !important;
 }
 button {
 	transition-property: background, transform, opacity, border, box-shadow;
 	transition-duration: 300ms;
-	cursor: pointer;
 	&:disabled {
-		cursor: not-allowed;
+		@apply cursor-not-allowed opacity-50;
 	}
 }
 
 .big, .selection {
+	@apply text-xl bg-grey-light;
 	height: 56px;
 	width: 224px;
-	font-size: 24px;
-	background: #e8e8e8;
 	&:not(.selected):hover {
 		opacity: 0.7;
 		&:active {
@@ -106,31 +88,10 @@ button {
 		}
 	}
 }
-
 .selection.selected {
-	cursor: default;
+	@apply cursor-default;
 }
 .big {
-	display: block;
-	margin: auto;
-	border-radius: 4px;
-}
-
-//TEXT
-
-.capitalize {
-	text-transform: capitalize;
-}
-
-.text-small {
-	font-size: 0.9em;
-}
-
-.text-faint {
-	color: #999;
-}
-
-.text-center {
-	text-align: center;
+	@apply block m-auto rounded;
 }
 </style>

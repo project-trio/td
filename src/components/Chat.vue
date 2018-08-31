@@ -1,12 +1,12 @@
 <template>
 <div class="chat">
 	<div ref="chatScroll" class="chat-log scrolls">
-		<div v-for="(msg, index) in messages" class="msg" :key="index">
-			<span class="msg-from">{{ msg.from }}</span>&ensp;<span class="msg-at">({{ timeSince(msg.at) }})</span>: {{ msg.body }}
+		<div v-for="(msg, index) in messages" class="my-1" :key="index">
+			<span class="font-bold">{{ msg.from }}</span>&ensp;<span class="italic text-sm">({{ timeSince(msg.at) }})</span>: {{ msg.body }}
 		</div>
 	</div>
-	<div class="chat-input-container">
-		<input ref="chatInput" v-model.trim="draftMessage" class="chat-input" placeholder="press enter to chat" :disabled="disableChat">
+	<div class="fixed pin-l pin-b h-16 w-full">
+		<input ref="chatInput" v-model.trim="draftMessage" class="wh-full text-2xl px-2 bg-transparent" placeholder="press enter to chat" :disabled="disableChat">
 	</div>
 </div>
 </template>
@@ -96,41 +96,9 @@ export default {
 
 <style lang="postcss" scoped>
 .chat-log {
-	text-align: left;
-	margin: 4px;
-	padding: 4px;
+	@apply fixed pin-l text-left m-1 p-1;
 	width: 300px;
-	position: fixed;
-	left: 0;
 	bottom: 64px;
 	max-height: 200px;
-	z-index: 0;
-}
-
-.msg {
-	margin: 4px 0;
-}
-.msg-from {
-	font-weight: 500;
-}
-.msg-at {
-	font-style: italic;
-	font-size: 0.75em;
-}
-
-.chat-input-container {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	height: 64px;
-	width: 100%;
-}
-.chat-input {
-	height: inherit;
-	width: inherit;
-	font-size: 1.5em;
-	padding: 0 8px;
-	background: transparent;
 }
 </style>

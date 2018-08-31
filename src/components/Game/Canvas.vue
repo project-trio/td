@@ -1,5 +1,5 @@
 <template>
-<canvas />
+<canvas class="block" />
 </template>
 
 <script>
@@ -82,9 +82,3 @@ export default {
 	},
 }
 </script>
-
-<style lang="postcss" scoped>
-canvas {
-	display: block;
-}
-</style>

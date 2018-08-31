@@ -1,6 +1,6 @@
 <template>
-<div class="game-overlay">
-	<div v-if="gameOver" clsas="overlay">
+<div class="game-overlay overlay">
+	<div v-if="gameOver">
 		<h1 v-if="finished" class="text-center">
 			<span v-if="winners.length">{{ localWinner ? 'You' : winners.join(', ') }} won in <Time :duration="finalTime" />!</span>
 			<span v-else>Game over</span>
@@ -9,7 +9,7 @@
 		<p v-if="!lives">You let too many creeps escape. Keep an eye on your lives next time!</p>
 		<button @click="onLeave" class="big">Leave</button>
 	</div>
-	<div v-else-if="overlay === 'help'" clsas="overlay">
+	<div v-else-if="overlay === 'help'">
 		<h1 class="text-center">TD Guide</h1>
 		<p>Build a maze to corral the creeps:</p>
 		<table>
@@ -98,33 +98,27 @@ export default {
 
 <style lang="postcss" scoped>
 .game-overlay {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	pointer-events: none;
+	@apply pointer-events-none;
+	& > div {
+		@apply w-full px-8 m-4;
+		background: rgba(34,34,34,0.9);
+		max-width: 480px;
+	}
 }
-.game-overlay > div {
-	padding: 0 24px;
-	background: rgba(34,34,34,0.9);
-	color: #eee;
-	box-sizing: border-box;
-	margin: 16px;
-	width: 100%;
-	max-width: 480px;
+
+button {
+	@apply pointer-events-auto my-4;
 }
-.game-overlay button {
-	pointer-events: all;
-	margin: 16px auto;
+
+h1 {
+	@apply my-4;
 }
 
 table {
+	@apply w-full;
 	border-spacing: 0 4px;
-	width: 100%;
-}
-th {
-	text-align: left;
+	& th {
+		@apply text-left;
+	}
 }
 </style>
