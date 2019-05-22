@@ -1,4 +1,4 @@
-const TESTING = window.location.protocol === 'http:'
+const TESTING = process.env.NODE_ENV === 'development'
 
 export default {
 

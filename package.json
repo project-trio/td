@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"b": "vue-cli-service build --modern"
+		"build": "vue-cli-service build --modern"
 	},
 	"devDependencies": {
 		"@fullhuman/postcss-purgecss": "^1.2.0",
@@ -27,25 +27,25 @@
 		"vue-router": "^3.0.6",
 		"vue-template-compiler": "^2.6.10"
 	},
-  "babel": {
-    "presets": [
-      [
-        "@vue/app",
-        {
-          "jsx": false,
-          "loose": true,
-          "modules": "commonjs"
-        }
-      ]
-    ]
-  },
-  "eslintConfig": {
-    "extends": "@ky-is/eslint-config/vue",
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
+	"babel": {
+		"presets": [
+			[
+				"@vue/app",
+				{
+					"jsx": false,
+					"loose": true,
+					"modules": "commonjs"
+				}
+			]
+		]
+	},
+	"eslintConfig": {
+		"extends": "@ky-is/eslint-config/vue",
+		"parserOptions": {
+			"parser": "babel-eslint"
+		},
+		"rules": {}
+	},
 	"browserslist": {
 		"production": [
 			"> 1%",
