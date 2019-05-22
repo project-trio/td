@@ -1,6 +1,6 @@
 # TD
 
-https://td.suzu.online
+https://ttd.netlify.com
 
 ![TD Example Maze](https://i.imgur.com/AI1nS2G.gif)
 
