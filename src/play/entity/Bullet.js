@@ -78,11 +78,10 @@ class Bullet {
 	setDestination (x, y) {
 		const dx = x - this.cX
 		const dy = y - this.cY
-		let moveX, moveY
 		const moveAngle = Math.atan2(dy, dx)
 		this.moveAngle = moveAngle
-		moveX = Math.cos(moveAngle)
-		moveY = Math.sin(moveAngle)
+		const moveX = Math.cos(moveAngle)
+		const moveY = Math.sin(moveAngle)
 		this.container.rotation.z = moveAngle
 		this.moveX = moveX
 		this.moveY = moveY
@@ -150,8 +149,8 @@ class Bullet {
 			moveByY = Math.round(moveScalar * this.moveY)
 		}
 
-		let movingToX = fromX + moveByX
-		let movingToY = fromY + moveByY
+		const movingToX = fromX + moveByX
+		const movingToY = fromY + moveByY
 		if (tweening) {
 			this.updatePosition(movingToX, movingToY)
 		} else {

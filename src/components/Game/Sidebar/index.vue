@@ -7,14 +7,17 @@
 			<div class="time"><span class="emoji">⏱</span><Time :duration="renderTime" /></div>
 		</div>
 		<div class="towers">
-			<div v-for="(tower, idx) in $options.towers" class="tower-box  inline-block w-1/4" :key="tower.name">
-				<button v-if="availableTower(idx)" @click="setTowerName(tower.name)" class="tower-button selection  relative w-full font-bold capitalize bg-contain bg-center" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }">
-					<span class="absolute pin-t pin-l text-sm ml-1 text-grey-darker">{{ idx + 1 }}</span>
+			<div v-for="(tower, idx) in $options.towers" :key="tower.name" class="tower-box  inline-block w-1/4">
+				<button v-if="availableTower(idx)"
+					class="tower-button selection  relative w-full font-bold capitalize bg-contain bg-center" :class="{ selected: tower.name === build }" :style="{ 'background-image': `url(${url(tower)})` }"
+					@click="setTowerName(tower.name)"
+				>
+					<span class="absolute top-0 left-0 text-sm ml-1 text-gray-700">{{ idx + 1 }}</span>
 				</button>
 			</div>
 		</div>
 		<transition-group name="players" tag="div" class="players-container  overflow-y-scroll">
-			<PlayerBox v-for="player in players" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :key="player.id" :winner="finished && player.score > highscore" />
+			<PlayerBox v-for="player in players" :key="player.id" :player="player" :local="player.id === localId" :waveCreeps="waveCreeps" :winner="finished && player.score > highscore" />
 		</transition-group>
 	</div>
 	<div>
@@ -22,7 +25,7 @@
 			<SelectionTower :name="selection.name" :level="selection.level" :boost="selection.boost" />
 		</div>
 		<transition-group name="waves" tag="div" class="waves-container  text-faint  flex">
-			<WaveBox v-for="wave in waves" :number="wave[0]" :name="wave[1]" :boss="wave[2]" :key="wave[0]" />
+			<WaveBox v-for="wave in waves" :key="wave[0]" :number="wave[0]" :name="wave[1]" :boss="wave[2]" />
 		</transition-group>
 	</div>
 </div>
@@ -239,7 +242,7 @@ export default {
 
 @media (min-height: 896px) {
 	.waves-container {
-		@apply absolute pin-b z-10;
+		@apply absolute bottom-0 z-10;
 		left: 50%;
 		margin-left: -24px;
 	}

@@ -3,7 +3,7 @@
 	<div v-if="reconnectAttempts !== null" class="overlay reconnect">
 		<h1>{{ reconnectAttempts }} attempts to reconnect</h1>
 	</div>
-	<router-view/>
+	<router-view />
 </div>
 </template>
 
@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="postcss">
-@import '../assets/styles/tailwind.postcss';
+@import '../assets/styles/tailwind.css';
 
 html, body, #app {
 	@apply h-full;
@@ -43,25 +43,32 @@ html, body, #app {
 }
 
 .overlay {
-	@apply text-grey-light absolute pin z-40  flex justify-center items-center;
+	@apply text-gray-400 absolute inset-0 z-40  flex justify-center items-center;
 }
 .reconnect {
 	background: rgba(131, 75, 75, 0.5);
 }
 
 a {
-	@apply no-underline text-brand;
+	@apply no-underline text-brand-500;
 	transition: color 300ms ease-out;
 	&:hover {
-		@apply text-brand-lighter;
+		@apply text-brand-200;
 		&:active {
-			@apply text-brand-dark;
+			@apply text-brand-600;
 		}
 	}
 }
 
+h1 {
+	@apply text-4xl;
+}
+h2 {
+	@apply text-3xl;
+}
+
 .text-faint {
-	@apply text-grey-dark;
+	@apply text-gray-600;
 }
 
 /* BUTTONS */
@@ -70,6 +77,7 @@ input, button {
 	outline: 0 !important;
 }
 button {
+	@apply text-gray-800;
 	transition-property: background, transform, opacity, border, box-shadow;
 	transition-duration: 300ms;
 	&:disabled {
@@ -78,7 +86,7 @@ button {
 }
 
 .big, .selection {
-	@apply text-xl bg-grey-light;
+	@apply text-xl bg-gray-400;
 	height: 56px;
 	width: 224px;
 	&:not(.selected):hover {

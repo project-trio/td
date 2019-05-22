@@ -73,7 +73,7 @@ export default class Renderer {
 			// this.gameCamera.add(this.audioListener)
 		}
 
-		let newPixelMultiplier = window.devicePixelRatio / (store.state.settings.fullResolution ? 1 : 2)
+		const newPixelMultiplier = window.devicePixelRatio / (store.state.settings.fullResolution ? 1 : 2)
 		if (newPixelMultiplier !== this.pixelMultiplier) {
 			this.pixelMultiplier = newPixelMultiplier
 			this.renderer.setPixelRatio(newPixelMultiplier)

@@ -72,7 +72,7 @@ export default class Waves {
 			gold *= data.gold
 		}
 		const children = data.name === 'spawn' ? (boss ? 6 : 2) : 0
-		let waveCount = waveSize * (children + 1) * 2
+		const waveCount = waveSize * (children + 1) * 2
 		store.state.game.waveCreepCount = waveCount
 		this.creepCount += waveCount
 		this.waveStart = renderTime

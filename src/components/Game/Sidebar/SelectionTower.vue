@@ -20,8 +20,12 @@
 	<div class="description  mt-1 mb-2">{{ data.description }}</div>
 	<div class="stats">
 		<div>
-			<button @click="onTower(false)" class="selection mr-1">Sell (+{{ total('cost') }}g)</button>
-			<button @click="onTower(true)" class="selection" :disabled="!upgradeable">Up (-{{ nextCost }}g)</button>
+			<button class="selection mr-1" @click="onTower(false)">
+				Sell (+{{ total('cost') }}g)
+			</button>
+			<button class="selection" :disabled="!upgradeable" @click="onTower(true)">
+				Up (-{{ nextCost }}g)
+			</button>
 		</div>
 		<div>
 			<Popover help="Attack damage">💥</Popover>
@@ -170,7 +174,7 @@ export default {
 .stats > * {
 	@apply text-xl;
 	& button {
-		@apply w-1/2 rounded-lg text-sm h-8 text-white bg-grey-darker;
+		@apply w-1/2 rounded-lg text-sm h-8 text-white bg-gray-700;
 	}
 	& > * {
 		@apply w-12;

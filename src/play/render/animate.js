@@ -73,7 +73,7 @@ export default {
 			if (timeElapsed <= 0) {
 				continue
 			}
-			let target = animation.target
+			const target = animation.target
 			const duration = animation.duration
 			let currentValue
 			if (renderTime >= startTime + duration) {

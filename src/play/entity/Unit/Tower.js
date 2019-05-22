@@ -363,7 +363,7 @@ export default class Tower extends Unit {
 				const { cX, cY, rangeCheck } = this
 				let attackedCreep = false
 				let creepsRemaining = this.multi
-				let explodes = this.name === 'bash'
+				const explodes = this.name === 'bash'
 				const data = !explodes && this.bulletData()
 				const attackBit = this.stats.attackBit
 				let stunDuration = null

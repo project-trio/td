@@ -1,11 +1,11 @@
 <template>
 <div class="chat">
 	<div ref="chatScroll" class="chat-log scrolls">
-		<div v-for="(msg, index) in messages" class="my-1" :key="index">
+		<div v-for="(msg, index) in messages" :key="index" class="my-1">
 			<span class="font-bold">{{ msg.from }}</span>&ensp;<span class="italic text-sm">({{ timeSince(msg.at) }})</span>: {{ msg.body }}
 		</div>
 	</div>
-	<div class="fixed pin-l pin-b h-16 w-full">
+	<div class="fixed left-0 bottom-0 h-16 w-full">
 		<input ref="chatInput" v-model.trim="draftMessage" class="wh-full text-2xl px-2 bg-transparent" placeholder="press enter to chat" :disabled="disableChat">
 	</div>
 </div>
@@ -96,7 +96,7 @@ export default {
 
 <style lang="postcss" scoped>
 .chat-log {
-	@apply fixed pin-l text-left m-1 p-1;
+	@apply fixed left-0 text-left m-1 p-1;
 	width: 300px;
 	bottom: 64px;
 	max-height: 200px;

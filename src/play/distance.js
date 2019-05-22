@@ -14,7 +14,7 @@ export default {
 	},
 
 	betweenRadians (a, b) {
-		let diff = ((b - a + PI) % PIt2) - PI
+		const diff = ((b - a + PI) % PIt2) - PI
 		return diff < -PI ? diff + PIt2 : diff
 	},
 

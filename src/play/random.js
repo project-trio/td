@@ -24,7 +24,7 @@ export default {
 
 	shuffle (array) {
 		let j, tmp
-		for (let i = array.length - 1; i > 0; i--) {
+		for (let i = array.length - 1; i > 0; i -= 1) {
 			j = Math.floor(rng() * (i + 1))
 			tmp = array[i]
 			array[i] = array[j]

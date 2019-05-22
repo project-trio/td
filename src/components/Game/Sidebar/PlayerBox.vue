@@ -1,10 +1,10 @@
 <template>
 <div class="player-box  relative m-2" :class="{ local, winner }">
-	<div class="progress-bar  bg-brand-darkest absolute pin-t pin-l pin-b" :style="{ width: wavePercent+'%' }" />
+	<div class="progress-bar  bg-brand-900 absolute top-0 left-0 bottom-0" :style="{ width: wavePercent+'%' }" />
 	<div class="relative z-10">
 		<div class="flex justify-between"><div>{{ player.name }}</div><div>{{ player.lives }}</div></div>
 		<div class="waves  mt-1  flex flex-wrap">
-			<div v-for="(won, idx) in player.waves" :class="{ won }" :key="idx" />
+			<div v-for="(won, idx) in player.waves" :key="idx" :class="{ won }" />
 		</div>
 	</div>
 </div>
@@ -47,7 +47,7 @@ export default {
 		background: #212;
 	}
 	&.winner {
-		@apply bg-brand;
+		@apply bg-brand-500;
 	}
 }
 
@@ -59,13 +59,13 @@ export default {
 	margin-right: -2px;
 	margin-bottom: -2px;
 	& > * {
-		@apply bg-grey-darker;
+		@apply bg-gray-700;
 		margin-right: 2px;
 		margin-bottom: 2px;
 		width: 7px;
 		height: 4px;
 		&.won {
-			@apply bg-warning;
+			@apply bg-warning-500;
 		}
 	}
 }

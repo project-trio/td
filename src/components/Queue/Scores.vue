@@ -1,9 +1,9 @@
 <template>
-<div>
+<div class="mt-4">
 	<h2>Highscores</h2>
 	<table>
 		<tr><th>Rank</th><th>User</th><th>Score</th></tr>
-		<tr v-for="(score, idx) in scores" :class="{ 'bg-brand-lightest': score[0] === localId }" :key="score[0]">
+		<tr v-for="(score, idx) in scores" :key="score[0]" :class="{ 'bg-brand-100': score[0] === localId }">
 			<td>{{ idx + 1 }}</td><td><User :id="score[0]" :size="32" /></td><td><Time :duration="score[1]" /></td>
 		</tr>
 	</table>

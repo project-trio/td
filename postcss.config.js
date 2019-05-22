@@ -1,25 +1,17 @@
-const isHotReloaded = process.argv.includes('serve')
-
-class TailwindExtractor {
-	static extract (content) {
-		return content.match(/[A-Za-z0-9-_:/]+/g) || []
-	}
-}
-
-const extensionsWithCSS = [ 'vue', 'css', 'less', 'pcss', 'postcss', 'sass', 'scss', 'styl' ]
+const IN_PRODUCTION = process.env.NODE_ENV === 'production'
 
 module.exports = {
 	plugins: [
 		require('postcss-preset-env')({ stage: 0 }),
-		require('tailwindcss')('./tailwind.config.js'),
-		isHotReloaded ? null : require('@fullhuman/postcss-purgecss')({
-			content: [ `./src/**/*.@(${extensionsWithCSS.join('|')})` ],
-			extractors: [
-				{
-					extractor: TailwindExtractor,
-					extensions: extensionsWithCSS,
-				},
-			],
+		require('tailwindcss')(),
+		IN_PRODUCTION && require('@fullhuman/postcss-purgecss')({
+			content: [ `./public/**/*.html`, `./src/**/*.vue` ],
+			defaultExtractor (content) {
+				const contentWithoutStyleBlocks = content.replace(/<style[^]+?<\/style>/gi, '')
+				return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || []
+			},
+			whitelist: [],
+			whitelistPatterns: [ /-(leave|enter|appear)(|-(to|from|active))$/, /^(?!(|.*?:)cursor-move).+-move$/, /^router-link(|-exact)-active$/ ],
 		}),
 		require('autoprefixer')(),
 	],

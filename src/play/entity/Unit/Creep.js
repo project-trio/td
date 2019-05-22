@@ -286,7 +286,7 @@ export default class Creep extends Unit {
 			if (Math.abs(angleDiff) < turnDistance) {
 				newAngle = destinationAngle
 			} else {
-				let spinDirection = angleDiff < 0 ? -1 : 1
+				const spinDirection = angleDiff < 0 ? -1 : 1
 				newAngle = currentAngle + (turnDistance * spinDirection)
 			}
 			this.unitContainer.rotation.z = newAngle
@@ -572,7 +572,7 @@ Creep.update = (renderTime, timeDelta, tweening) => {
 				allCreeps.splice(idx, 1)
 			}
 		} else {
-			let spawning = creep.spawningAt
+			const spawning = creep.spawningAt
 			if (spawning) {
 				if (!tweening && renderTime >= spawning) {
 					creep.spawningAt = null
