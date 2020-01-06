@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+import TrioClient from '@ky-is/trio-client'
+
 import router from '@/xjs/router'
 import store from '@/xjs/store'
 import util from '@/xjs/util'
@@ -16,7 +18,4 @@ new Vue({
 	render: h => h(App),
 }).$mount('#app')
 
-if (router.currentRoute.query.token) {
-	store.state.signin.attempted = true
-	router.replace({ query: null })
-}
+TrioClient.init(router)

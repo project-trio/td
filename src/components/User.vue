@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import util from '@/xjs/util'
+import TrioClient from '@ky-is/trio-client'
 
 export default {
 	props: {
@@ -26,7 +26,7 @@ export default {
 		},
 
 		userUrl () {
-			return `${util.HOST_URL}/user/${this.user.name}`
+			return TrioClient.getURL(`user/${this.user.name}`)
 		},
 
 		avatarUrl () {

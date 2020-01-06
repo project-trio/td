@@ -2,6 +2,7 @@
 	"name": "td",
 	"version": "0.1.0",
 	"scripts": {
+		"i": "pnpm install",
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build --modern"
 	},
@@ -10,6 +11,7 @@
 		"@ky-is/eslint-config": "^1.7.0",
 		"@ky-is/tailwind-color-palette": "^1.0.0",
 		"@ky-is/tailwindcss-plugin-width-height": "^1.0.0",
+		"@ky-is/trio-client": "^1.0.0",
 		"@ky-is/vue-cli-plugin-tabs": "^1.1.0",
 		"@ky-is/vue-cli-plugin-tailwind": "^2.0.0",
 		"@vue/babel-preset-app": "^4.1.2",
@@ -22,10 +24,10 @@
 		"eslint-plugin-vue": "^6.1.1",
 		"postcss-preset-env": "^6.7.0",
 		"seedrandom": "^3.0.5",
-		"socket.io-client": "^2.3.0",
 		"stats.js": "^0.17.0",
 		"tailwindcss": "^1.1.4",
 		"three": "^0.112.1",
+		"typescript": "^3.7.4",
 		"url-loader": "^3.0.0",
 		"vue": "^2.6.11",
 		"vue-router": "^3.1.3",

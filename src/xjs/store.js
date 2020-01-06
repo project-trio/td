@@ -43,7 +43,6 @@ export default {
 			token: storage.get('token'),
 			reconnect: null,
 			user: null,
-			attempted: false,
 		},
 
 		game: defaultGameState(),
@@ -100,7 +99,6 @@ export default {
 	},
 
 	signinToken (token) {
-		this.state.signin.attempted = true
 		this.state.signin.token = token
 		storage.set('token', token)
 	},
