@@ -255,8 +255,11 @@ export default {
 	}
 }
 
+.ready-button:not(.selected) {
+	@apply bg-danger-400;
+}
 .ready-button.selected {
-	@apply bg-success-400;
+	@apply bg-info-400;
 }
 
 table {
