@@ -160,8 +160,9 @@ export default class Game {
 
 	// Play
 
-	enqueueUpdate (update, actions, finished) {
-		if (finished) {
+	enqueueUpdate (update, actions, finishedTimestamp) {
+		if (finishedTimestamp) {
+			store.state.game.finalTime = finishedTimestamp
 			this.lastUpdate = true
 		}
 		this.serverUpdate = update

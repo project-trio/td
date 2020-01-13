@@ -49,11 +49,7 @@ export default {
 						player.towers = state.towers
 					}
 				}
-				const finished = data.finished
-				if (finished) {
-					gameState.finalTime = finished
-				}
-				game.enqueueUpdate(update, data.actions, finished)
+				game.enqueueUpdate(update, data.actions, data.finished)
 				bridge.emit('updated', { update })
 			}
 		})
