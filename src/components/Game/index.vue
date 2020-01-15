@@ -52,8 +52,8 @@ export default {
 	},
 
 	beforeCreate () {
-		bridge.on('start game', (data) => {
-			console.log('start game', data)
+		bridge.on('started game', (data) => {
+			console.log('started game', data)
 			const players = data.players
 			const localId = this.$store.state.signin.user
 			for (let idx = players.length - 1; idx >= 0; idx -= 1) {
@@ -77,7 +77,7 @@ export default {
 		if (this.gid) {
 			bridge.emit('leave game', this.gid)
 		}
-		bridge.off('start game')
+		bridge.off('started game')
 	},
 
 	mounted () {

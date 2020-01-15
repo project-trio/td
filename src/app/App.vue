@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import bridge from '@/xjs/bridge'
+
 export default {
 	computed: {
 		reconnectAttempts () {
@@ -17,10 +19,21 @@ export default {
 
 	created () {
 		window.addEventListener('contextmenu', this.onRightClick, true)
+
+		bridge.on('joined game', (data) => {
+			if (data.error) {
+				return window.alert('Unable to join game: ' + data.error)
+			}
+			const gid = data.gid
+			this.$store.state.game.id = gid
+			this.$router.push({ name: 'Game', params: { gid } })
+		})
 	},
 
 	beforeDestroy () {
 		window.addEventListener('contextmenu', this.onRightClick, true)
+
+		bridge.off('joined game')
 	},
 
 	methods: {
