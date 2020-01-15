@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="postcss">
-@import '../assets/styles/tailwind.css';
+@import '../assets/styles/tailwind.postcss';
 
 html, body, #app {
 	@apply h-full;
@@ -85,21 +85,4 @@ button {
 	}
 }
 
-.big, .selection {
-	@apply text-xl bg-gray-400;
-	height: 56px;
-	width: 224px;
-	&:not(.selected):hover {
-		opacity: 0.7;
-		&:active {
-			opacity: 0.4;
-		}
-	}
-}
-.selection.selected {
-	@apply cursor-default;
-}
-.big {
-	@apply block m-auto rounded;
-}
 </style>

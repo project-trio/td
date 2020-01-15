@@ -7,7 +7,7 @@
 		</h1>
 		<h1 v-else>Waiting{{ players.length > 1 ? ' for others to finish' : '' }}...</h1>
 		<p v-if="!lives">You let too many creeps escape. Keep an eye on your lives next time!</p>
-		<button class="big" @click="onLeave">Leave</button>
+		<button class="selection" @click="onLeave">Leave</button>
 	</div>
 	<div v-else-if="overlay === 'help'">
 		<h1 class="text-center">TD Guide</h1>
@@ -20,7 +20,7 @@
 			<tr><td>Snap</td><td>F</td><td>Double left click</td></tr>
 		</table>
 		<p>Earn points by being the first to clear each wave of creeps. Lose points by losing lives. The race is on!</p>
-		<button class="big" @click="onClose">Done</button>
+		<button class="selection" @click="onClose">Done</button>
 	</div>
 </div>
 </template>

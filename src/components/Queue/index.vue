@@ -1,7 +1,7 @@
 <template>
 <div class="text-center">
 	<h1 class="my-8">{{ queueCount }} in queue</h1>
-	<div class="mb-4">
+	<div class="selection-options mb-4">
 		<button class="selection" :class="{ selected: !multiplayer }" @click="onMultiplayer(false)">Single player</button>
 		<button class="selection" :class="{ selected: multiplayer }" @click="onMultiplayer(true)">Multiplayer</button>
 	</div>
@@ -10,7 +10,7 @@
 		<p class="mode-description">Compete against other players to clear the creeps the fastest!</p>
 		<div class="queue-action">
 			<div v-if="enoughPlayersForGame">
-				<button class="ready-button big" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2" @click="onReady">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
+				<button class="ready-button selection" :class="{ selected: readyRequested }" :disabled="readyRemaining < 2" @click="onReady">Ready{{ readyRequested ? '!' : `?` }} ({{ readyRemaining }})</button>
 			</div>
 			<p v-else class="text-faint m-12">
 				No one else is in queue for a game yet. Why not send the link to a friend?
@@ -22,7 +22,7 @@
 		<p class="mode-description">Take on the creeps in solo training and improve your high score.</p>
 	</div>
 
-	<div>
+	<div class="selection-options">
 		<button v-for="mode in $options.arcadeModes" :key="mode[0]" class="selection capitalize" :class="{ selected: gameMode === mode }" @click="onMode(mode)">{{ mode[0] }}</button>
 		<p v-if="gameMode">{{ gameMode[1] }}</p>
 		<table v-if="rules">
@@ -51,12 +51,12 @@
 			</div>
 			<div v-else>
 				<p class="text-sm text-faint">Get notified when a game becomes available while this page is in the background:</p>
-				<button class="big w-64 mt-1" :class="{ selected: readyRequested }" @click="onNotifications">Enable notifications</button>
+				<button class="selection w-64 mt-1 bg-brand-400" :class="{ selected: readyRequested }" @click="onNotifications">Enable notifications</button>
 			</div>
 		</div>
 	</div>
 	<div v-else-if="gameMode">
-		<button class="big my-4" @click="onPlaySingleplayer">Play now</button>
+		<button class="selection my-4 bg-brand-400" @click="onPlaySingleplayer">Play now</button>
 		<Scores :mode="gameMode[0]" />
 	</div>
 </div>
@@ -248,8 +248,8 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.selection {
-	@apply m-1 flex-grow rounded-full;
+.selection-options .selection {
+	@apply mx-1 flex-grow rounded-full;
 	&.selected {
 		@apply bg-info-500;
 	}

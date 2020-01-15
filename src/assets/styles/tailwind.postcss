@@ -1,0 +1,18 @@
+@tailwind base;
+
+@tailwind components;
+
+.selection {
+	@apply m-auto h-16 w-56 rounded text-xl bg-gray-300;
+	&:not(.selected):hover {
+		@apply opacity-75;
+		&:active {
+			@apply opacity-50;
+		}
+	}
+	&.selected {
+		@apply cursor-default;
+	}
+}
+
+@tailwind utilities;
