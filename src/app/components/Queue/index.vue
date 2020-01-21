@@ -63,9 +63,12 @@
 </template>
 
 <script>
-import Scores from '@/components/Queue/Scores'
+import store from '@/app/store'
 
-import bridge from '@/xjs/bridge'
+import Scores from '@/app/components/Queue/Scores'
+
+import bridge from '@/helpers/bridge'
+import { TESTING } from '@/app/utils'
 
 export default {
 	components: {
@@ -115,7 +118,7 @@ export default {
 		},
 
 		queuedNames () {
-			return this.$store.state.queue.names
+			return store.state.queue.names
 		},
 		queueCount () {
 			return this.queuedNames.length
@@ -146,7 +149,7 @@ export default {
 
 	mounted () {
 		this.$nextTick(() => {
-			if (this.$util.TESTING) {
+			if (TESTING) {
 				// return this.onPlaySingleplayer() //SAMPLE autostart
 			}
 		})

@@ -32,16 +32,18 @@
 </template>
 
 <script>
+import store from '@/app/store'
+
 import local from '@/play/local'
 
 import creeps from '@/play/data/creeps'
 import towers from '@/play/data/towers'
 
-import PlayerBox from '@/components/Game/Sidebar/PlayerBox'
-import WaveBox from '@/components/Game/Sidebar/WaveBox'
-import SelectionTower from '@/components/Game/Sidebar/SelectionTower'
+import PlayerBox from '@/app/components/Game/Sidebar/PlayerBox'
+import WaveBox from '@/app/components/Game/Sidebar/WaveBox'
+import SelectionTower from '@/app/components/Game/Sidebar/SelectionTower'
 
-import Time from '@/components/Time'
+import Time from '@/app/components/Time'
 
 export default {
 	components: {
@@ -59,11 +61,11 @@ export default {
 
 	computed: {
 		availableTowers () {
-			return this.$store.state.game.towers
+			return store.state.game.towers
 		},
 
 		storeStateGame () {
-			return this.$store.state.game
+			return store.state.game
 		},
 
 		waveCreeps () {
@@ -90,7 +92,7 @@ export default {
 		},
 
 		localId () {
-			return this.$store.state.signin.user.id
+			return store.state.signin.user.id
 		},
 
 		players () {
@@ -191,7 +193,7 @@ export default {
 		},
 
 		url (tower) {
-			return require(`@/assets/icons/${tower.name}.png`)
+			return require(`@/app/assets/icons/${tower.name}.png`)
 		},
 	},
 }

@@ -1,6 +1,6 @@
 import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, Vector3 } from 'three'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import render from '@/play/render'
 import animate from '@/play/render/animate'
@@ -39,18 +39,18 @@ let coinBuilder, heartBuilder
 	const voxParser = new Vox.Parser()
 	for (let digit = 0; digit < 10; digit += 1) {
 		store.state.loading += 1
-		voxParser.parse(require(`@/assets/text/${digit}.vox`)).then((voxelData) => {
+		voxParser.parse(require(`@/play/assets/text/${digit}.vox`)).then((voxelData) => {
 			store.state.loading -= 1
 			numberModelGeometry[digit] = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: coinMaterial }).geometry
 		})
 	}
 	store.state.loading += 1
-	voxParser.parse(require('@/assets/text/coin.vox')).then((voxelData) => {
+	voxParser.parse(require('@/play/assets/text/coin.vox')).then((voxelData) => {
 		store.state.loading -= 1
 		coinBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: coinMaterial })
 	})
 	store.state.loading += 1
-	voxParser.parse(require('@/assets/text/heart.vox')).then((voxelData) => {
+	voxParser.parse(require('@/play/assets/text/heart.vox')).then((voxelData) => {
 		store.state.loading -= 1
 		heartBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: NUMBER_SIZE, material: heartMaterial })
 	})

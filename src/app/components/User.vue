@@ -8,6 +8,8 @@
 <script>
 import TrioClient from '@ky-is/trio-client'
 
+import store from '@/app/store'
+
 export default {
 	props: {
 		id: {
@@ -22,7 +24,7 @@ export default {
 
 	computed: {
 		user () {
-			return this.$store.state.queue.users[this.id]
+			return store.state.queue.users[this.id]
 		},
 
 		userUrl () {

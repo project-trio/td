@@ -8,12 +8,14 @@
 </template>
 
 <script>
-import bridge from '@/xjs/bridge'
+import store from '@/app/store'
+
+import bridge from '@/helpers/bridge'
 
 export default {
 	computed: {
 		reconnectAttempts () {
-			return this.$store.state.signin.reconnect
+			return store.state.signin.reconnect
 		},
 	},
 
@@ -25,7 +27,7 @@ export default {
 				return window.alert('Unable to join game: ' + data.error)
 			}
 			const gid = data.gid
-			this.$store.state.game.id = gid
+			store.state.game.id = gid
 			this.$router.push({ name: 'Game', params: { gid } })
 		})
 	},
@@ -45,7 +47,7 @@ export default {
 </script>
 
 <style lang="postcss">
-@import '../assets/styles/tailwind.postcss';
+@import './assets/styles/tailwind.postcss';
 
 html, body, #app {
 	@apply h-full;

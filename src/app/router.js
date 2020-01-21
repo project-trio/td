@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import Game from '@/views/Game.vue'
+import Home from '@/app/components/Home'
+import Game from '@/app/components/Game'
 
 Vue.use(Router)
 

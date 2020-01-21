@@ -1,6 +1,6 @@
 import Stats from 'stats.js'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import animate from '@/play/render/animate'
 

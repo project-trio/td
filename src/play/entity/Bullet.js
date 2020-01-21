@@ -1,6 +1,6 @@
 import { SphereBufferGeometry, Mesh, MeshLambertMaterial } from 'three'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import distance from '@/play/distance'
 import local from '@/play/local'

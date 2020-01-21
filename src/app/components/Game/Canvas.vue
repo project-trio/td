@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import bridge from '@/xjs/bridge'
-import store from '@/xjs/store'
+import bridge from '@/helpers/bridge'
+import store from '@/app/store'
 
 import Game from '@/play/Game'
 import local from '@/play/local'

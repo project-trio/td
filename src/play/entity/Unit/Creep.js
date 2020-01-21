@@ -1,6 +1,6 @@
 import { PlaneBufferGeometry, WireframeGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshPhongMaterial } from 'three'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import distance from '@/play/distance'
 import local from '@/play/local'
@@ -51,7 +51,7 @@ let lifeLostBuilder = null
 		}
 		store.state.loading += 1
 		creepModelBuilders[modelName] = null
-		voxParser.parse(require(`@/assets/creeps/${modelName}.vox`)).then((voxelData) => {
+		voxParser.parse(require(`@/play/assets/creeps/${modelName}.vox`)).then((voxelData) => {
 			store.state.loading -= 1
 			creepModelBuilders[modelName] = new Vox.MeshBuilder(voxelData, { voxelSize: 2 })
 		})
@@ -60,13 +60,13 @@ let lifeLostBuilder = null
 	for (let digit = 0; digit < 11; digit += 1) {
 		const character = digit < 10 ? `${digit}` : '+'
 		store.state.loading += 1
-		voxParser.parse(require(`@/assets/text/${character}.vox`)).then((voxelData) => {
+		voxParser.parse(require(`@/play/assets/text/${character}.vox`)).then((voxelData) => {
 			store.state.loading -= 1
 			numberModelBuilders[character] = new Vox.MeshBuilder(voxelData, { voxelSize: 2, material: coinMaterial })
 		})
 	}
 	store.state.loading += 1
-	voxParser.parse(require(`@/assets/text/-1.vox`)).then((voxelData) => {
+	voxParser.parse(require(`@/play/assets/text/-1.vox`)).then((voxelData) => {
 		store.state.loading -= 1
 		lifeLostBuilder = new Vox.MeshBuilder(voxelData, { voxelSize: 3 })
 		lifeLostBuilder.material.color.setHex(0xff0000)

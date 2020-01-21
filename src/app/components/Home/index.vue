@@ -6,10 +6,12 @@
 </template>
 
 <script>
-import bridge from '@/xjs/bridge'
+import store from '@/app/store'
 
-import Chat from '@/components/Chat'
-import Queue from '@/components/Queue'
+import bridge from '@/helpers/bridge'
+
+import Chat from '@/app/components/Chat'
+import Queue from '@/app/components/Queue'
 
 export default {
 	components: {
@@ -22,7 +24,7 @@ export default {
 		bridge.on('reconnect', this.connect)
 
 		bridge.on('queued', ([ name, queuing ]) => {
-			const names = this.$store.state.queue.names
+			const names = store.state.queue.names
 			const index = names.indexOf(name)
 			const alreadyQueued = index !== -1
 			if (alreadyQueued !== queuing) {
@@ -43,9 +45,9 @@ export default {
 	methods: {
 		connect () {
 			bridge.emit('lobby', true, ({ names, scores, users }) => {
-				this.$store.state.queue.names = names
-				this.$store.state.queue.scores = scores
-				this.$store.state.queue.users = users
+				store.state.queue.names = names
+				store.state.queue.scores = scores
+				store.state.queue.users = users
 			})
 		},
 	},

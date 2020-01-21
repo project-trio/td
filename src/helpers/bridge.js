@@ -1,6 +1,6 @@
 import TrioClient from '@ky-is/trio-client'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 const socket = TrioClient.connectTo('td', store.state.signin.token, (token) => {
 	store.signinToken(token)

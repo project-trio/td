@@ -1,12 +1,12 @@
 <template>
-<Popover class="wave-box  relative pl-2 pb-px bg-contain bg-center bg-no-repeat capitalize  flex items-end" :style="{ 'background-image': `url(${require(`@/assets/icons/${name}.png`)})` }">
+<Popover class="wave-box  relative pl-2 pb-px bg-contain bg-center bg-no-repeat capitalize  flex items-end" :style="{ 'background-image': `url(${require(`@/app/assets/icons/${name}.png`)})` }">
 	{{ number }}
 	<template slot="hover">{{ name }} {{ boss ? 'Boss' : null }}</template>
 </Popover>
 </template>
 
 <script>
-import Popover from '@/components/Game/Sidebar/Popover'
+import Popover from '@/app/components/Game/Sidebar/Popover'
 
 export default {
 	components: {

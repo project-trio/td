@@ -11,8 +11,10 @@
 </template>
 
 <script>
-import Time from '@/components/Time'
-import User from '@/components/User'
+import store from '@/app/store'
+
+import Time from '@/app/components/Time'
+import User from '@/app/components/User'
 
 export default {
 	components: {
@@ -29,11 +31,11 @@ export default {
 
 	computed: {
 		localId () {
-			return this.$store.state.signin.user.id
+			return store.state.signin.user.id
 		},
 
 		scores () {
-			return this.$store.state.queue.scores[this.mode]
+			return store.state.queue.scores[this.mode]
 		},
 	},
 }

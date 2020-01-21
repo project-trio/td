@@ -1,6 +1,6 @@
 import { Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera, OrthographicCamera, BasicShadowMap, PCFSoftShadowMap } from 'three'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import Pointer from '@/play/render/Pointer'
 

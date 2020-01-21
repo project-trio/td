@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import local from '@/play/local'
 
-import storage from '@/xjs/storage'
+import storage from '@/helpers/storage'
 
 const defaultGameState = () => {
 	return {

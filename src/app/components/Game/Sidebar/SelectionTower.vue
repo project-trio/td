@@ -63,11 +63,13 @@
 </template>
 
 <script>
+import store from '@/app/store'
+
 import local from '@/play/local'
 
 import towers from '@/play/data/towers'
 
-import Popover from '@/components/Game/Sidebar/Popover'
+import Popover from '@/app/components/Game/Sidebar/Popover'
 
 export default {
 	components: {
@@ -91,14 +93,14 @@ export default {
 
 	computed: {
 		gold () {
-			return this.$store.state.game.local.gold
+			return store.state.game.local.gold
 		},
 		upgradeable () {
 			return this.nextCost <= this.gold
 		},
 
 		url () {
-			return require(`@/assets/icons/${this.name}.png`)
+			return require(`@/app/assets/icons/${this.name}.png`)
 		},
 
 		data () {

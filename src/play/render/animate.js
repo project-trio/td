@@ -1,4 +1,4 @@
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 const animations = []
 

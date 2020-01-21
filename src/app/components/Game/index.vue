@@ -12,14 +12,15 @@
 </template>
 
 <script>
-import bridge from '@/xjs/bridge'
-import store from '@/xjs/store'
+import store from '@/app/store'
+
+import bridge from '@/helpers/bridge'
 
 import local from '@/play/local'
 
-import GameCanvas from '@/components/Game/Canvas'
-import GameOverlay from '@/components/Game/Overlay'
-import Sidebar from '@/components/Game/Sidebar'
+import GameCanvas from '@/app/components/Game/Canvas'
+import GameOverlay from '@/app/components/Game/Overlay'
+import Sidebar from '@/app/components/Game/Sidebar'
 
 export default {
 	components: {
@@ -43,11 +44,11 @@ export default {
 
 	computed: {
 		loading () {
-			return this.$store.state.loading
+			return store.state.loading
 		},
 
 		joined () {
-			return this.$store.state.game.id === this.gid
+			return store.state.game.id === this.gid
 		},
 	},
 
@@ -55,7 +56,7 @@ export default {
 		bridge.on('started game', (data) => {
 			console.log('started game', data)
 			const players = data.players
-			const localId = this.$store.state.signin.user
+			const localId = store.state.signin.user
 			for (let idx = players.length - 1; idx >= 0; idx -= 1) {
 				const player = players[idx]
 				player.score = 0

@@ -1,6 +1,6 @@
 import { BoxBufferGeometry, ExtrudeGeometry, PlaneBufferGeometry, RingBufferGeometry, WireframeGeometry, LineSegments, Mesh, MeshBasicMaterial, MeshLambertMaterial, Shape } from 'three'
 
-import store from '@/xjs/store'
+import store from '@/app/store'
 
 import distance from '@/play/distance'
 import local from '@/play/local'
@@ -54,7 +54,7 @@ const wireMaterials = {}
 		wireMaterials[towerData.wire] = new MeshBasicMaterial({ color: towerData.wire })
 		store.state.loading += 1
 		turretModelBuilders[name] = null
-		voxParser.parse(require(`@/assets/towers/${name}.vox`)).then((voxelData) => {
+		voxParser.parse(require(`@/play/assets/towers/${name}.vox`)).then((voxelData) => {
 			store.state.loading -= 1
 			turretModelBuilders[name] = new Vox.MeshBuilder(voxelData, { voxelSize: 2 })
 		})

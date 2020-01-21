@@ -1,5 +1,5 @@
-import bridge from '@/xjs/bridge'
-import store from '@/xjs/store'
+import bridge from '@/helpers/bridge'
+import store from '@/app/store'
 
 import local from '@/play/local'
 import random from '@/play/random'

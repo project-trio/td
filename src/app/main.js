@@ -1,16 +1,12 @@
 import Vue from 'vue'
-import App from './App.vue'
-
 import TrioClient from '@ky-is/trio-client'
 
-import router from '@/xjs/router'
-import store from '@/xjs/store'
-import util from '@/xjs/util'
+import store from '@/app/store'
+
+import App from './App.vue'
+import router from './router'
 
 Vue.config.productionTip = false
-
-Vue.prototype.$store = store
-Vue.prototype.$util = util
 
 new Vue({
 	router,

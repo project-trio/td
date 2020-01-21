@@ -7,7 +7,7 @@
 		</h1>
 		<h1 v-else>Waiting{{ players.length > 1 ? ' for others to finish' : '' }}...</h1>
 		<p v-if="!lives">You let too many creeps escape. Keep an eye on your lives next time!</p>
-		<button class="selection" @click="onLeave">Leave</button>
+		<button class="selection  block" @click="onLeave">Leave</button>
 	</div>
 	<div v-else-if="overlay === 'help'">
 		<h1 class="text-center">TD Guide</h1>
@@ -26,9 +26,11 @@
 </template>
 
 <script>
-import storage from '@/xjs/storage'
+import store from '@/app/store'
 
-import Time from '@/components/Time'
+import storage from '@/helpers/storage'
+
+import Time from '@/app/components/Time'
 
 export default {
 	components: {
@@ -37,7 +39,7 @@ export default {
 
 	computed: {
 		overlay () {
-			return this.$store.state.game.overlay
+			return store.state.game.overlay
 		},
 
 		gameOver () {
@@ -45,23 +47,23 @@ export default {
 		},
 
 		finished () {
-			return this.$store.state.game.finished
+			return store.state.game.finished
 		},
 
 		finalTime () {
-			return this.$store.state.game.finalTime
+			return store.state.game.finalTime
 		},
 
 		lives () {
-			return this.$store.state.game.local.lives
+			return store.state.game.local.lives
 		},
 
 		localWinner () {
-			return this.winners.length === 1 && this.winners[0] === this.$store.state.signin.user.name
+			return this.winners.length === 1 && this.winners[0] === store.state.signin.user.name
 		},
 
 		players () {
-			return this.$store.state.game.players
+			return store.state.game.players
 		},
 
 		winners () {
@@ -73,13 +75,13 @@ export default {
 		},
 
 		highscore () {
-			return this.$store.state.game.highscore
+			return store.state.game.highscore
 		},
 	},
 
 	created () {
 		if (!storage.get('helped')) {
-			this.$store.state.game.overlay = 'help'
+			store.state.game.overlay = 'help'
 			storage.set('helped', 1)
 		}
 	},
@@ -90,7 +92,7 @@ export default {
 		},
 
 		onClose () {
-			this.$store.state.game.overlay = null
+			store.state.game.overlay = null
 		},
 	},
 }
