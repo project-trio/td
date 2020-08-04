@@ -63,7 +63,7 @@ export default {
 		}
 	},
 
-	beforeDestroy () {
+	beforeUnmount () {
 		bridge.off('server update')
 		if (local.game) {
 			local.game.destroy()

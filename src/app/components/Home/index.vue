@@ -37,7 +37,7 @@ export default {
 		})
 	},
 
-	beforeDestroy () {
+	beforeUnmount () {
 		bridge.off('reconnect', this.connect)
 		bridge.off('queued')
 	},

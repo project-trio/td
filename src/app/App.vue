@@ -32,7 +32,7 @@ export default {
 		})
 	},
 
-	beforeDestroy () {
+	beforeUnmount () {
 		window.addEventListener('contextmenu', this.onRightClick, true)
 
 		bridge.off('joined game')

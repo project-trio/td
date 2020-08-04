@@ -157,7 +157,7 @@ export default {
 		bridge.on('disconnect', this.disconnect)
 	},
 
-	beforeDestroy () {
+	beforeUnmount () {
 		bridge.off('disconnect', this.disconnect)
 		this.setReadyTimer(false)
 	},

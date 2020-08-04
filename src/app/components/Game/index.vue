@@ -74,7 +74,7 @@ export default {
 		})
 	},
 
-	beforeDestroy () {
+	beforeUnmount () {
 		if (this.gid) {
 			bridge.emit('leave game', this.gid)
 		}
