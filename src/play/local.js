@@ -1,9 +1,12 @@
 export default {
-
+	gid: null,
 	game: null,
+	renderer: null,
 
 	syncTowers: [],
 
-	playerIndex: null,
-
+	setGame (newGame) {
+		this.game?.destroy()
+		this.game = newGame
+	},
 }

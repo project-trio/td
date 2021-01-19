@@ -4,8 +4,6 @@ import store from '@/app/store'
 import local from '@/play/local'
 import random from '@/play/random'
 
-import Loop from '@/play/render/Loop'
-
 import Bullet from '@/play/entity/Bullet'
 import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
@@ -15,12 +13,10 @@ import Waves from '@/play/Game/Waves'
 
 export default class Game {
 
-	constructor (renderer, data) {
+	constructor (data) {
+		local.gid = data.gid
 		this.id = data.gid
 		random.init(this.id)
-
-		this.renderer = renderer
-		this.container = renderer.container
 
 		this.updateCount = 0
 		this.updateQueue = {}
@@ -55,14 +51,15 @@ export default class Game {
 			store.state.game.towers = null
 		}
 
+		this.map = new GameMap()
+		this.waves = new Waves(this.map.paths.entrances, data.waves, this.creepMode)
+
+		if (local.renderer) {
+			local.renderer.container.add(this.map.container)
+		}
+
 		this.ticksRendered = -this.updatesUntilStart * this.ticksPerUpdate
 		this.lastTickTime = performance.now()
-
-		this.map = new GameMap(this.container)
-		this.waves = new Waves(this.map.paths.entrances, data.waves, this.creepMode)
-		this.loop = new Loop(this)
-
-		Creep.init(this.map)
 	}
 
 	// Update
@@ -202,9 +199,7 @@ export default class Game {
 	// Setup
 
 	destroy () {
-		this.loop.stop()
-		this.renderer.destroy()
-		store.resetGameState()
+		Bullet.destroy()
 		Creep.destroy()
 		Tower.destroy()
 	}

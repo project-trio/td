@@ -470,8 +470,8 @@ const roundedRect = (width, r) => {
 	return o
 }
 
-Tower.init = (_tileSize, placeholder) => {
-	TILE_SIZE = _tileSize
+Tower.init = (tileSize, placeholder) => {
+	TILE_SIZE = tileSize
 	allTowers = []
 
 	upgradeSize = TILE_SIZE / 5

@@ -1,4 +1,4 @@
-import { Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, Vector3 } from 'three'
+import { Group, Geometry, BoxBufferGeometry, PlaneBufferGeometry, LineSegments, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, Vector3 } from 'three'
 
 import store from '@/app/store'
 
@@ -7,6 +7,7 @@ import animate from '@/play/render/animate'
 
 import towers from '@/play/data/towers'
 
+import Bullet from '@/play/entity/Bullet'
 import Creep from '@/play/entity/Unit/Creep'
 import Tower from '@/play/entity/Unit/Tower'
 
@@ -58,7 +59,7 @@ let coinBuilder, heartBuilder
 
 export default class GameMap {
 
-	constructor (parent) {
+	constructor () {
 		store.state.game.wave = 0
 		this.killY = -(TILES_TALL + 2) * TILE_SIZE / 2
 		this.killX = (TILES_WIDE + 2) * TILE_SIZE / 2
@@ -67,7 +68,7 @@ export default class GameMap {
 		const TWH = TILES_WIDE / 2
 		const TTH = TILES_TALL / 2
 
-		this.container = render.group(parent)
+		this.container = new Group()
 		this.goldContainer = render.group(this.container)
 		const offsetY = MAP_HEIGHT / 2 + NUMBER_SIZE * 4
 		const offsetZ = 64
@@ -98,6 +99,7 @@ export default class GameMap {
 
 		Tower.init(TILE_SIZE, placement)
 		Creep.init(this, TILE_SIZE)
+		Bullet.init(TILE_SIZE)
 
 		const walls = [
 			[ 0,              0,              1,             TTH - EH - EY ],

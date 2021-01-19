@@ -10,6 +10,8 @@ import store from '@/app/store'
 
 import bridge from '@/helpers/bridge'
 
+import local from '@/play/local'
+
 import Chat from '@/app/components/Chat'
 import Queue from '@/app/components/Queue'
 
@@ -20,6 +22,12 @@ export default {
 	},
 
 	created () {
+		if (local.gid) {
+			bridge.emit('leave game', local.gid)
+			local.gid = null
+		}
+		local.setGame(null)
+
 		this.connect()
 		bridge.on('reconnect', this.connect)
 
@@ -37,7 +45,7 @@ export default {
 		})
 	},
 
-	beforeUnmount () {
+	beforeDestroy () {
 		bridge.off('reconnect', this.connect)
 		bridge.off('queued')
 	},

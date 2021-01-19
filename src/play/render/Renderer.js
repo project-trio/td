@@ -2,6 +2,9 @@ import { Scene, AmbientLight, DirectionalLight, WebGLRenderer, PerspectiveCamera
 
 import store from '@/app/store'
 
+import local from '@/play/local'
+
+import Loop from '@/play/render/Loop'
 import Pointer from '@/play/render/Pointer'
 
 const CAMERA_FOV = 20
@@ -49,10 +52,17 @@ export default class Renderer {
 
 		this.resizeThis = this.resize.bind(this)
 		window.addEventListener('resize', this.resizeThis)
+
+		if (local.game) {
+			this.container.add(local.game.map.container)
+		}
+
+		this.loop = new Loop()
 	}
 
 	destroy () {
 		this.pointer.destroy()
+		this.loop.destroy()
 		window.removeEventListener('resize', this.resizeThis)
 	}
 
@@ -76,9 +86,9 @@ export default class Renderer {
 		const newPixelMultiplier = window.devicePixelRatio / (store.state.settings.fullResolution ? 1 : 2)
 		if (newPixelMultiplier !== this.pixelMultiplier) {
 			this.pixelMultiplier = newPixelMultiplier
-			this.renderer.setPixelRatio(newPixelMultiplier)
+			this.rendering.setPixelRatio(newPixelMultiplier)
 		}
-		this.renderer.setSize(width, height)
+		this.rendering.setSize(width, height)
 
 		if (this.usePerspectiveCamera) {
 			this.gameCamera.aspect = width / height
@@ -106,7 +116,7 @@ export default class Renderer {
 	createRenderer () {
 		this.pixelMultiplier = null
 
-		this.renderer = new WebGLRenderer({
+		this.rendering = new WebGLRenderer({
 			antialias: true,
 			canvas: this.canvas,
 		})
@@ -120,9 +130,9 @@ export default class Renderer {
 		const shadowQuality = store.state.settings.shadows
 		const renderShadow = shadowQuality >= 1
 		this.gameLight.castShadow = renderShadow
-		this.renderer.shadowMap.enabled = renderShadow
+		this.rendering.shadowMap.enabled = renderShadow
 		if (renderShadow) {
-			this.renderer.shadowMap.type = shadowQuality >= 2 ? PCFSoftShadowMap : BasicShadowMap
+			this.rendering.shadowMap.type = shadowQuality >= 2 ? PCFSoftShadowMap : BasicShadowMap
 		}
 
 		this.resize()
@@ -130,7 +140,7 @@ export default class Renderer {
 
 	update () {
 		this.pointer.update(this.gameCamera)
-		this.renderer.render(this.gameScene, this.gameCamera)
+		this.rendering.render(this.gameScene, this.gameCamera)
 	}
 
 }

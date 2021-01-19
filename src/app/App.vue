@@ -26,13 +26,14 @@ export default {
 			if (data.error) {
 				return window.alert('Unable to join game: ' + data.error)
 			}
+			store.resetGameState()
 			const gid = data.gid
 			store.state.game.id = gid
 			this.$router.push({ name: 'Game', params: { gid } })
 		})
 	},
 
-	beforeUnmount () {
+	beforeDestroy () {
 		window.addEventListener('contextmenu', this.onRightClick, true)
 
 		bridge.off('joined game')

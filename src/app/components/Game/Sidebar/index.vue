@@ -130,11 +130,11 @@ export default {
 		},
 	},
 
-	mounted () {
+	created () {
 		window.addEventListener('keydown', this.keydown)
 	},
 
-	beforeUnmount () {
+	beforeDestroy () {
 		window.removeEventListener('keydown', this.keydown)
 	},
 
@@ -155,7 +155,7 @@ export default {
 					this.setTowerName(tower.name)
 				}
 			} else {
-				const selection = local.game.selection
+				const selection = local.game?.selection
 				if (selection) {
 					if (keyCode === 83) {
 						selection.tower.sell()
@@ -170,10 +170,7 @@ export default {
 
 		setTowerName (name) {
 			this.storeStateGame.build = name
-			const game = local.game
-			if (game) {
-				game.map.setTowerName(name)
-			}
+			local.game?.map.setTowerName(name)
 		},
 
 		onTower (name) {

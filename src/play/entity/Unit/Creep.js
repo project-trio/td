@@ -22,7 +22,7 @@ const START_DISTANCE = 96
 const MOVEMENT_PADDING = 2
 const BOSS_SCALE = 1.2
 
-let allCreeps = []
+let allCreeps  = null
 let gameMap
 
 const HP_HEIGHT = 5
@@ -554,12 +554,13 @@ Creep.all = () => {
 	return allCreeps
 }
 
-Creep.init = (map, _tileSize) => {
+Creep.init = (map, tileSize) => {
 	gameMap = map
+	allCreeps = []
 }
 
 Creep.destroy = () => {
-	allCreeps = []
+	allCreeps = null
 	gameMap = null
 }
 

@@ -15,7 +15,7 @@ import Creep from '@/play/entity/Unit/Creep'
 
 const COLLISION_DISTANCE = 300
 
-let allBullets = []
+let allBullets = null
 
 const bulletsCache = {}
 for (const name in towers) {
@@ -182,9 +182,12 @@ class Bullet {
 }
 
 //STATIC
+Bullet.init = () => {
+	allBullets = []
+}
 
 Bullet.destroy = () => {
-	allBullets = []
+	allBullets = null
 }
 
 Bullet.update = (renderTime, timeDelta, tweening) => {

@@ -2,6 +2,7 @@ import Stats from 'stats.js'
 
 import store from '@/app/store'
 
+import local from '@/play/local'
 import animate from '@/play/render/animate'
 
 import Bullet from '@/play/entity/Bullet'
@@ -12,8 +13,7 @@ const storeSettings = store.state.settings
 
 export default class Loop {
 
-	constructor (game) {
-		this.game = game
+	constructor () {
 		this.animateThis = this.animate.bind(this)
 		this.animationId = window.requestAnimationFrame(this.animateThis)
 
@@ -25,12 +25,16 @@ export default class Loop {
 	}
 
 	animate (timestamp) {
-		const game = this.game
 		const gameState = store.state.game
-		if (!game || gameState.finished) {
+		if (gameState.finished) {
 			return
 		}
 		this.animationId = window.requestAnimationFrame(this.animateThis)
+		const game = local.game
+		const renderer = local.renderer
+		if (!game || !renderer) {
+			return
+		}
 
 		const isPlaying = gameState.playing
 		if (isPlaying && this.framePanel) {
@@ -58,7 +62,7 @@ export default class Loop {
 		if (renderTime !== null) {
 			animate.update(renderTime)
 		}
-		game.renderer.update()
+		renderer.update()
 
 		if (this.framePanel && isPlaying) {
 			this.framePanel.end()
@@ -66,7 +70,7 @@ export default class Loop {
 		this.previousTimestamp = timestamp
 	}
 
-	stop () {
+	destroy () {
 		window.cancelAnimationFrame(this.animationId)
 
 		if (this.framePanel) {

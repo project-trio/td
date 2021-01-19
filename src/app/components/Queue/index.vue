@@ -68,7 +68,7 @@ import store from '@/app/store'
 import Scores from '@/app/components/Queue/Scores'
 
 import bridge from '@/helpers/bridge'
-import { TESTING } from '@/app/utils'
+// import { TESTING } from '@/app/utils'
 
 export default {
 	components: {
@@ -145,19 +145,15 @@ export default {
 
 	created () {
 		this.notificationPermission = window.Notification ? Notification.permission : 'unavailable'
-	},
-
-	mounted () {
-		this.$nextTick(() => {
-			if (TESTING) {
-				// return this.onPlaySingleplayer() //SAMPLE autostart
-			}
-		})
-
+		// this.$nextTick(() => {
+		// 	if (TESTING) {
+		// 		return this.onPlaySingleplayer() //SAMPLE autostart
+		// 	}
+		// })
 		bridge.on('disconnect', this.disconnect)
 	},
 
-	beforeUnmount () {
+	beforeDestroy () {
 		bridge.off('disconnect', this.disconnect)
 		this.setReadyTimer(false)
 	},
